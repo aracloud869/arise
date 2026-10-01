@@ -1,0 +1,6 @@
+{
+  "name": "Hệ Thống Solo Leveling - Sung Jin-woo System",
+  "description": "Giao diện bảng Hệ Thống mô phỏng thợ săn Sung Jin-woo với thông số, nhiệm vụ hàng ngày, chuỗi ngày, ải hầm ngục săn boss với hiệu ứng âm thanh, cửa hàng và thư viện tiểu thuyết.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
