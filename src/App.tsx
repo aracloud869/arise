@@ -628,6 +628,7 @@ export default function App() {
           if (justFinished) {
             triggerParticles('cyan');
             soundFx.playSystemNotification();
+            checkAutoIncrementStreak(q.name);
           }
           return {
             ...q,
@@ -817,6 +818,7 @@ export default function App() {
             // Give reward
             gainExp(g.rewardExp);
             setStats((s) => ({ ...s, gold: s.gold + g.rewardGold }));
+            checkAutoIncrementStreak(g.title);
             addLog(
               `Hoàn Thành Mục Tiêu: ${g.title}`,
               `Nhận thưởng: +${g.rewardExp} EXP và +${g.rewardGold} Vàng!`,
