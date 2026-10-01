@@ -803,6 +803,7 @@ export default function App() {
           if (isFinished && !g.completed) {
             triggerParticles('cyan');
             soundFx.playSystemNotification();
+            checkAutoIncrementStreak(g.title);
             const isHardMission = g.difficulty === 'B' || g.difficulty === 'A' || g.difficulty === 'S';
 
             if (isHardMission) {
@@ -818,7 +819,6 @@ export default function App() {
             // Give reward
             gainExp(g.rewardExp);
             setStats((s) => ({ ...s, gold: s.gold + g.rewardGold }));
-            checkAutoIncrementStreak(g.title);
             addLog(
               `Hoàn Thành Mục Tiêu: ${g.title}`,
               `Nhận thưởng: +${g.rewardExp} EXP và +${g.rewardGold} Vàng!`,

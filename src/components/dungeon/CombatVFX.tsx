@@ -40,10 +40,10 @@ export const CombatVFX: React.FC<CombatVFXProps> = ({ activeVFX }) => {
       {/* 1. BASIC SLASH (TRẢM KÍCH ĐOẢN ĐAO) - Cyan Plasma Razor Slice */}
       {activeVFX === 'basic_slash' && (
         <div className="relative w-full h-full flex items-center justify-center animate-skill-slash">
-          <div className="absolute w-[160%] h-5 bg-gradient-to-r from-transparent via-white to-transparent -rotate-45 shadow-[0_0_35px_#00f0ff,0_0_70px_#ffffff]" />
-          <div className="absolute w-[150%] h-12 bg-gradient-to-r from-transparent via-cyan-400 to-transparent -rotate-45 blur-md opacity-80" />
-          <div className="absolute w-44 h-44 rounded-full bg-cyan-300/40 shadow-[0_0_40px_#00e5ff]" />
-          <div className="absolute text-center">
+          <div className="absolute w-[160%] h-5 bg-gradient-to-r from-transparent via-white to-transparent animate-blade-slash -rotate-45 shadow-[0_0_35px_#00f0ff,0_0_70px_#ffffff]" />
+          <div className="absolute w-[150%] h-12 bg-gradient-to-r from-transparent via-cyan-400 to-transparent animate-blade-slash -rotate-45 blur-md opacity-80" />
+          <div className="absolute w-44 h-44 rounded-full bg-cyan-300/40 animate-ping shadow-[0_0_40px_#00e5ff]" />
+          <div className="absolute text-center animate-bounce">
             <span className="font-black font-chakra text-2xl sm:text-3xl text-cyan-200 tracking-widest text-glow-blue uppercase block">
               TRẢM KÍCH ĐOẢN ĐAO
             </span>
@@ -53,11 +53,11 @@ export const CombatVFX: React.FC<CombatVFXProps> = ({ activeVFX }) => {
 
       {/* 2. DAGGER THROW (PHI ĐAO ĐOẠT MỆNH) - Flying Cyan Dagger Impale */}
       {activeVFX === 'dagger_throw' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-skill-dagger">
-          <div className="absolute w-60 h-60 border-2 border-dashed border-sky-400 rounded-full shadow-[0_0_40px_#38bdf8]" />
-          <div className="absolute w-[140%] h-4 bg-gradient-to-r from-transparent via-sky-300 to-transparent rotate-12 shadow-[0_0_35px_#38bdf8]" />
-          <div className="absolute w-[140%] h-4 bg-gradient-to-r from-transparent via-white to-transparent -rotate-12 shadow-[0_0_35px_#ffffff]" />
-          <div className="absolute text-center">
+        <div className="relative w-full h-full flex items-center justify-center animate-skill-slash">
+          <div className="absolute w-60 h-60 border-2 border-dashed border-sky-400 rounded-full animate-spin shadow-[0_0_40px_#38bdf8]" />
+          <div className="absolute w-[140%] h-4 bg-gradient-to-r from-transparent via-sky-300 to-transparent animate-blade-slash rotate-12 shadow-[0_0_35px_#38bdf8]" />
+          <div className="absolute w-[140%] h-4 bg-gradient-to-r from-transparent via-white to-transparent animate-blade-slash -rotate-12 shadow-[0_0_35px_#ffffff]" />
+          <div className="absolute text-center animate-bounce">
             <span className="font-black font-chakra text-3xl sm:text-4xl text-sky-300 tracking-widest drop-shadow-[0_0_25px_#38bdf8] block uppercase">
               PHI ĐAO ĐOẠT MỆNH!
             </span>
@@ -71,16 +71,16 @@ export const CombatVFX: React.FC<CombatVFXProps> = ({ activeVFX }) => {
       {/* 3. VENOM STRIKE / RASAKA FANG (NỌC ĐỘC RASAKA) - Phantom Viper Jaws */}
       {activeVFX === 'venom_strike' && (
         <div className="relative w-full h-full flex items-center justify-center animate-skill-venom">
-          <div className="absolute inset-0 bg-purple-950/50 backdrop-blur-[2px]" />
-          <svg className="w-80 h-80 sm:w-[420px] sm:h-[420px] filter drop-shadow-[0_0_40px_#a855f7]" viewBox="0 0 200 200">
-            <circle cx="100" cy="100" r="85" fill="none" stroke="#22c55e" strokeWidth="4" strokeDasharray="10 6" opacity="0.7" />
+          <div className="absolute inset-0 bg-purple-950/50 backdrop-blur-[2px] animate-pulse" />
+          <svg className="w-80 h-80 sm:w-[420px] sm:h-[420px] animate-venom-splash filter drop-shadow-[0_0_40px_#a855f7]" viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="85" fill="none" stroke="#22c55e" strokeWidth="4" strokeDasharray="10 6" opacity="0.7" className="animate-spin" />
             <path d="M30,35 Q100,75 170,35" stroke="#c084fc" strokeWidth="8" fill="none" strokeLinecap="round" />
             <polygon points="45,40 68,40 55,108" fill="#f8fafc" stroke="#a855f7" strokeWidth="2.5" />
             <polygon points="132,40 155,40 145,108" fill="#f8fafc" stroke="#a855f7" strokeWidth="2.5" />
-            <circle cx="100" cy="100" r="18" fill="#a855f7" opacity="0.9" />
+            <circle cx="100" cy="100" r="18" fill="#a855f7" opacity="0.9" className="animate-ping" />
           </svg>
-          <div className="absolute w-80 h-80 rounded-full border-4 border-emerald-400 bg-purple-900/40 shadow-[0_0_60px_#a855f7,0_0_40px_#22c55e]" />
-          <div className="absolute text-center">
+          <div className="absolute w-80 h-80 rounded-full border-4 border-emerald-400 bg-purple-900/40 animate-ping shadow-[0_0_60px_#a855f7,0_0_40px_#22c55e]" />
+          <div className="absolute text-center animate-bounce">
             <span className="font-black font-chakra text-3xl sm:text-4xl text-emerald-300 tracking-widest drop-shadow-[0_0_25px_#22c55e] block uppercase">
               NỌC ĐỘC RASAKA!
             </span>
@@ -94,11 +94,11 @@ export const CombatVFX: React.FC<CombatVFXProps> = ({ activeVFX }) => {
       {/* 4. MUTILATE X (XÉ TOẠC LIÊN HOÀN) - Savage 10-Hit Blood Slash Frenzy */}
       {activeVFX === 'mutilate_x' && (
         <div className="relative w-full h-full flex items-center justify-center animate-skill-mutilate">
-          <div className="absolute w-[150%] h-6 bg-gradient-to-r from-transparent via-rose-500 to-transparent rotate-45 shadow-[0_0_50px_#f43f5e]" />
-          <div className="absolute w-[150%] h-6 bg-gradient-to-r from-transparent via-red-600 to-transparent -rotate-45 shadow-[0_0_50px_#dc2626]" />
-          <div className="absolute w-[140%] h-5 bg-gradient-to-r from-transparent via-white to-transparent rotate-15" />
-          <div className="absolute w-[140%] h-5 bg-gradient-to-r from-transparent via-rose-400 to-transparent -rotate-75" />
-          <div className="absolute text-center">
+          <div className="absolute w-[150%] h-6 bg-gradient-to-r from-transparent via-rose-500 to-transparent animate-cross-slash rotate-45 shadow-[0_0_50px_#f43f5e]" />
+          <div className="absolute w-[150%] h-6 bg-gradient-to-r from-transparent via-red-600 to-transparent animate-cross-slash -rotate-45 shadow-[0_0_50px_#dc2626]" />
+          <div className="absolute w-[140%] h-5 bg-gradient-to-r from-transparent via-white to-transparent animate-cross-slash rotate-15" />
+          <div className="absolute w-[140%] h-5 bg-gradient-to-r from-transparent via-rose-400 to-transparent animate-cross-slash -rotate-75" />
+          <div className="absolute text-center animate-bounce">
             <span className="font-black font-chakra text-3xl sm:text-5xl text-rose-500 tracking-widest drop-shadow-[0_0_35px_#f43f5e] block uppercase">
               XÉ TOẠC LIÊN HOÀN!
             </span>
@@ -112,9 +112,9 @@ export const CombatVFX: React.FC<CombatVFXProps> = ({ activeVFX }) => {
       {/* 5. KAMISH WRATH (CƠN THỊNH NỘ KAMISH) - Golden Dragon Claw Shatter */}
       {activeVFX === 'kamish_wrath' && (
         <div className="relative w-full h-full flex items-center justify-center animate-skill-kamish">
-          <div className="absolute w-[170%] h-8 bg-gradient-to-r from-transparent via-amber-400 to-transparent rotate-35 shadow-[0_0_60px_#f59e0b]" />
-          <div className="absolute w-[170%] h-8 bg-gradient-to-r from-transparent via-orange-500 to-transparent -rotate-35 shadow-[0_0_60px_#f97316]" />
-          <div className="absolute text-center">
+          <div className="absolute w-[170%] h-8 bg-gradient-to-r from-transparent via-amber-400 to-transparent animate-cross-slash rotate-35 shadow-[0_0_60px_#f59e0b]" />
+          <div className="absolute w-[170%] h-8 bg-gradient-to-r from-transparent via-orange-500 to-transparent animate-cross-slash -rotate-35 shadow-[0_0_60px_#f97316]" />
+          <div className="absolute text-center animate-bounce">
             <span className="font-black font-chakra text-3xl sm:text-5xl text-amber-300 tracking-widest text-glow-gold block uppercase">
               CƠN THỊNH NỘ KAMISH!
             </span>
@@ -127,11 +127,11 @@ export const CombatVFX: React.FC<CombatVFXProps> = ({ activeVFX }) => {
 
       {/* 6. SHADOW STEP (BỘ PHÁP BÓNG ĐÊM) - Triple Shadow Afterimage Dash */}
       {activeVFX === 'shadow_step' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-skill-shadow-step">
-          <div className="absolute w-72 h-72 border-2 border-cyan-400/80 rounded-full shadow-[0_0_40px_#38bdf8]" />
-          <div className="absolute w-[160%] h-8 bg-gradient-to-r from-transparent via-cyan-400 to-transparent rotate-12 opacity-80" />
-          <div className="absolute w-[160%] h-8 bg-gradient-to-r from-transparent via-purple-500 to-transparent -rotate-24 opacity-80" />
-          <div className="absolute text-center">
+        <div className="relative w-full h-full flex items-center justify-center animate-skill-stealth">
+          <div className="absolute w-72 h-72 border-2 border-cyan-400/80 rounded-full animate-ping shadow-[0_0_40px_#38bdf8]" />
+          <div className="absolute w-[160%] h-8 bg-gradient-to-r from-transparent via-cyan-400 to-transparent animate-blade-slash rotate-12 opacity-80" />
+          <div className="absolute w-[160%] h-8 bg-gradient-to-r from-transparent via-purple-500 to-transparent animate-blade-slash -rotate-24 opacity-80" />
+          <div className="absolute text-center animate-bounce">
             <span className="font-black font-chakra text-3xl sm:text-4xl text-cyan-300 tracking-widest text-glow-blue uppercase block">
               BỘ PHÁP BÓNG ĐÊM!
             </span>
@@ -144,11 +144,11 @@ export const CombatVFX: React.FC<CombatVFXProps> = ({ activeVFX }) => {
 
       {/* 7. STEALTH INVISIBLE (TÀNG HÌNH ẨN THÂN) - Dark Abyssal Eyes */}
       {activeVFX === 'stealth_invisible' && (
-        <div className="absolute inset-0 bg-[#020617]/90 backdrop-blur-md flex items-center justify-center z-50 animate-skill-stealth">
+        <div className="absolute inset-0 bg-[#020617]/90 backdrop-blur-md flex items-center justify-center animate-skill-stealth z-50">
           <div className="relative text-center space-y-4">
             <div className="flex items-center justify-center gap-8">
-              <div className="w-16 h-3.5 bg-cyan-300 rounded-full shadow-[0_0_35px_#00e5ff]" />
-              <div className="w-16 h-3.5 bg-cyan-300 rounded-full shadow-[0_0_35px_#00e5ff]" />
+              <div className="w-16 h-3.5 bg-cyan-300 rounded-full shadow-[0_0_35px_#00e5ff] animate-ping" />
+              <div className="w-16 h-3.5 bg-cyan-300 rounded-full shadow-[0_0_35px_#00e5ff] animate-ping" />
             </div>
             <h3 className="text-3xl sm:text-5xl font-black text-white font-chakra tracking-widest text-glow-blue uppercase">
               TÀNG HÌNH ẨN THÂN
@@ -162,10 +162,10 @@ export const CombatVFX: React.FC<CombatVFXProps> = ({ activeVFX }) => {
 
       {/* 8. BLOODLUST AURA (SÁT KHÍ ÁP ĐẢO) - Crimson Death Intent Aura */}
       {activeVFX === 'bloodlust_aura' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-skill-bloodlust">
-          <div className="absolute w-[500px] h-[500px] rounded-full border-4 border-red-600 shadow-[0_0_100px_#ef4444]" />
-          <div className="absolute text-center">
-            <span className="text-6xl block mb-2">☠️</span>
+        <div className="relative w-full h-full flex items-center justify-center">
+          <div className="absolute w-[500px] h-[500px] rounded-full border-4 border-red-600 animate-ping shadow-[0_0_100px_#ef4444]" />
+          <div className="absolute text-center animate-bounce">
+            <span className="text-6xl block mb-2 animate-pulse">☠️</span>
             <span className="font-black font-chakra text-3xl sm:text-5xl text-red-500 tracking-widest text-glow-red block uppercase">
               SÁT KHÍ ÁP ĐẢO!
             </span>
@@ -179,10 +179,10 @@ export const CombatVFX: React.FC<CombatVFXProps> = ({ activeVFX }) => {
       {/* 9. QUICKSILVER (TỐC BỘ THẦN TỐC) - Golden Clockwork Warp */}
       {activeVFX === 'quicksilver' && (
         <div className="relative w-full h-full flex items-center justify-center animate-skill-quicksilver">
-          <div className="absolute w-80 h-80 border-4 border-amber-400 rounded-full shadow-[0_0_60px_#f59e0b]" />
-          <div className="absolute w-64 h-64 border-2 border-dashed border-yellow-200 rounded-full" />
-          <div className="absolute w-[170%] h-6 bg-gradient-to-r from-transparent via-yellow-300 to-transparent -rotate-12 shadow-[0_0_40px_#eab308]" />
-          <div className="absolute text-center">
+          <div className="absolute w-80 h-80 border-4 border-amber-400 rounded-full animate-spin shadow-[0_0_60px_#f59e0b]" />
+          <div className="absolute w-64 h-64 border-2 border-dashed border-yellow-200 rounded-full animate-ping" />
+          <div className="absolute w-[170%] h-6 bg-gradient-to-r from-transparent via-yellow-300 to-transparent animate-blade-slash -rotate-12 shadow-[0_0_40px_#eab308]" />
+          <div className="absolute text-center animate-bounce">
             <span className="font-black font-chakra text-3xl sm:text-4xl text-amber-300 tracking-widest drop-shadow-[0_0_25px_#eab308] block uppercase">
               TỐC BỘ THẦN TỐC!
             </span>
@@ -196,10 +196,10 @@ export const CombatVFX: React.FC<CombatVFXProps> = ({ activeVFX }) => {
       {/* 10. RULER'S AUTHORITY (QUYỀN NĂNG THỐNG TRỊ) - Psychic Telekinetic Hand Slam */}
       {activeVFX === 'ruler_authority' && (
         <div className="relative w-full h-full flex items-center justify-center animate-skill-authority">
-          <div className="absolute w-96 h-96 sm:w-[520px] sm:h-[520px] rounded-full border-4 border-cyan-300 bg-cyan-950/50 shadow-[0_0_90px_#00e5ff] flex items-center justify-center">
+          <div className="absolute w-96 h-96 sm:w-[520px] sm:h-[520px] rounded-full border-4 border-cyan-300 bg-cyan-950/50 shadow-[0_0_90px_#00e5ff] flex items-center justify-center animate-spin">
             <div className="w-80 h-80 rounded-full border-2 border-dashed border-cyan-200" />
           </div>
-          <svg className="w-80 h-80 sm:w-[380px] sm:h-[380px] filter drop-shadow-[0_0_60px_#38bdf8]" viewBox="0 0 200 200">
+          <svg className="w-80 h-80 sm:w-[380px] sm:h-[380px] filter drop-shadow-[0_0_60px_#38bdf8] animate-bounce" viewBox="0 0 200 200">
             <path d="M45,110 L45,35 Q55,22 68,35 L68,110" stroke="#ffffff" strokeWidth="8" fill="#0284c7" opacity="0.85" strokeLinecap="round" />
             <path d="M72,110 L72,15 Q84,5 96,15 L96,110" stroke="#ffffff" strokeWidth="8" fill="#0284c7" opacity="0.85" strokeLinecap="round" />
             <path d="M100,110 L100,20 Q112,10 124,20 L124,110" stroke="#ffffff" strokeWidth="8" fill="#0284c7" opacity="0.85" strokeLinecap="round" />
@@ -218,10 +218,10 @@ export const CombatVFX: React.FC<CombatVFXProps> = ({ activeVFX }) => {
 
       {/* 11. SPATIAL COLLAPSE (SỤP ĐỔ KHÔNG GIAN) - Gravity Singularity Hole */}
       {activeVFX === 'spatial_collapse' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-skill-collapse">
-          <div className="absolute w-72 h-72 rounded-full bg-purple-950 border-4 border-cyan-400 shadow-[0_0_80px_#7e22ce,inset_0_0_50px_#00e5ff]" />
-          <div className="absolute w-44 h-44 rounded-full bg-black border-2 border-white" />
-          <div className="absolute text-center">
+        <div className="relative w-full h-full flex items-center justify-center animate-skill-authority">
+          <div className="absolute w-72 h-72 rounded-full bg-purple-950 border-4 border-cyan-400 animate-spin shadow-[0_0_80px_#7e22ce,inset_0_0_50px_#00e5ff]" />
+          <div className="absolute w-44 h-44 rounded-full bg-black border-2 border-white animate-ping" />
+          <div className="absolute text-center animate-bounce">
             <span className="font-black font-chakra text-3xl sm:text-4xl text-purple-300 tracking-widest drop-shadow-[0_0_30px_#a855f7] block uppercase">
               SỤP ĐỔ KHÔNG GIAN!
             </span>
@@ -234,10 +234,10 @@ export const CombatVFX: React.FC<CombatVFXProps> = ({ activeVFX }) => {
 
       {/* 12. SHADOW EXCHANGE (HOÁN ĐỔI BÓNG TỐI) - Abyssal Portal Swap */}
       {activeVFX === 'shadow_exchange' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-skill-exchange">
-          <div className="absolute w-80 h-[140%] bg-purple-950/80 border-x-4 border-purple-400 blur-sm" />
-          <div className="absolute w-56 h-56 rounded-full bg-cyan-400/40 shadow-[0_0_50px_#a855f7]" />
-          <div className="absolute text-center">
+        <div className="relative w-full h-full flex items-center justify-center animate-skill-stealth">
+          <div className="absolute w-80 h-[140%] bg-purple-950/80 border-x-4 border-purple-400 animate-pulse blur-sm" />
+          <div className="absolute w-56 h-56 rounded-full bg-cyan-400/40 animate-ping shadow-[0_0_50px_#a855f7]" />
+          <div className="absolute text-center animate-bounce">
             <span className="font-black font-chakra text-3xl sm:text-4xl text-purple-300 tracking-widest drop-shadow-[0_0_30px_#c084fc] block uppercase">
               HOÁN ĐỔI BÓNG TỐI!
             </span>
@@ -250,13 +250,13 @@ export const CombatVFX: React.FC<CombatVFXProps> = ({ activeVFX }) => {
 
       {/* 13. ARISE (TRỖI DẬY) - Monarch Army Extraction */}
       {activeVFX === 'arise' && (
-        <div className="absolute inset-0 bg-[#090014]/95 backdrop-blur-md flex items-center justify-center z-50 overflow-hidden animate-skill-arise">
-          <div className="absolute w-[700px] h-[700px] rounded-full bg-gradient-to-r from-purple-900 via-indigo-950 to-purple-950 opacity-60 blur-2xl" />
-          <div className="absolute w-96 h-96 sm:w-[580px] sm:h-[580px] rounded-full border-4 border-purple-500 bg-purple-950/50 shadow-[0_0_100px_#a855f7] flex items-center justify-center">
-            <CrownMonarchIcon className="w-28 h-28 text-purple-400" />
+        <div className="absolute inset-0 bg-[#090014]/95 backdrop-blur-md flex items-center justify-center animate-skill-arise z-50 overflow-hidden">
+          <div className="absolute w-[700px] h-[700px] rounded-full bg-gradient-to-r from-purple-900 via-indigo-950 to-purple-950 opacity-60 animate-shadow-vortex blur-2xl" />
+          <div className="absolute w-96 h-96 sm:w-[580px] sm:h-[580px] rounded-full border-4 border-purple-500 bg-purple-950/50 shadow-[0_0_100px_#a855f7] flex items-center justify-center animate-spin">
+            <CrownMonarchIcon className="w-28 h-28 text-purple-400 animate-pulse" />
           </div>
           <div className="relative text-center space-y-3 z-20">
-            <h2 className="text-5xl sm:text-8xl font-black text-white font-orbitron tracking-widest text-glow-purple uppercase">
+            <h2 className="text-5xl sm:text-8xl font-black text-white font-orbitron tracking-widest text-glow-purple uppercase animate-bounce">
               ARISE!
             </h2>
             <p className="text-xl sm:text-3xl font-black text-purple-300 font-chakra tracking-widest text-glow-purple uppercase">
@@ -268,10 +268,10 @@ export const CombatVFX: React.FC<CombatVFXProps> = ({ activeVFX }) => {
 
       {/* 14. SHADOW EXTRACTION (TRÍCH XUẤT HẮC ÁM) - Life & Mana Drain Tendrils */}
       {activeVFX === 'shadow_extraction' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-skill-extraction">
-          <div className="absolute w-80 h-80 rounded-full border-4 border-dashed border-purple-400 bg-purple-950/60 shadow-[0_0_70px_#a855f7]" />
-          <div className="absolute w-56 h-56 rounded-full bg-emerald-400/40" />
-          <div className="absolute text-center">
+        <div className="relative w-full h-full flex items-center justify-center animate-skill-arise">
+          <div className="absolute w-80 h-80 rounded-full border-4 border-dashed border-purple-400 bg-purple-950/60 animate-spin shadow-[0_0_70px_#a855f7]" />
+          <div className="absolute w-56 h-56 rounded-full bg-emerald-400/40 animate-ping" />
+          <div className="absolute text-center animate-bounce">
             <span className="font-black font-chakra text-3xl sm:text-4xl text-purple-300 tracking-widest drop-shadow-[0_0_30px_#a855f7] block uppercase">
               TRÍCH XUẤT HẮC ÁM!
             </span>
@@ -284,10 +284,10 @@ export const CombatVFX: React.FC<CombatVFXProps> = ({ activeVFX }) => {
 
       {/* 15. MONARCH DOMAIN (LÃNH ĐỊA CHÚA TỂ) - Floor Expansion Domain */}
       {activeVFX === 'monarch_domain' && (
-        <div className="absolute inset-0 bg-slate-950/90 border-4 border-purple-500 flex items-center justify-center z-50 animate-skill-domain">
-          <div className="absolute w-[800px] h-[800px] rounded-full bg-purple-950/70 blur-2xl" />
+        <div className="absolute inset-0 bg-slate-950/90 border-4 border-purple-500 flex items-center justify-center animate-skill-arise z-50">
+          <div className="absolute w-[800px] h-[800px] rounded-full bg-purple-950/70 blur-2xl animate-spin" />
           <div className="relative text-center space-y-3">
-            <CrownMonarchIcon className="w-24 h-24 text-purple-400 mx-auto" />
+            <CrownMonarchIcon className="w-24 h-24 text-purple-400 mx-auto animate-bounce" />
             <h3 className="text-4xl sm:text-6xl font-black text-purple-300 font-chakra tracking-widest text-glow-purple uppercase">
               LÃNH ĐỊA CHÚA TỂ!
             </h3>
@@ -300,9 +300,9 @@ export const CombatVFX: React.FC<CombatVFXProps> = ({ activeVFX }) => {
 
       {/* 16. SHADOW ARMOR (HẮC GIÁP HỘ THỂ) - Crystalline Obsidian Barrier */}
       {activeVFX === 'shadow_armor' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-skill-armor">
-          <div className="absolute w-72 h-72 sm:w-96 sm:h-96 rounded-full border-4 border-purple-400 bg-slate-950/80 shadow-[0_0_70px_#a855f7]" />
-          <div className="absolute text-center">
+        <div className="relative w-full h-full flex items-center justify-center animate-skill-stealth">
+          <div className="absolute w-72 h-72 sm:w-96 sm:h-96 rounded-full border-4 border-purple-400 bg-slate-950/80 animate-ping shadow-[0_0_70px_#a855f7]" />
+          <div className="absolute text-center animate-bounce">
             <span className="font-black font-chakra text-3xl sm:text-4xl text-purple-200 tracking-widest text-glow-purple block uppercase">
               HẮC GIÁP HỘ THỂ!
             </span>
@@ -315,10 +315,10 @@ export const CombatVFX: React.FC<CombatVFXProps> = ({ activeVFX }) => {
 
       {/* 17. DRAGON FEAR (UY ÁP LONG TỘC) - Golden Dragon Ghost Roar */}
       {activeVFX === 'dragon_fear' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-skill-dragon-fear">
-          <div className="absolute w-[500px] h-[500px] rounded-full border-4 border-amber-400 shadow-[0_0_90px_#f59e0b]" />
-          <div className="absolute text-center">
-            <span className="text-6xl block mb-2">🐉</span>
+        <div className="relative w-full h-full flex items-center justify-center animate-skill-dragon">
+          <div className="absolute w-[500px] h-[500px] rounded-full border-4 border-amber-400 animate-ping shadow-[0_0_90px_#f59e0b]" />
+          <div className="absolute text-center animate-bounce">
+            <span className="text-6xl block mb-2 animate-pulse">🐉</span>
             <span className="font-black font-chakra text-3xl sm:text-5xl text-amber-400 tracking-widest text-glow-gold block uppercase">
               UY ÁP LONG TỘC!
             </span>
@@ -331,10 +331,10 @@ export const CombatVFX: React.FC<CombatVFXProps> = ({ activeVFX }) => {
 
       {/* 18. DRAGON BREATH (HƠI THỞ HỦY DIỆT) - Infernal Molten Stream */}
       {activeVFX === 'dragon_breath' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-skill-dragon-breath">
-          <div className="absolute w-[180%] h-44 bg-gradient-to-r from-transparent via-red-600 to-amber-500 blur-xl opacity-90" />
-          <div className="absolute w-[150%] h-24 bg-gradient-to-r from-yellow-300 via-orange-500 to-rose-600 shadow-[0_0_50px_#ef4444]" />
-          <div className="absolute text-center">
+        <div className="relative w-full h-full flex items-center justify-center animate-skill-dragon">
+          <div className="absolute w-[180%] h-44 bg-gradient-to-r from-transparent via-red-600 to-amber-500 animate-pulse blur-xl opacity-90" />
+          <div className="absolute w-[150%] h-24 bg-gradient-to-r from-yellow-300 via-orange-500 to-rose-600 animate-blade-slash shadow-[0_0_50px_#ef4444]" />
+          <div className="absolute text-center animate-bounce">
             <span className="font-black font-chakra text-3xl sm:text-5xl text-amber-300 tracking-widest drop-shadow-[0_0_35px_#dc2626] block uppercase">
               HƠI THỞ HỦY DIỆT!
             </span>
@@ -347,10 +347,10 @@ export const CombatVFX: React.FC<CombatVFXProps> = ({ activeVFX }) => {
 
       {/* 19. DEMON LIGHTNING (LÔI QUANG MA VƯƠNG) - Blue Demon Bolt Strike */}
       {activeVFX === 'demon_lightning' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-skill-demon-lightning">
-          <div className="absolute w-4 h-[180%] bg-gradient-to-b from-white via-blue-500 to-cyan-400 shadow-[0_0_60px_#38bdf8]" />
-          <div className="absolute w-72 h-72 rounded-full bg-blue-600/50" />
-          <div className="absolute text-center">
+        <div className="relative w-full h-full flex items-center justify-center animate-skill-lightning">
+          <div className="absolute w-4 h-[180%] bg-gradient-to-b from-white via-blue-500 to-cyan-400 animate-pulse shadow-[0_0_60px_#38bdf8]" />
+          <div className="absolute w-72 h-72 rounded-full bg-blue-600/50 animate-ping" />
+          <div className="absolute text-center animate-bounce">
             <span className="font-black font-chakra text-3xl sm:text-5xl text-cyan-300 tracking-widest text-glow-blue block uppercase">
               LÔI QUANG MA VƯƠNG!
             </span>
@@ -363,10 +363,10 @@ export const CombatVFX: React.FC<CombatVFXProps> = ({ activeVFX }) => {
 
       {/* 20. VOID CLEAVE (TRẢM KÍCH HƯ KHÔNG) - Magenta Reality Tear */}
       {activeVFX === 'void_cleave' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-skill-void-cleave">
-          <div className="absolute w-[180%] h-8 bg-gradient-to-r from-transparent via-pink-500 to-transparent -rotate-30 shadow-[0_0_60px_#ec4899]" />
-          <div className="absolute w-[180%] h-8 bg-gradient-to-r from-transparent via-purple-600 to-transparent rotate-30 shadow-[0_0_60px_#a855f7]" />
-          <div className="absolute text-center">
+        <div className="relative w-full h-full flex items-center justify-center animate-skill-void">
+          <div className="absolute w-[180%] h-8 bg-gradient-to-r from-transparent via-pink-500 to-transparent animate-blade-slash -rotate-30 shadow-[0_0_60px_#ec4899]" />
+          <div className="absolute w-[180%] h-8 bg-gradient-to-r from-transparent via-purple-600 to-transparent animate-blade-slash rotate-30 shadow-[0_0_60px_#a855f7]" />
+          <div className="absolute text-center animate-bounce">
             <span className="font-black font-chakra text-3xl sm:text-5xl text-pink-300 tracking-widest drop-shadow-[0_0_35px_#ec4899] block uppercase">
               TRẢM KÍCH HƯ KHÔNG!
             </span>

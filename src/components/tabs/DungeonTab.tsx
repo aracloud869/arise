@@ -201,6 +201,82 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
   const [lootResult, setLootResult] = useState<{ exp: number; gold: number; drops: string[] } | null>(null);
   const [isLoadoutModalOpen, setIsLoadoutModalOpen] = useState<boolean>(false);
 
+  // Combo System States
+  const [comboCount, setComboCount] = useState<number>(0);
+  const [comboSequence, setComboSequence] = useState<string[]>([]);
+  const [activeSynergy, setActiveSynergy] = useState<{ name: string; bonusPercent: number; desc: string } | null>(null);
+  const [comboBadgeAnim, setComboBadgeAnim] = useState<boolean>(false);
+
+  // Helper to categorize skill IDs for combo sequence matching
+  const getSkillCategory = (skillId: string): string => {
+    if (skillId.includes('stealth') || skillId.includes('shadow-step') || skillId.includes('quicksilver')) return 'stealth';
+    if (skillId.includes('slash') || skillId.includes('dagger') || skillId.includes('mutilate') || skillId.includes('rasaka')) return 'slash';
+    if (skillId.includes('authority') || skillId.includes('spatial')) return 'authority';
+    if (skillId.includes('arise') || skillId.includes('extraction') || skillId.includes('monarch')) return 'monarch';
+    if (skillId.includes('dragon')) return 'dragon';
+    if (skillId.includes('lightning') || skillId.includes('demon')) return 'lightning';
+    if (skillId.includes('void') || skillId.includes('kamish')) return 'void';
+    return 'slash';
+  };
+
+  // Register skill/attack combo and evaluate combo order synergies
+  const registerSkillCombo = (skillId: string) => {
+    const category = getSkillCategory(skillId);
+    const nextCount = comboCount + 1;
+    setComboCount(nextCount);
+
+    setComboBadgeAnim(true);
+    setTimeout(() => setComboBadgeAnim(false), 500);
+
+    const updatedSeq = [...comboSequence.slice(-2), category];
+    setComboSequence(updatedSeq);
+
+    let synergy: { name: string; bonusPercent: number; desc: string } | null = null;
+    const seqStr = updatedSeq.join('-');
+
+    if (seqStr.includes('stealth-slash') || seqStr.includes('stealth-mutilate')) {
+      synergy = {
+        name: 'SÁT THỦ TÀNG HÌNH (ASSASSIN EXECUTION)',
+        bonusPercent: 70,
+        desc: '+70% Sát thương & 100% Bạo kích!',
+      };
+    } else if (seqStr.includes('authority-monarch') || seqStr.includes('authority-arise') || seqStr.includes('monarch-arise')) {
+      synergy = {
+        name: 'UY ÁP CHÚA TỂ BÓNG TỐI (MONARCH REIGN)',
+        bonusPercent: 90,
+        desc: '+90% Sát thương & Hồi +25 MP!',
+      };
+      setPlayerCombatMp((prev) => Math.min(stats.maxMp, prev + 25));
+    } else if (seqStr.includes('dragon-lightning') || seqStr.includes('dragon-void') || seqStr.includes('lightning-void')) {
+      synergy = {
+        name: 'LONG LÔI HỦY DIỆT (DRAGON THUNDER)',
+        bonusPercent: 110,
+        desc: '+110% Sát thương & Xuyên 100% Giáp!',
+      };
+    } else if (nextCount >= 3) {
+      synergy = {
+        name: `LIÊN HOÀN TRẢM (COMBO CHAIN x${nextCount})`,
+        bonusPercent: 30 + nextCount * 10,
+        desc: `+${30 + nextCount * 10}% Sát thương duy trì!`,
+      };
+    }
+
+    setActiveSynergy(synergy);
+
+    if (synergy) {
+      soundFx.playCrit();
+      addFloatingText(`🔥 COMBO SYNERGY: ${synergy.name}!`, 'crit', 'boss');
+    } else {
+      addFloatingText(`COMBO x${nextCount}!`, 'status', 'boss');
+    }
+
+    const baseComboPercent = nextCount * 15;
+    const synergyPercent = synergy ? synergy.bonusPercent : 0;
+    const totalBonusPercent = baseComboPercent + synergyPercent;
+
+    return 1 + totalBonusPercent / 100;
+  };
+
   const combatLogContainerRef = useRef<HTMLDivElement>(null);
 
   // Max 5 Equipped Skills for Battle Deck
@@ -277,6 +353,9 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
     setIsGuarding(false);
     setPoisonTurnsRemaining(0);
     setSkillCooldownTurns({});
+    setComboCount(0);
+    setComboSequence([]);
+    setActiveSynergy(null);
     setCombatLogs([
       `[TIẾN VÀO CỔNG]: ${gate.name} (Độ khó: ${gate.rank})`,
       `[HỆ THỐNG]: Đợt 1/${totalWaves} bắt đầu! Đã nạp ${equippedBattleSkills.length} kỹ năng xuất chiến.`,
@@ -379,7 +458,8 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
       triggerScreenShake();
       triggerGroundImpact('normal');
 
-      const baseDmg = Math.round(stats.strength * 1.3 + stats.agility * 0.8 + 15);
+      const comboMult = registerSkillCombo('skill-slash');
+      const baseDmg = Math.round((stats.strength * 1.3 + stats.agility * 0.8 + 15) * comboMult);
       const isCrit = isStealthed || Math.random() < (stats.perception * 0.005 + 0.15);
       const critMulti = isStealthed ? 2.5 : 1.8;
       const rawDmg = isCrit ? Math.round(baseDmg * critMulti) : baseDmg;
@@ -390,7 +470,7 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
 
       setCombatLogs((prev) => [
         ...prev,
-        `[ĐÒN ĐÁNH]: Bạn vung dao găm chém trúng ${enemyName}, gây ${damage} sát thương ${isCrit ? '(BẠO KÍCH!)' : ''}.`,
+        `[ĐÒN ĐÁNH - COMBO x${comboCount + 1}]: Bạn vung dao găm chém trúng ${enemyName}, gây ${damage} sát thương ${isCrit ? '(BẠO KÍCH!)' : ''} (+${Math.round((comboMult - 1) * 100)}% ST từ Combo)!`,
       ]);
 
       const nextEnemyHp = Math.max(0, enemyCurrentHp - damage);
@@ -537,7 +617,8 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
       setIsMonsterHurt(true);
       triggerScreenShake();
 
-      const baseSkillDmg = Math.round((stats.strength * 1.5 + stats.intelligence * 1.2 + 25) * skill.damageMultiplier);
+      const comboMult = registerSkillCombo(skill.id);
+      const baseSkillDmg = Math.round((stats.strength * 1.5 + stats.intelligence * 1.2 + 25) * skill.damageMultiplier * comboMult);
       const isCrit = isStealthed || Math.random() < 0.35;
       const damage = isCrit ? Math.round(baseSkillDmg * 2.2) : baseSkillDmg;
 
@@ -545,7 +626,7 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
       addFloatingText(isCrit ? `BẠO KÍCH! -${damage}` : `-${damage}`, 'crit', 'boss');
       setCombatLogs((prev) => [
         ...prev,
-        `[KỸ NĂNG: ${skill.vietnameseName}]: Gây ${damage} sát thương ${isCrit ? '(SIÊU BẠO KÍCH!)' : ''} lên ${enemyName}!`,
+        `[KỸ NĂNG: ${skill.vietnameseName} - COMBO x${comboCount + 1}]: Gây ${damage} sát thương ${isCrit ? '(SIÊU BẠO KÍCH!)' : ''} (+${Math.round((comboMult - 1) * 100)}% từ Combo) lên ${enemyName}!`,
       ]);
 
       const nextEnemyHp = Math.max(0, enemyCurrentHp - damage);
@@ -1254,10 +1335,7 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
       {/* STATE 2: FULLSCREEN TURN-BASED COMBAT ARENA (CLEAN, 100% NON-CLIPPED LAYOUT) */}
       {/* ========================================================================= */}
       {battleState === 'fighting' && activeGate && (
-        <div className="w-full max-w-full flex flex-col gap-1.5 pb-20 overflow-y-auto max-h-[calc(100dvh-75px)] scrollbar-thin box-border relative">
-          {/* Active Skill & Boss Combat Visual Effects Overlay */}
-          <CombatVFX activeVFX={activeVFX} />
-
+        <div className="w-full max-w-full flex flex-col gap-1.5 pb-20 overflow-y-auto max-h-[calc(100dvh-75px)] scrollbar-thin box-border">
           {/* 1. Header Bar: Gate Title, Wave Count, Speed Toggle & Exit */}
           <div className="p-1.5 sm:p-2 bg-slate-950/95 border border-cyan-500/30 rounded-xs flex items-center justify-between gap-2 text-xs shrink-0 shadow-sm">
             <div className="flex items-center gap-1.5 sm:gap-2 truncate min-w-0">
@@ -1320,7 +1398,7 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
             />
           </div>
 
-          {/* 3. Battlefield Arena (Monster and Hunter Visuals + Ground Impact Effect + Ghosting) */}
+          {/* 3. Battlefield Arena (Monster and Hunter Visuals + Ground Impact Effect + Ghosting + Combo HUD) */}
           <div className="grid grid-cols-2 gap-2 p-1 bg-slate-950/70 border border-slate-800 rounded-xs h-24 sm:h-32 items-center justify-center relative shrink-0 overflow-hidden">
             {/* Ground Impact Particle Dust & Shockwaves Component */}
             <GroundImpactEffect
@@ -1329,6 +1407,30 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
               xPercent={25}
               yPercent={65}
             />
+
+            {/* Live Combo Counter HUD Badge Overlay */}
+            {comboCount > 0 && (
+              <div
+                className={`absolute top-1 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center justify-center pointer-events-none transition-all duration-300 ${
+                  comboBadgeAnim ? 'scale-125' : 'scale-100'
+                }`}
+              >
+                <div className="flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-cyan-950 via-slate-950 to-purple-950 border border-cyan-400 rounded-xs shadow-[0_0_25px_rgba(0,229,255,0.7)] animate-combo-bounce">
+                  <span className="text-amber-400 font-black font-orbitron text-xs sm:text-sm tracking-wider animate-combo-fire">
+                    🔥 COMBO x{comboCount}
+                  </span>
+                  <span className="text-[10px] sm:text-xs font-mono font-bold text-cyan-300">
+                    (+{comboCount * 15 + (activeSynergy ? activeSynergy.bonusPercent : 0)}% ST)
+                  </span>
+                </div>
+
+                {activeSynergy && (
+                  <div className="mt-0.5 px-2 py-0.5 bg-purple-950/90 border border-purple-400 text-purple-200 text-[9px] sm:text-[10px] font-chakra font-bold rounded-xs shadow-[0_0_15px_rgba(168,85,247,0.8)] animate-combo-badge truncate max-w-[280px]">
+                    ✨ {activeSynergy.name}: {activeSynergy.desc}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Monster Visual Model with Ghosting Evasion */}
             <div className="flex flex-col items-center justify-center relative z-10">
