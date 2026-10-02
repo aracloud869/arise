@@ -1,10 +1,12 @@
 import React from 'react';
 import { CrownMonarchIcon } from '../icons/SystemIcons';
 
-export type VFXType = 
+export type VFXType =
   | 'basic_slash'
   | 'dagger_throw'
+  | 'vital_strike'
   | 'venom_strike'
+  | 'rasaka_flurry'
   | 'mutilate_x'
   | 'kamish_wrath'
   | 'shadow_step'
@@ -37,387 +39,734 @@ export const CombatVFX: React.FC<CombatVFXProps> = ({ activeVFX }) => {
 
   return (
     <div className="absolute inset-0 pointer-events-none z-50 overflow-hidden flex items-center justify-center">
-      {/* 1. BASIC SLASH (TRẢM KÍCH ĐOẢN ĐAO) - Cyan Plasma Razor Slice */}
+      {/* 1. BASIC SLASH (skill-slash) - Twin High-Velocity Cyan Sonic Razor Arc */}
       {activeVFX === 'basic_slash' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-skill-slash">
-          <div className="absolute w-[160%] h-5 bg-gradient-to-r from-transparent via-white to-transparent animate-blade-slash -rotate-45 shadow-[0_0_35px_#00f0ff,0_0_70px_#ffffff]" />
-          <div className="absolute w-[150%] h-12 bg-gradient-to-r from-transparent via-cyan-400 to-transparent animate-blade-slash -rotate-45 blur-md opacity-80" />
-          <div className="absolute w-44 h-44 rounded-full bg-cyan-300/40 animate-ping shadow-[0_0_40px_#00e5ff]" />
-          <div className="absolute text-center animate-bounce">
-            <span className="font-black font-chakra text-2xl sm:text-3xl text-cyan-200 tracking-widest text-glow-blue uppercase block">
-              TRẢM KÍCH ĐOẢN ĐAO
+        <div className="relative w-full h-full flex items-center justify-center animate-vfx-razorslash">
+          <svg className="w-80 h-80 sm:w-[440px] sm:h-[440px] filter drop-shadow-[0_0_35px_#00f0ff]" viewBox="0 0 200 200">
+            <path
+              d="M 15 180 Q 95 95 185 20"
+              fill="none"
+              stroke="#ffffff"
+              strokeWidth="7"
+              strokeLinecap="round"
+            />
+            <path
+              d="M 25 185 Q 100 100 190 30"
+              fill="none"
+              stroke="#00e5ff"
+              strokeWidth="14"
+              opacity="0.8"
+              strokeLinecap="round"
+            />
+            <path
+              d="M 180 180 Q 105 105 20 25"
+              fill="none"
+              stroke="#38bdf8"
+              strokeWidth="10"
+              opacity="0.8"
+              strokeLinecap="round"
+            />
+            {/* Speed spark particles */}
+            <circle cx="100" cy="100" r="18" fill="#ffffff" className="animate-ping" />
+            <circle cx="60" cy="140" r="4" fill="#00f0ff" />
+            <circle cx="140" cy="60" r="5" fill="#ffffff" />
+            <circle cx="130" cy="130" r="4" fill="#38bdf8" />
+          </svg>
+          <div className="absolute text-center mt-36">
+            <span className="font-black font-chakra text-2xl sm:text-4xl text-cyan-200 tracking-widest uppercase block drop-shadow-[0_0_20px_#00e5ff]">
+              CHÉM CHỚP NHOÁNG!
+            </span>
+            <span className="text-[10px] sm:text-xs font-mono text-cyan-300 bg-slate-950/90 px-3 py-0.5 border border-cyan-400 rounded-xs inline-block mt-1">
+              [SONIC RAZOR SLASH · TỐC ĐỘ CỰC HẠN]
             </span>
           </div>
         </div>
       )}
 
-      {/* 2. DAGGER THROW (PHI ĐAO ĐOẠT MỆNH) - Flying Cyan Dagger Impale */}
+      {/* 2. DAGGER THROW (skill-dagger-throw) - 5 Homing Spectral Flying Daggers */}
       {activeVFX === 'dagger_throw' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-skill-slash">
-          <div className="absolute w-60 h-60 border-2 border-dashed border-sky-400 rounded-full animate-spin shadow-[0_0_40px_#38bdf8]" />
-          <div className="absolute w-[140%] h-4 bg-gradient-to-r from-transparent via-sky-300 to-transparent animate-blade-slash rotate-12 shadow-[0_0_35px_#38bdf8]" />
-          <div className="absolute w-[140%] h-4 bg-gradient-to-r from-transparent via-white to-transparent animate-blade-slash -rotate-12 shadow-[0_0_35px_#ffffff]" />
-          <div className="absolute text-center animate-bounce">
-            <span className="font-black font-chakra text-3xl sm:text-4xl text-sky-300 tracking-widest drop-shadow-[0_0_25px_#38bdf8] block uppercase">
+        <div className="relative w-full h-full flex items-center justify-center animate-vfx-daggerburst">
+          <svg className="w-80 h-80 sm:w-[420px] sm:h-[420px] filter drop-shadow-[0_0_30px_#38bdf8]" viewBox="0 0 200 200">
+            {/* Target reticle */}
+            <circle cx="100" cy="100" r="45" fill="none" stroke="#38bdf8" strokeWidth="2" strokeDasharray="6 4" className="animate-spin" />
+            <circle cx="100" cy="100" r="8" fill="#38bdf8" className="animate-ping" />
+            {/* 5 daggers converging */}
+            {[
+              { x: 30, y: 35, rot: 45 },
+              { x: 170, y: 35, rot: -45 },
+              { x: 20, y: 120, rot: 75 },
+              { x: 180, y: 120, rot: -75 },
+              { x: 100, y: 180, rot: 180 },
+            ].map((d, i) => (
+              <g key={i} transform={`translate(${d.x}, ${d.y}) rotate(${d.rot})`}>
+                <polygon points="0,-25 6,10 0,6 -6,10" fill="#ffffff" stroke="#0284c7" strokeWidth="1.5" />
+                <line x1="0" y1="10" x2="0" y2="40" stroke="#38bdf8" strokeWidth="3" opacity="0.6" strokeDasharray="4 2" />
+              </g>
+            ))}
+          </svg>
+          <div className="absolute text-center mt-36">
+            <span className="font-black font-chakra text-2xl sm:text-4xl text-sky-300 tracking-widest uppercase block drop-shadow-[0_0_20px_#38bdf8]">
               PHI ĐAO ĐOẠT MỆNH!
             </span>
-            <span className="text-xs font-mono text-sky-100 tracking-wider bg-slate-950/90 px-3 py-1 border border-sky-400 rounded-xs inline-block mt-1">
-              [PHÓNG ĐAO TỪ XA · GIẢM 40% NÉ TRÁNH]
+            <span className="text-[10px] sm:text-xs font-mono text-sky-100 bg-slate-950/90 px-3 py-0.5 border border-sky-400 rounded-xs inline-block mt-1">
+              [5 PHI ĐAO ĐỒNG LOẠT KHÓA MỤC TIÊU]
             </span>
           </div>
         </div>
       )}
 
-      {/* 3. VENOM STRIKE / RASAKA FANG (NỌC ĐỘC RASAKA) - Phantom Viper Jaws */}
-      {activeVFX === 'venom_strike' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-skill-venom">
-          <div className="absolute inset-0 bg-purple-950/50 backdrop-blur-[2px] animate-pulse" />
-          <svg className="w-80 h-80 sm:w-[420px] sm:h-[420px] animate-venom-splash filter drop-shadow-[0_0_40px_#a855f7]" viewBox="0 0 200 200">
-            <circle cx="100" cy="100" r="85" fill="none" stroke="#22c55e" strokeWidth="4" strokeDasharray="10 6" opacity="0.7" className="animate-spin" />
-            <path d="M30,35 Q100,75 170,35" stroke="#c084fc" strokeWidth="8" fill="none" strokeLinecap="round" />
-            <polygon points="45,40 68,40 55,108" fill="#f8fafc" stroke="#a855f7" strokeWidth="2.5" />
-            <polygon points="132,40 155,40 145,108" fill="#f8fafc" stroke="#a855f7" strokeWidth="2.5" />
-            <circle cx="100" cy="100" r="18" fill="#a855f7" opacity="0.9" className="animate-ping" />
+      {/* 3. VITAL STRIKE (skill-vital-strike) - Tactical Ocular Reticle & Crimson Laser Needle */}
+      {activeVFX === 'vital_strike' && (
+        <div className="relative w-full h-full flex items-center justify-center animate-vfx-vitalcrosshair">
+          <svg className="w-84 h-84 sm:w-[460px] sm:h-[460px] filter drop-shadow-[0_0_40px_#ef4444]" viewBox="0 0 200 200">
+            {/* Sniper concentric circles */}
+            <circle cx="100" cy="100" r="75" fill="none" stroke="#ef4444" strokeWidth="2.5" />
+            <circle cx="100" cy="100" r="45" fill="none" stroke="#f87171" strokeWidth="1.5" strokeDasharray="6 3" />
+            <circle cx="100" cy="100" r="20" fill="none" stroke="#ffffff" strokeWidth="2" />
+            {/* Crosshair lines */}
+            <line x1="15" y1="100" x2="80" y2="100" stroke="#ef4444" strokeWidth="2" />
+            <line x1="120" y1="100" x2="185" y2="100" stroke="#ef4444" strokeWidth="2" />
+            <line x1="100" y1="15" x2="100" y2="80" stroke="#ef4444" strokeWidth="2" />
+            <line x1="100" y1="120" x2="100" y2="185" stroke="#ef4444" strokeWidth="2" />
+            {/* Center crimson core */}
+            <circle cx="100" cy="100" r="10" fill="#dc2626" className="animate-ping" />
+            <circle cx="100" cy="100" r="4" fill="#ffffff" />
+            {/* Target locked corner ticks */}
+            <path d="M 40 50 L 30 50 L 30 60" fill="none" stroke="#ef4444" strokeWidth="3" />
+            <path d="M 160 50 L 170 50 L 170 60" fill="none" stroke="#ef4444" strokeWidth="3" />
+            <path d="M 40 150 L 30 150 L 30 140" fill="none" stroke="#ef4444" strokeWidth="3" />
+            <path d="M 160 150 L 170 150 L 170 140" fill="none" stroke="#ef4444" strokeWidth="3" />
           </svg>
-          <div className="absolute w-80 h-80 rounded-full border-4 border-emerald-400 bg-purple-900/40 animate-ping shadow-[0_0_60px_#a855f7,0_0_40px_#22c55e]" />
-          <div className="absolute text-center animate-bounce">
-            <span className="font-black font-chakra text-3xl sm:text-4xl text-emerald-300 tracking-widest drop-shadow-[0_0_25px_#22c55e] block uppercase">
-              NỌC ĐỘC RASAKA!
+          <div className="absolute text-center mt-36">
+            <span className="font-black font-chakra text-2xl sm:text-4xl text-red-500 tracking-widest uppercase block drop-shadow-[0_0_20px_#ef4444]">
+              NHÁT ĐÂM CHÍ MẠNG!
             </span>
-            <span className="text-xs font-mono text-purple-200 tracking-wider bg-slate-950/90 px-3 py-1 border border-purple-500 rounded-xs inline-block mt-1">
-              [GÂY TÊ LIỆT · RÚT MÁU KẺ THÙ TRONG 3 HIỆP]
+            <span className="text-[10px] sm:text-xs font-mono text-red-200 bg-red-950/90 px-3 py-0.5 border border-red-500 rounded-xs inline-block mt-1">
+              [TARGET LOCKED: KHÓA TỬ HUYỆT · BẠO KÍCH CỰC ĐẠI]
             </span>
           </div>
         </div>
       )}
 
-      {/* 4. MUTILATE X (XÉ TOẠC LIÊN HOÀN) - Savage 10-Hit Blood Slash Frenzy */}
+      {/* 4. VENOM STRIKE (skill-venom) - Toxic Emerald Viper Acid Jaws */}
+      {activeVFX === 'venom_strike' && (
+        <div className="relative w-full h-full flex items-center justify-center animate-vfx-venomsnap">
+          <svg className="w-80 h-80 sm:w-[440px] sm:h-[440px] filter drop-shadow-[0_0_40px_#22c55e]" viewBox="0 0 200 200">
+            {/* Acid biohazard circle */}
+            <circle cx="100" cy="100" r="75" fill="none" stroke="#22c55e" strokeWidth="3" strokeDasharray="12 6" className="animate-spin" />
+            {/* Giant viper jaws */}
+            <path d="M 40 60 Q 100 25 160 60" fill="none" stroke="#86efac" strokeWidth="8" strokeLinecap="round" />
+            <path d="M 40 140 Q 100 175 160 140" fill="none" stroke="#86efac" strokeWidth="8" strokeLinecap="round" />
+            {/* Fangs */}
+            <polygon points="65,60 80,60 72,110" fill="#ffffff" stroke="#22c55e" strokeWidth="2" />
+            <polygon points="120,60 135,60 128,110" fill="#ffffff" stroke="#22c55e" strokeWidth="2" />
+            <polygon points="72,140 85,140 78,95" fill="#ffffff" stroke="#22c55e" strokeWidth="2" />
+            <polygon points="115,140 128,140 122,95" fill="#ffffff" stroke="#22c55e" strokeWidth="2" />
+            {/* Dripping acid bubbles */}
+            <circle cx="72" cy="120" r="6" fill="#4ade80" className="animate-bounce" />
+            <circle cx="128" cy="120" r="5" fill="#4ade80" className="animate-bounce" />
+            <circle cx="100" cy="100" r="14" fill="#15803d" opacity="0.8" className="animate-ping" />
+          </svg>
+          <div className="absolute text-center mt-36">
+            <span className="font-black font-chakra text-2xl sm:text-4xl text-emerald-400 tracking-widest uppercase block drop-shadow-[0_0_20px_#22c55e]">
+              ĐÒN ĐỘC TÊ LIỆT!
+            </span>
+            <span className="text-[10px] sm:text-xs font-mono text-emerald-200 bg-slate-950/90 px-3 py-0.5 border border-emerald-400 rounded-xs inline-block mt-1">
+              [NANH ĐỘC HUYẾT XÀ · GÂY TÊ LIỆT KẺ ĐỊCH]
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* 5. RASAKA FLURRY (skill-rasaka-fang) - Blood Poison 8-Blade Storm Vortex */}
+      {activeVFX === 'rasaka_flurry' && (
+        <div className="relative w-full h-full flex items-center justify-center animate-vfx-rasakawhirl">
+          <svg className="w-88 h-88 sm:w-[460px] sm:h-[460px] filter drop-shadow-[0_0_40px_#c084fc]" viewBox="0 0 200 200">
+            {/* Spinning blade arcs */}
+            <circle cx="100" cy="100" r="80" fill="none" stroke="#a855f7" strokeWidth="3" strokeDasharray="8 6" className="animate-spin" />
+            {[0, 45, 90, 135, 180, 225, 270, 315].map((angle, i) => (
+              <g key={i} transform={`rotate(${angle} 100 100)`}>
+                <path d="M 100 20 Q 140 50 100 100" fill="none" stroke={i % 2 === 0 ? '#10b981' : '#c084fc'} strokeWidth="5" strokeLinecap="round" />
+                <circle cx="100" cy="20" r="4" fill="#ffffff" />
+              </g>
+            ))}
+            <circle cx="100" cy="100" r="24" fill="#7e22ce" opacity="0.6" className="animate-ping" />
+          </svg>
+          <div className="absolute text-center mt-36">
+            <span className="font-black font-chakra text-2xl sm:text-4xl text-purple-300 tracking-widest uppercase block drop-shadow-[0_0_20px_#c084fc]">
+              HUYẾT VŨ TRẢM!
+            </span>
+            <span className="text-[10px] sm:text-xs font-mono text-emerald-300 bg-slate-950/90 px-3 py-0.5 border border-purple-400 rounded-xs inline-block mt-1">
+              [VŨ BÃO 8 ĐAO HUYẾT ĐỘC · PHÁ GIÁP DIỆN RỘNG]
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* 6. MUTILATE X (skill-mutilate) - Heavy Armor-Shattering Crimson Cross Cleave */}
       {activeVFX === 'mutilate_x' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-skill-mutilate">
-          <div className="absolute w-[150%] h-6 bg-gradient-to-r from-transparent via-rose-500 to-transparent animate-cross-slash rotate-45 shadow-[0_0_50px_#f43f5e]" />
-          <div className="absolute w-[150%] h-6 bg-gradient-to-r from-transparent via-red-600 to-transparent animate-cross-slash -rotate-45 shadow-[0_0_50px_#dc2626]" />
-          <div className="absolute w-[140%] h-5 bg-gradient-to-r from-transparent via-white to-transparent animate-cross-slash rotate-15" />
-          <div className="absolute w-[140%] h-5 bg-gradient-to-r from-transparent via-rose-400 to-transparent animate-cross-slash -rotate-75" />
-          <div className="absolute text-center animate-bounce">
-            <span className="font-black font-chakra text-3xl sm:text-5xl text-rose-500 tracking-widest drop-shadow-[0_0_35px_#f43f5e] block uppercase">
-              XÉ TOẠC LIÊN HOÀN!
+        <div className="relative w-full h-full flex items-center justify-center animate-vfx-mutilatecrash">
+          <svg className="w-88 h-88 sm:w-[480px] sm:h-[480px] filter drop-shadow-[0_0_50px_#f43f5e]" viewBox="0 0 200 200">
+            {/* Colossal Red X-Cut */}
+            <line x1="20" y1="20" x2="180" y2="180" stroke="#ffffff" strokeWidth="6" strokeLinecap="round" />
+            <line x1="20" y1="20" x2="180" y2="180" stroke="#f43f5e" strokeWidth="18" opacity="0.85" strokeLinecap="round" />
+            <line x1="180" y1="20" x2="20" y2="180" stroke="#ffffff" strokeWidth="6" strokeLinecap="round" />
+            <line x1="180" y1="20" x2="20" y2="180" stroke="#dc2626" strokeWidth="18" opacity="0.85" strokeLinecap="round" />
+            {/* Shattered armor fragments */}
+            <polygon points="50,90 65,80 60,105" fill="#f87171" stroke="#ffffff" strokeWidth="1.5" />
+            <polygon points="140,85 155,95 135,105" fill="#f87171" stroke="#ffffff" strokeWidth="1.5" />
+            <polygon points="90,45 105,50 95,65" fill="#ef4444" stroke="#ffffff" strokeWidth="1.5" />
+            <polygon points="95,145 110,135 105,155" fill="#ef4444" stroke="#ffffff" strokeWidth="1.5" />
+            <circle cx="100" cy="100" r="28" fill="#ffffff" opacity="0.9" className="animate-ping" />
+          </svg>
+          <div className="absolute text-center mt-36">
+            <span className="font-black font-chakra text-2xl sm:text-4xl text-rose-500 tracking-widest uppercase block drop-shadow-[0_0_20px_#f43f5e]">
+              TRẢM KÍCH TÀN BẠO!
             </span>
-            <span className="text-xs font-mono text-white tracking-wider bg-red-950/90 px-3 py-1 border border-rose-500 rounded-xs inline-block mt-1">
-              [10 NHÁT TRẢM TÀN SÁT · SÁT THƯƠNG BẠO KÍCH CỰC ĐẠI]
+            <span className="text-[10px] sm:text-xs font-mono text-white bg-red-950/90 px-3 py-0.5 border border-rose-500 rounded-xs inline-block mt-1">
+              [VẾT CHÉM CHỮ X TÀN KHỐC · BỔ TOÁC PHÒNG NGỰ]
             </span>
           </div>
         </div>
       )}
 
-      {/* 5. KAMISH WRATH (CƠN THỊNH NỘ KAMISH) - Golden Dragon Claw Shatter */}
+      {/* 7. KAMISH WRATH (skill-kamish-wrath) - Colossal Fiery Dragon Skull Magma Eruption */}
       {activeVFX === 'kamish_wrath' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-skill-kamish">
-          <div className="absolute w-[170%] h-8 bg-gradient-to-r from-transparent via-amber-400 to-transparent animate-cross-slash rotate-35 shadow-[0_0_60px_#f59e0b]" />
-          <div className="absolute w-[170%] h-8 bg-gradient-to-r from-transparent via-orange-500 to-transparent animate-cross-slash -rotate-35 shadow-[0_0_60px_#f97316]" />
-          <div className="absolute text-center animate-bounce">
-            <span className="font-black font-chakra text-3xl sm:text-5xl text-amber-300 tracking-widest text-glow-gold block uppercase">
+        <div className="relative w-full h-full flex items-center justify-center animate-vfx-kamishvolcano">
+          <svg className="w-96 h-96 sm:w-[500px] sm:h-[500px] filter drop-shadow-[0_0_60px_#f59e0b]" viewBox="0 0 200 200">
+            {/* Fiery magma ring */}
+            <circle cx="100" cy="100" r="85" fill="none" stroke="#ea580c" strokeWidth="4" strokeDasharray="10 5" className="animate-spin" />
+            {/* Dragon Head Silhouette */}
+            <path
+              d="M 50 140 Q 60 70 100 45 Q 140 70 150 140 Q 125 155 100 135 Q 75 155 50 140 Z"
+              fill="#7c2d12"
+              stroke="#f59e0b"
+              strokeWidth="5"
+            />
+            {/* Glowing yellow Dragon Eyes */}
+            <ellipse cx="80" cy="85" rx="8" ry="4" fill="#fef08a" transform="rotate(-15 80 85)" className="animate-pulse" />
+            <ellipse cx="120" cy="85" rx="8" ry="4" fill="#fef08a" transform="rotate(15 120 85)" className="animate-pulse" />
+            {/* Dragon Teeth & Horns */}
+            <polygon points="65,55 50,20 75,45" fill="#f59e0b" />
+            <polygon points="135,55 150,20 125,45" fill="#f59e0b" />
+            <polygon points="85,130 92,110 99,130" fill="#ffffff" />
+            <polygon points="101,130 108,110 115,130" fill="#ffffff" />
+            {/* Magma burst sparks */}
+            <circle cx="100" cy="100" r="30" fill="#fbbf24" opacity="0.6" className="animate-ping" />
+          </svg>
+          <div className="absolute text-center mt-36">
+            <span className="font-black font-chakra text-2xl sm:text-4xl text-amber-300 tracking-widest uppercase block drop-shadow-[0_0_20px_#f59e0b]">
               CƠN THỊNH NỘ KAMISH!
             </span>
-            <span className="text-xs font-mono text-yellow-100 tracking-wider bg-amber-950/90 px-4 py-1 border border-amber-400 rounded-xs inline-block mt-1">
-              [NANH RỒNG KAMISH · PHÁ 80% GIÁP TRÙM]
+            <span className="text-[10px] sm:text-xs font-mono text-yellow-100 bg-amber-950/90 px-3 py-0.5 border border-amber-400 rounded-xs inline-block mt-1">
+              [NANH RỒNG HOÀNG ĐẾ · PHÁ HỦY 80% GIÁP TRÙM]
             </span>
           </div>
         </div>
       )}
 
-      {/* 6. SHADOW STEP (BỘ PHÁP BÓNG ĐÊM) - Triple Shadow Afterimage Dash */}
+      {/* 8. SHADOW STEP (skill-shadow-step) - Tri-Phase Dimensional Shadow Mirage Dash */}
       {activeVFX === 'shadow_step' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-skill-stealth">
-          <div className="absolute w-72 h-72 border-2 border-cyan-400/80 rounded-full animate-ping shadow-[0_0_40px_#38bdf8]" />
-          <div className="absolute w-[160%] h-8 bg-gradient-to-r from-transparent via-cyan-400 to-transparent animate-blade-slash rotate-12 opacity-80" />
-          <div className="absolute w-[160%] h-8 bg-gradient-to-r from-transparent via-purple-500 to-transparent animate-blade-slash -rotate-24 opacity-80" />
-          <div className="absolute text-center animate-bounce">
-            <span className="font-black font-chakra text-3xl sm:text-4xl text-cyan-300 tracking-widest text-glow-blue uppercase block">
+        <div className="relative w-full h-full flex items-center justify-center animate-vfx-shadowmirage">
+          <svg className="w-84 h-84 sm:w-[440px] sm:h-[440px] filter drop-shadow-[0_0_40px_#6366f1]" viewBox="0 0 200 200">
+            {/* 3 shadow silhouette steps */}
+            {[-45, 0, 45].map((offset, i) => (
+              <g key={i} transform={`translate(${offset}, 0)`} opacity={0.35 + i * 0.3}>
+                <ellipse cx="100" cy="140" rx="30" ry="8" fill="#1e1b4b" opacity="0.8" />
+                <path d="M 85 140 L 95 60 L 105 60 L 115 140 Z" fill="#312e81" stroke="#6366f1" strokeWidth="2" />
+                <circle cx="100" cy="50" r="14" fill="#1e1b4b" stroke="#818cf8" strokeWidth="2" />
+                {/* Glowing cyan eyes on lead shadow */}
+                {i === 2 && (
+                  <>
+                    <circle cx="96" cy="48" r="2.5" fill="#00f0ff" className="animate-ping" />
+                    <circle cx="104" cy="48" r="2.5" fill="#00f0ff" className="animate-ping" />
+                  </>
+                )}
+              </g>
+            ))}
+            {/* Horizontal dash trails */}
+            <line x1="20" y1="95" x2="180" y2="95" stroke="#818cf8" strokeWidth="3" strokeDasharray="15 8" />
+            <line x1="30" y1="110" x2="170" y2="110" stroke="#00f0ff" strokeWidth="2" strokeDasharray="10 5" />
+          </svg>
+          <div className="absolute text-center mt-36">
+            <span className="font-black font-chakra text-2xl sm:text-4xl text-indigo-300 tracking-widest uppercase block drop-shadow-[0_0_20px_#6366f1]">
               BỘ PHÁP BÓNG ĐÊM!
             </span>
-            <span className="text-xs font-mono text-cyan-200 tracking-wider bg-slate-950/90 px-3 py-1 border border-cyan-400 rounded-xs inline-block mt-1">
-              [LƯỚT HƯ KHÔNG · TĂNG 100% NÉ ĐÒN · HỒI 10% MP]
+            <span className="text-[10px] sm:text-xs font-mono text-cyan-200 bg-slate-950/90 px-3 py-0.5 border border-indigo-400 rounded-xs inline-block mt-1">
+              [LƯỚT HƯ KHÔNG · +100% NÉ ĐÒN · HỒI 10% MP]
             </span>
           </div>
         </div>
       )}
 
-      {/* 7. STEALTH INVISIBLE (TÀNG HÌNH ẨN THÂN) - Dark Abyssal Eyes */}
+      {/* 9. STEALTH (skill-stealth) - Hexagonal Camouflage Matrix & Piercing Monarch Eyes */}
       {activeVFX === 'stealth_invisible' && (
-        <div className="absolute inset-0 bg-[#020617]/90 backdrop-blur-md flex items-center justify-center animate-skill-stealth z-50">
-          <div className="relative text-center space-y-4">
-            <div className="flex items-center justify-center gap-8">
-              <div className="w-16 h-3.5 bg-cyan-300 rounded-full shadow-[0_0_35px_#00e5ff] animate-ping" />
-              <div className="w-16 h-3.5 bg-cyan-300 rounded-full shadow-[0_0_35px_#00e5ff] animate-ping" />
-            </div>
-            <h3 className="text-3xl sm:text-5xl font-black text-white font-chakra tracking-widest text-glow-blue uppercase">
+        <div className="relative w-full h-full flex items-center justify-center animate-vfx-stealthhex">
+          <svg className="w-92 h-92 sm:w-[480px] sm:h-[480px] filter drop-shadow-[0_0_40px_#00e5ff]" viewBox="0 0 200 200">
+            {/* Hexagonal Camouflage Grid */}
+            {[
+              { x: 100, y: 50 },
+              { x: 55, y: 75 },
+              { x: 145, y: 75 },
+              { x: 100, y: 100 },
+              { x: 55, y: 125 },
+              { x: 145, y: 125 },
+              { x: 100, y: 150 },
+            ].map((hex, i) => (
+              <polygon
+                key={i}
+                points={`${hex.x},${hex.y - 22} ${hex.x + 19},${hex.y - 11} ${hex.x + 19},${hex.y + 11} ${hex.x},${hex.y + 22} ${hex.x - 19},${hex.y + 11} ${hex.x - 19},${hex.y - 11}`}
+                fill="none"
+                stroke="#00e5ff"
+                strokeWidth="1.8"
+                opacity={0.4 + (i % 3) * 0.25}
+              />
+            ))}
+            {/* Twin Glowing Cyan Monarch Eyes piercing the dark */}
+            <g transform="translate(100, 100)">
+              <ellipse cx="-24" cy="0" rx="14" ry="5" fill="#00f0ff" className="animate-pulse" />
+              <circle cx="-24" cy="0" r="3" fill="#ffffff" />
+              <ellipse cx="24" cy="0" rx="14" ry="5" fill="#00f0ff" className="animate-pulse" />
+              <circle cx="24" cy="0" r="3" fill="#ffffff" />
+            </g>
+          </svg>
+          <div className="absolute text-center mt-36">
+            <span className="font-black font-chakra text-2xl sm:text-4xl text-cyan-200 tracking-widest uppercase block drop-shadow-[0_0_20px_#00e5ff]">
               TÀNG HÌNH ẨN THÂN
-            </h3>
-            <p className="text-xs sm:text-sm font-mono text-cyan-300 tracking-widest bg-cyan-950/80 px-4 py-1 border border-cyan-400/60 inline-block">
+            </span>
+            <span className="text-[10px] sm:text-xs font-mono text-cyan-300 bg-cyan-950/90 px-3 py-0.5 border border-cyan-400 rounded-xs inline-block mt-1">
               [HÒA VÀO HƯ KHÔNG · NÉ 100% ĐÒN ĐÁNH · +250% BẠO KÍCH]
-            </p>
+            </span>
           </div>
         </div>
       )}
 
-      {/* 8. BLOODLUST AURA (SÁT KHÍ ÁP ĐẢO) - Crimson Death Intent Aura */}
+      {/* 10. BLOODLUST (skill-bloodlust) - Terrifying Demonic Red Glare & Panic Shockwave */}
       {activeVFX === 'bloodlust_aura' && (
-        <div className="relative w-full h-full flex items-center justify-center">
-          <div className="absolute w-[500px] h-[500px] rounded-full border-4 border-red-600 animate-ping shadow-[0_0_100px_#ef4444]" />
-          <div className="absolute text-center animate-bounce">
-            <span className="text-6xl block mb-2 animate-pulse">☠️</span>
-            <span className="font-black font-chakra text-3xl sm:text-5xl text-red-500 tracking-widest text-glow-red block uppercase">
+        <div className="relative w-full h-full flex items-center justify-center animate-vfx-bloodlustpulse">
+          <svg className="w-92 h-92 sm:w-[480px] sm:h-[480px] filter drop-shadow-[0_0_50px_#ef4444]" viewBox="0 0 200 200">
+            {/* Blood shockwaves */}
+            <circle cx="100" cy="100" r="85" fill="none" stroke="#ef4444" strokeWidth="3" opacity="0.6" className="animate-ping" />
+            <circle cx="100" cy="100" r="60" fill="none" stroke="#dc2626" strokeWidth="2.5" />
+            {/* Demonic Ocular Gaze */}
+            <path
+              d="M 30 100 Q 100 40 170 100 Q 100 160 30 100 Z"
+              fill="#450a0a"
+              stroke="#ef4444"
+              strokeWidth="4"
+            />
+            {/* Slit Demonic Pupil */}
+            <circle cx="100" cy="100" r="28" fill="#ef4444" />
+            <ellipse cx="100" cy="100" rx="6" ry="24" fill="#000000" />
+            <circle cx="94" cy="92" r="3" fill="#ffffff" />
+            {/* Fear runes */}
+            <line x1="20" y1="50" x2="40" y2="70" stroke="#f87171" strokeWidth="2" />
+            <line x1="180" y1="50" x2="160" y2="70" stroke="#f87171" strokeWidth="2" />
+          </svg>
+          <div className="absolute text-center mt-36">
+            <span className="font-black font-chakra text-2xl sm:text-4xl text-red-500 tracking-widest uppercase block drop-shadow-[0_0_20px_#ef4444]">
               SÁT KHÍ ÁP ĐẢO!
             </span>
-            <span className="text-xs font-mono text-red-200 tracking-wider bg-red-950/90 px-3 py-1 border border-red-500 rounded-xs inline-block mt-1">
-              [SÁT KHÍ LẠNH GÁY · GIẢM 35% CÔNG & PHÒNG QUÁI]
+            <span className="text-[10px] sm:text-xs font-mono text-red-200 bg-red-950/90 px-3 py-0.5 border border-red-500 rounded-xs inline-block mt-1">
+              [UY ÁP KINH HOÀNG · GIẢM 35% CÔNG & PHÒNG QUÁI]
             </span>
           </div>
         </div>
       )}
 
-      {/* 9. QUICKSILVER (TỐC BỘ THẦN TỐC) - Golden Clockwork Warp */}
+      {/* 11. QUICKSILVER (skill-quicksilver) - Ancient Golden Chronometer / Time-Dilation Dial */}
       {activeVFX === 'quicksilver' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-skill-quicksilver">
-          <div className="absolute w-80 h-80 border-4 border-amber-400 rounded-full animate-spin shadow-[0_0_60px_#f59e0b]" />
-          <div className="absolute w-64 h-64 border-2 border-dashed border-yellow-200 rounded-full animate-ping" />
-          <div className="absolute w-[170%] h-6 bg-gradient-to-r from-transparent via-yellow-300 to-transparent animate-blade-slash -rotate-12 shadow-[0_0_40px_#eab308]" />
-          <div className="absolute text-center animate-bounce">
-            <span className="font-black font-chakra text-3xl sm:text-4xl text-amber-300 tracking-widest drop-shadow-[0_0_25px_#eab308] block uppercase">
+        <div className="relative w-full h-full flex items-center justify-center animate-vfx-quicksilverclock">
+          <svg className="w-88 h-88 sm:w-[460px] sm:h-[460px] filter drop-shadow-[0_0_40px_#eab308]" viewBox="0 0 200 200">
+            {/* Outer clock ring with ticks */}
+            <circle cx="100" cy="100" r="80" fill="none" stroke="#eab308" strokeWidth="4" />
+            <circle cx="100" cy="100" r="70" fill="none" stroke="#fef08a" strokeWidth="1.5" strokeDasharray="8 6" className="animate-spin" />
+            {/* Roman Hour Ticks */}
+            {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((deg, i) => (
+              <line
+                key={i}
+                x1="100"
+                y1="25"
+                x2="100"
+                y2="33"
+                stroke="#eab308"
+                strokeWidth={i % 3 === 0 ? '3' : '1.5'}
+                transform={`rotate(${deg} 100 100)`}
+              />
+            ))}
+            {/* Golden Clock Hands */}
+            <line x1="100" y1="100" x2="100" y2="45" stroke="#ffffff" strokeWidth="3.5" strokeLinecap="round" />
+            <line x1="100" y1="100" x2="140" y2="100" stroke="#facc15" strokeWidth="4" strokeLinecap="round" />
+            <circle cx="100" cy="100" r="8" fill="#eab308" />
+            <circle cx="100" cy="100" r="4" fill="#ffffff" />
+          </svg>
+          <div className="absolute text-center mt-36">
+            <span className="font-black font-chakra text-2xl sm:text-4xl text-amber-300 tracking-widest uppercase block drop-shadow-[0_0_20px_#eab308]">
               TỐC BỘ THẦN TỐC!
             </span>
-            <span className="text-xs font-mono text-yellow-200 tracking-wider bg-slate-950/90 px-3 py-1 border border-amber-400 rounded-xs inline-block mt-1">
-              [GIA TĂNG TỐC ĐỘ 50% · TẶNG NGAY 1 LƯỢT ĐÁNH PHỤ]
+            <span className="text-[10px] sm:text-xs font-mono text-yellow-200 bg-slate-950/90 px-3 py-0.5 border border-amber-400 rounded-xs inline-block mt-1">
+              [TIME DILATION · GIA TĂNG TỐC ĐỘ 50%]
             </span>
           </div>
         </div>
       )}
 
-      {/* 10. RULER'S AUTHORITY (QUYỀN NĂNG THỐNG TRỊ) - Psychic Telekinetic Hand Slam */}
+      {/* 12. RULER'S AUTHORITY (skill-authority) - Colossal Celestial Telekinetic Starlight Hand */}
       {activeVFX === 'ruler_authority' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-skill-authority">
-          <div className="absolute w-96 h-96 sm:w-[520px] sm:h-[520px] rounded-full border-4 border-cyan-300 bg-cyan-950/50 shadow-[0_0_90px_#00e5ff] flex items-center justify-center animate-spin">
-            <div className="w-80 h-80 rounded-full border-2 border-dashed border-cyan-200" />
-          </div>
-          <svg className="w-80 h-80 sm:w-[380px] sm:h-[380px] filter drop-shadow-[0_0_60px_#38bdf8] animate-bounce" viewBox="0 0 200 200">
-            <path d="M45,110 L45,35 Q55,22 68,35 L68,110" stroke="#ffffff" strokeWidth="8" fill="#0284c7" opacity="0.85" strokeLinecap="round" />
-            <path d="M72,110 L72,15 Q84,5 96,15 L96,110" stroke="#ffffff" strokeWidth="8" fill="#0284c7" opacity="0.85" strokeLinecap="round" />
-            <path d="M100,110 L100,20 Q112,10 124,20 L124,110" stroke="#ffffff" strokeWidth="8" fill="#0284c7" opacity="0.85" strokeLinecap="round" />
-            <circle cx="95" cy="130" r="40" fill="#00e5ff" opacity="0.75" />
+        <div className="relative w-full h-full flex items-center justify-center animate-vfx-authorityslam">
+          <svg className="w-96 h-96 sm:w-[500px] sm:h-[500px] filter drop-shadow-[0_0_60px_#00e5ff]" viewBox="0 0 200 200">
+            {/* Gravitational shockwave rings */}
+            <circle cx="100" cy="100" r="85" fill="none" stroke="#00e5ff" strokeWidth="3" opacity="0.6" className="animate-ping" />
+            <circle cx="100" cy="100" r="60" fill="none" stroke="#38bdf8" strokeWidth="2" strokeDasharray="6 4" />
+            {/* Ethereal Starlight Hand Palm */}
+            <path
+              d="M 50 120 L 50 45 Q 60 30 70 45 L 70 120"
+              stroke="#ffffff"
+              strokeWidth="6"
+              fill="#0369a1"
+              strokeLinecap="round"
+            />
+            <path
+              d="M 75 120 L 75 25 Q 87 10 99 25 L 99 120"
+              stroke="#ffffff"
+              strokeWidth="6"
+              fill="#0369a1"
+              strokeLinecap="round"
+            />
+            <path
+              d="M 104 120 L 104 35 Q 116 20 128 35 L 128 120"
+              stroke="#ffffff"
+              strokeWidth="6"
+              fill="#0369a1"
+              strokeLinecap="round"
+            />
+            <path
+              d="M 133 120 L 133 60 Q 143 50 153 60 L 153 120"
+              stroke="#ffffff"
+              strokeWidth="6"
+              fill="#0369a1"
+              strokeLinecap="round"
+            />
+            {/* Main Palm */}
+            <rect x="50" y="110" width="103" height="60" rx="15" fill="#0284c7" stroke="#00e5ff" strokeWidth="3" />
+            {/* Center gravity star */}
+            <circle cx="100" cy="140" r="14" fill="#ffffff" className="animate-pulse" />
           </svg>
-          <div className="absolute text-center mt-44">
-            <span className="font-black font-chakra text-3xl sm:text-5xl text-white tracking-widest text-glow-blue block uppercase">
+          <div className="absolute text-center mt-36">
+            <span className="font-black font-chakra text-2xl sm:text-4xl text-white tracking-widest uppercase block drop-shadow-[0_0_20px_#00e5ff]">
               BÀN TAY THỐNG TRỊ
             </span>
-            <span className="text-xs sm:text-sm font-mono font-bold text-amber-300 tracking-wider bg-slate-950/90 px-4 py-1.5 rounded-xs border border-amber-400 inline-block mt-2">
-              [UY ÁP VÔ HÌNH · QUÁI BỊ CHOÁNG 1 HIỆP]
+            <span className="text-[10px] sm:text-xs font-mono text-amber-300 bg-slate-950/90 px-3 py-0.5 border border-amber-400 rounded-xs inline-block mt-1">
+              [UY ÁP KẺ THỐNG TRỊ · QUÁI BỊ CHOÁNG 1 HIỆP]
             </span>
           </div>
         </div>
       )}
 
-      {/* 11. SPATIAL COLLAPSE (SỤP ĐỔ KHÔNG GIAN) - Gravity Singularity Hole */}
+      {/* 13. SPATIAL COLLAPSE (skill-spatial-collapse) - Gravitational Black Hole Accretion Disk */}
       {activeVFX === 'spatial_collapse' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-skill-authority">
-          <div className="absolute w-72 h-72 rounded-full bg-purple-950 border-4 border-cyan-400 animate-spin shadow-[0_0_80px_#7e22ce,inset_0_0_50px_#00e5ff]" />
-          <div className="absolute w-44 h-44 rounded-full bg-black border-2 border-white animate-ping" />
-          <div className="absolute text-center animate-bounce">
-            <span className="font-black font-chakra text-3xl sm:text-4xl text-purple-300 tracking-widest drop-shadow-[0_0_30px_#a855f7] block uppercase">
+        <div className="relative w-full h-full flex items-center justify-center animate-vfx-blackhole">
+          <svg className="w-88 h-88 sm:w-[460px] sm:h-[460px] filter drop-shadow-[0_0_50px_#7e22ce]" viewBox="0 0 200 200">
+            {/* Accretion disk spiral arms */}
+            <circle cx="100" cy="100" r="85" fill="none" stroke="#7e22ce" strokeWidth="5" strokeDasharray="14 8" className="animate-spin" />
+            <circle cx="100" cy="100" r="65" fill="none" stroke="#00e5ff" strokeWidth="3" strokeDasharray="10 6" />
+            {/* Photon Ring */}
+            <circle cx="100" cy="100" r="45" fill="none" stroke="#c084fc" strokeWidth="4" />
+            {/* Event Horizon (Pure Black Void) */}
+            <circle cx="100" cy="100" r="35" fill="#000000" stroke="#ffffff" strokeWidth="2" />
+            {/* Warping light beams */}
+            <line x1="10" y1="100" x2="190" y2="100" stroke="#00f0ff" strokeWidth="2" opacity="0.6" />
+            <line x1="100" y1="10" x2="100" y2="190" stroke="#a855f7" strokeWidth="2" opacity="0.6" />
+          </svg>
+          <div className="absolute text-center mt-36">
+            <span className="font-black font-chakra text-2xl sm:text-4xl text-purple-300 tracking-widest uppercase block drop-shadow-[0_0_20px_#7e22ce]">
               SỤP ĐỔ KHÔNG GIAN!
             </span>
-            <span className="text-xs font-mono text-cyan-200 tracking-wider bg-slate-950/90 px-3 py-1 border border-purple-500 rounded-xs inline-block mt-1">
+            <span className="text-[10px] sm:text-xs font-mono text-cyan-200 bg-slate-950/90 px-3 py-0.5 border border-purple-500 rounded-xs inline-block mt-1">
               [TRỌNG LỰC HỐ ĐEN · PHÁ HUỶ 100% GIÁP PHÒNG THỦ]
             </span>
           </div>
         </div>
       )}
 
-      {/* 12. SHADOW EXCHANGE (HOÁN ĐỔI BÓNG TỐI) - Abyssal Portal Swap */}
+      {/* 14. SHADOW EXCHANGE (skill-shadow-exchange) - Dual Swirling Abyssal Gateway Portals */}
       {activeVFX === 'shadow_exchange' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-skill-stealth">
-          <div className="absolute w-80 h-[140%] bg-purple-950/80 border-x-4 border-purple-400 animate-pulse blur-sm" />
-          <div className="absolute w-56 h-56 rounded-full bg-cyan-400/40 animate-ping shadow-[0_0_50px_#a855f7]" />
-          <div className="absolute text-center animate-bounce">
-            <span className="font-black font-chakra text-3xl sm:text-4xl text-purple-300 tracking-widest drop-shadow-[0_0_30px_#c084fc] block uppercase">
+        <div className="relative w-full h-full flex items-center justify-center animate-vfx-shadowportal">
+          <svg className="w-88 h-88 sm:w-[460px] sm:h-[460px] filter drop-shadow-[0_0_45px_#a855f7]" viewBox="0 0 200 200">
+            {/* Twin portals swapping */}
+            <ellipse cx="60" cy="100" rx="35" ry="60" fill="#1e1b4b" stroke="#a855f7" strokeWidth="4" className="animate-spin" />
+            <ellipse cx="140" cy="100" rx="35" ry="60" fill="#1e1b4b" stroke="#00f0ff" strokeWidth="4" className="animate-spin" />
+            {/* Energy bridge between portals */}
+            <path d="M 60 70 Q 100 40 140 70" fill="none" stroke="#c084fc" strokeWidth="3" strokeDasharray="6 3" />
+            <path d="M 60 130 Q 100 160 140 130" fill="none" stroke="#38bdf8" strokeWidth="3" strokeDasharray="6 3" />
+            {/* Shadow particles */}
+            <circle cx="60" cy="100" r="10" fill="#a855f7" className="animate-ping" />
+            <circle cx="140" cy="100" r="10" fill="#00f0ff" className="animate-ping" />
+          </svg>
+          <div className="absolute text-center mt-36">
+            <span className="font-black font-chakra text-2xl sm:text-4xl text-purple-300 tracking-widest uppercase block drop-shadow-[0_0_20px_#a855f7]">
               HOÁN ĐỔI BÓNG TỐI!
             </span>
-            <span className="text-xs font-mono text-cyan-200 tracking-wider bg-slate-950/90 px-3 py-1 border border-purple-400 rounded-xs inline-block mt-1">
-              [DỊCH CHUYỂN TỨC THỜI · NÉ ĐÒN & TẬP KÍCH LƯNG]
+            <span className="text-[10px] sm:text-xs font-mono text-cyan-200 bg-slate-950/90 px-3 py-0.5 border border-purple-400 rounded-xs inline-block mt-1">
+              [DỊCH CHUYỂN TỨC THỜI · HOÁN ĐỔI VỊ TRÍ CHIẾN BINH]
             </span>
           </div>
         </div>
       )}
 
-      {/* 13. ARISE (TRỖI DẬY) - Monarch Army Extraction */}
+      {/* 15. ARISE (skill-arise) - THE ICONIC SHADOW MONARCH AWAKENING */}
       {activeVFX === 'arise' && (
-        <div className="absolute inset-0 bg-[#090014]/95 backdrop-blur-md flex items-center justify-center animate-skill-arise z-50 overflow-hidden">
-          <div className="absolute w-[700px] h-[700px] rounded-full bg-gradient-to-r from-purple-900 via-indigo-950 to-purple-950 opacity-60 animate-shadow-vortex blur-2xl" />
-          <div className="absolute w-96 h-96 sm:w-[580px] sm:h-[580px] rounded-full border-4 border-purple-500 bg-purple-950/50 shadow-[0_0_100px_#a855f7] flex items-center justify-center animate-spin">
-            <CrownMonarchIcon className="w-28 h-28 text-purple-400 animate-pulse" />
-          </div>
-          <div className="relative text-center space-y-3 z-20">
-            <h2 className="text-5xl sm:text-8xl font-black text-white font-orbitron tracking-widest text-glow-purple uppercase animate-bounce">
+        <div className="absolute inset-0 bg-[#070012]/95 backdrop-blur-md flex items-center justify-center animate-vfx-ariseburst z-50 overflow-hidden">
+          <div className="absolute w-[600px] h-[600px] rounded-full bg-purple-900/40 blur-3xl animate-pulse" />
+          <div className="relative text-center space-y-4">
+            {/* Monarch Crown Symbol */}
+            <div className="w-28 h-28 mx-auto rounded-full bg-purple-950 border-4 border-purple-400 flex items-center justify-center shadow-[0_0_60px_#a855f7] animate-bounce">
+              <CrownMonarchIcon className="w-16 h-16 text-purple-300" />
+            </div>
+            {/* Iconic English 'ARISE' */}
+            <h1 className="text-6xl sm:text-8xl md:text-9xl font-black text-white font-orbitron tracking-widest text-glow-purple uppercase">
               ARISE!
-            </h2>
+            </h1>
             <p className="text-xl sm:text-3xl font-black text-purple-300 font-chakra tracking-widest text-glow-purple uppercase">
-              TRỖI DẬY · BẬC THẦY BÓNG TỐI
+              TRỖI DẬY · HỠI QUÂN ĐOÀN BÓNG TỐI!
             </p>
+            <div className="inline-block bg-purple-950/90 border border-purple-400 px-4 py-1 rounded-xs font-mono text-xs text-cyan-300">
+              [THỨC TỈNH TOÀN BỘ LINH HỒN SAU TỬ THẦN]
+            </div>
           </div>
         </div>
       )}
 
-      {/* 14. SHADOW EXTRACTION (TRÍCH XUẤT HẮC ÁM) - Life & Mana Drain Tendrils */}
+      {/* 16. SHADOW EXTRACTION (skill-shadow-extraction) - Soul Core Siphon Wisps */}
       {activeVFX === 'shadow_extraction' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-skill-arise">
-          <div className="absolute w-80 h-80 rounded-full border-4 border-dashed border-purple-400 bg-purple-950/60 animate-spin shadow-[0_0_70px_#a855f7]" />
-          <div className="absolute w-56 h-56 rounded-full bg-emerald-400/40 animate-ping" />
-          <div className="absolute text-center animate-bounce">
-            <span className="font-black font-chakra text-3xl sm:text-4xl text-purple-300 tracking-widest drop-shadow-[0_0_30px_#a855f7] block uppercase">
+        <div className="relative w-full h-full flex items-center justify-center animate-vfx-soulextraction">
+          <svg className="w-88 h-88 sm:w-[460px] sm:h-[460px] filter drop-shadow-[0_0_50px_#34d399]" viewBox="0 0 200 200">
+            {/* Siphoning rings */}
+            <circle cx="100" cy="100" r="75" fill="none" stroke="#10b981" strokeWidth="2.5" strokeDasharray="8 6" className="animate-spin" />
+            {/* Rising soul core wisps */}
+            <path d="M 80 160 Q 60 110 95 60" fill="none" stroke="#34d399" strokeWidth="4" strokeLinecap="round" />
+            <path d="M 120 160 Q 140 110 105 60" fill="none" stroke="#6ee7b7" strokeWidth="4" strokeLinecap="round" />
+            <path d="M 100 170 Q 100 120 100 50" fill="none" stroke="#ffffff" strokeWidth="5" strokeLinecap="round" />
+            {/* Luminous Soul Core */}
+            <circle cx="100" cy="50" r="16" fill="#34d399" className="animate-ping" />
+            <circle cx="100" cy="50" r="7" fill="#ffffff" />
+          </svg>
+          <div className="absolute text-center mt-36">
+            <span className="font-black font-chakra text-2xl sm:text-4xl text-purple-300 tracking-widest uppercase block drop-shadow-[0_0_20px_#a855f7]">
               TRÍCH XUẤT HẮC ÁM!
             </span>
-            <span className="text-xs font-mono text-emerald-300 tracking-wider bg-slate-950/90 px-3 py-1 border border-emerald-400 rounded-xs inline-block mt-1">
-              [HÚT SINH MỆNH · HỒI 50% HP & MP CHO THỢ SĂN]
+            <span className="text-[10px] sm:text-xs font-mono text-emerald-300 bg-slate-950/90 px-3 py-0.5 border border-emerald-400 rounded-xs inline-block mt-1">
+              [HÚT TỐI ĐA SINH MỆNH · HỒI 50% HP & MP CHO NGƯỜI CHƠI]
             </span>
           </div>
         </div>
       )}
 
-      {/* 15. MONARCH DOMAIN (LÃNH ĐỊA CHÚA TỂ) - Floor Expansion Domain */}
+      {/* 17. MONARCH DOMAIN (skill-monarch-domain) - Infinite Obsidian Floor Sea */}
       {activeVFX === 'monarch_domain' && (
-        <div className="absolute inset-0 bg-slate-950/90 border-4 border-purple-500 flex items-center justify-center animate-skill-arise z-50">
-          <div className="absolute w-[800px] h-[800px] rounded-full bg-purple-950/70 blur-2xl animate-spin" />
+        <div className="absolute inset-0 bg-[#090216]/90 border-4 border-purple-500 flex items-center justify-center animate-vfx-monarchdomain z-50">
+          <div className="absolute w-[650px] h-[650px] rounded-full bg-purple-950/60 blur-3xl animate-spin" />
           <div className="relative text-center space-y-3">
             <CrownMonarchIcon className="w-24 h-24 text-purple-400 mx-auto animate-bounce" />
-            <h3 className="text-4xl sm:text-6xl font-black text-purple-300 font-chakra tracking-widest text-glow-purple uppercase">
+            <h2 className="text-4xl sm:text-6xl font-black text-purple-300 font-chakra tracking-widest text-glow-purple uppercase">
               LÃNH ĐỊA CHÚA TỂ!
-            </h3>
-            <span className="text-xs sm:text-sm font-mono text-cyan-300 tracking-wider bg-purple-950/90 px-4 py-1.5 border border-purple-400 rounded-xs inline-block">
-              [BAO PHỦ HẮC ÁM · +50% SÁT THƯƠNG & HỒI 25 MP MỖI LƯỢT]
+            </h2>
+            <span className="text-xs sm:text-sm font-mono text-cyan-300 bg-purple-950/90 px-4 py-1.5 border border-purple-400 rounded-xs inline-block">
+              [BIỂN BÓNG TỐI VÔ TẬN · +50% SÁT THƯƠNG QUÂN ĐOÀN]
             </span>
           </div>
         </div>
       )}
 
-      {/* 16. SHADOW ARMOR (HẮC GIÁP HỘ THỂ) - Crystalline Obsidian Barrier */}
+      {/* 18. SHADOW ARMOR (skill-shadow-armor) - Hexagonal Obsidian Barrier Plate Snap */}
       {activeVFX === 'shadow_armor' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-skill-stealth">
-          <div className="absolute w-72 h-72 sm:w-96 sm:h-96 rounded-full border-4 border-purple-400 bg-slate-950/80 animate-ping shadow-[0_0_70px_#a855f7]" />
-          <div className="absolute text-center animate-bounce">
-            <span className="font-black font-chakra text-3xl sm:text-4xl text-purple-200 tracking-widest text-glow-purple block uppercase">
+        <div className="relative w-full h-full flex items-center justify-center animate-vfx-shadowarmor">
+          <svg className="w-92 h-92 sm:w-[480px] sm:h-[480px] filter drop-shadow-[0_0_50px_#a855f7]" viewBox="0 0 200 200">
+            {/* Hexagonal Aegis Crest */}
+            <polygon
+              points="100,20 170,55 170,145 100,180 30,145 30,55"
+              fill="#1e1b4b"
+              stroke="#a855f7"
+              strokeWidth="5"
+              opacity="0.8"
+            />
+            <polygon
+              points="100,40 150,65 150,135 100,160 50,135 50,65"
+              fill="none"
+              stroke="#38bdf8"
+              strokeWidth="2.5"
+              strokeDasharray="8 4"
+            />
+            {/* Inner Crest Glyph */}
+            <path d="M 80 100 L 100 120 L 130 80" fill="none" stroke="#ffffff" strokeWidth="6" strokeLinecap="round" />
+          </svg>
+          <div className="absolute text-center mt-36">
+            <span className="font-black font-chakra text-2xl sm:text-4xl text-purple-200 tracking-widest uppercase block drop-shadow-[0_0_20px_#a855f7]">
               HẮC GIÁP HỘ THỂ!
             </span>
-            <span className="text-xs font-mono text-cyan-300 tracking-wider bg-slate-950/90 px-3 py-1 border border-purple-500 rounded-xs inline-block mt-1">
+            <span className="text-[10px] sm:text-xs font-mono text-cyan-300 bg-slate-950/90 px-3 py-0.5 border border-purple-500 rounded-xs inline-block mt-1">
               [HẤP THỤ 80% SÁT THƯƠNG · PHẢN ĐÒN 50%]
             </span>
           </div>
         </div>
       )}
 
-      {/* 17. DRAGON FEAR (UY ÁP LONG TỘC) - Golden Dragon Ghost Roar */}
+      {/* 19. DRAGON FEAR (skill-dragon-fear) - Acoustic Golden Dragon Roar Shockwave */}
       {activeVFX === 'dragon_fear' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-skill-dragon">
-          <div className="absolute w-[500px] h-[500px] rounded-full border-4 border-amber-400 animate-ping shadow-[0_0_90px_#f59e0b]" />
-          <div className="absolute text-center animate-bounce">
-            <span className="text-6xl block mb-2 animate-pulse">🐉</span>
-            <span className="font-black font-chakra text-3xl sm:text-5xl text-amber-400 tracking-widest text-glow-gold block uppercase">
+        <div className="relative w-full h-full flex items-center justify-center animate-vfx-dragonroar">
+          <svg className="w-96 h-96 sm:w-[500px] sm:h-[500px] filter drop-shadow-[0_0_55px_#f59e0b]" viewBox="0 0 200 200">
+            {/* Soundwave expanding concentric arcs */}
+            <circle cx="100" cy="100" r="85" fill="none" stroke="#f59e0b" strokeWidth="3" opacity="0.6" className="animate-ping" />
+            <circle cx="100" cy="100" r="65" fill="none" stroke="#fbbf24" strokeWidth="3.5" />
+            <circle cx="100" cy="100" r="45" fill="none" stroke="#ffffff" strokeWidth="4" />
+            {/* Dragon Head Roaring Mouth */}
+            <path d="M 65 75 Q 100 50 135 75 L 145 125 Q 100 150 55 125 Z" fill="#78350f" stroke="#f59e0b" strokeWidth="4" />
+            <circle cx="85" cy="85" r="5" fill="#fef08a" />
+            <circle cx="115" cy="85" r="5" fill="#fef08a" />
+          </svg>
+          <div className="absolute text-center mt-36">
+            <span className="font-black font-chakra text-2xl sm:text-4xl text-amber-400 tracking-widest uppercase block drop-shadow-[0_0_20px_#f59e0b]">
               UY ÁP LONG TỘC!
             </span>
-            <span className="text-xs font-mono text-yellow-200 tracking-wider bg-slate-950/90 px-3 py-1 border border-amber-400 rounded-xs inline-block mt-1">
+            <span className="text-[10px] sm:text-xs font-mono text-yellow-200 bg-slate-950/90 px-3 py-0.5 border border-amber-400 rounded-xs inline-block mt-1">
               [TIẾNG GẦM KINH HOÀNG · KẺ ĐỊCH TÊ LIỆT MẤT LƯỢT]
             </span>
           </div>
         </div>
       )}
 
-      {/* 18. DRAGON BREATH (HƠI THỞ HỦY DIỆT) - Infernal Molten Stream */}
+      {/* 20. DRAGON BREATH (skill-dragon-breath) - Cosmic Plasma Flame Inferno Beam */}
       {activeVFX === 'dragon_breath' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-skill-dragon">
-          <div className="absolute w-[180%] h-44 bg-gradient-to-r from-transparent via-red-600 to-amber-500 animate-pulse blur-xl opacity-90" />
-          <div className="absolute w-[150%] h-24 bg-gradient-to-r from-yellow-300 via-orange-500 to-rose-600 animate-blade-slash shadow-[0_0_50px_#ef4444]" />
-          <div className="absolute text-center animate-bounce">
-            <span className="font-black font-chakra text-3xl sm:text-5xl text-amber-300 tracking-widest drop-shadow-[0_0_35px_#dc2626] block uppercase">
+        <div className="relative w-full h-full flex items-center justify-center animate-vfx-dragonbeam">
+          <svg className="w-full h-64 sm:h-80 filter drop-shadow-[0_0_60px_#ef4444]" viewBox="0 0 400 150">
+            {/* Horizontal Plasma Beam */}
+            <path d="M 0 75 Q 200 20 400 75 Q 200 130 0 75 Z" fill="#b91c1c" opacity="0.8" />
+            <path d="M 0 75 Q 200 40 400 75 Q 200 110 0 75 Z" fill="#f97316" opacity="0.9" />
+            <line x1="0" y1="75" x2="400" y2="75" stroke="#ffffff" strokeWidth="12" strokeLinecap="round" />
+          </svg>
+          <div className="absolute text-center mt-36">
+            <span className="font-black font-chakra text-2xl sm:text-4xl text-amber-300 tracking-widest uppercase block drop-shadow-[0_0_20px_#ef4444]">
               HƠI THỞ HỦY DIỆT!
             </span>
-            <span className="text-xs font-mono text-yellow-100 tracking-wider bg-red-950/90 px-3 py-1 border border-amber-400 rounded-xs inline-block mt-1">
+            <span className="text-[10px] sm:text-xs font-mono text-yellow-100 bg-red-950/90 px-3 py-0.5 border border-amber-400 rounded-xs inline-block mt-1">
               [NGỌN LỬA LONG ĐẾ · THIÊU RỤI X6.2 SÁT THƯƠNG]
             </span>
           </div>
         </div>
       )}
 
-      {/* 19. DEMON LIGHTNING (LÔI QUANG MA VƯƠNG) - Blue Demon Bolt Strike */}
+      {/* 21. DEMON LIGHTNING (skill-demon-lightning) - Baran Heavenly Thunder Torrent */}
       {activeVFX === 'demon_lightning' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-skill-lightning">
-          <div className="absolute w-4 h-[180%] bg-gradient-to-b from-white via-blue-500 to-cyan-400 animate-pulse shadow-[0_0_60px_#38bdf8]" />
-          <div className="absolute w-72 h-72 rounded-full bg-blue-600/50 animate-ping" />
-          <div className="absolute text-center animate-bounce">
-            <span className="font-black font-chakra text-3xl sm:text-5xl text-cyan-300 tracking-widest text-glow-blue block uppercase">
+        <div className="relative w-full h-full flex items-center justify-center animate-vfx-demonthunder">
+          <svg className="w-88 h-96 sm:w-[460px] sm:h-[500px] filter drop-shadow-[0_0_60px_#38bdf8]" viewBox="0 0 200 300">
+            {/* Jagged Lightning Bolt */}
+            <polyline
+              points="100,0 80,70 120,90 70,170 115,190 60,300"
+              fill="none"
+              stroke="#0284c7"
+              strokeWidth="16"
+              opacity="0.8"
+            />
+            <polyline
+              points="100,0 80,70 120,90 70,170 115,190 60,300"
+              fill="none"
+              stroke="#ffffff"
+              strokeWidth="6"
+            />
+            {/* Electrical Arcs */}
+            <line x1="80" y1="70" x2="40" y2="100" stroke="#38bdf8" strokeWidth="3" />
+            <line x1="120" y1="90" x2="160" y2="120" stroke="#38bdf8" strokeWidth="3" />
+            <circle cx="60" cy="300" r="22" fill="#38bdf8" className="animate-ping" />
+          </svg>
+          <div className="absolute text-center mt-36">
+            <span className="font-black font-chakra text-2xl sm:text-4xl text-cyan-300 tracking-widest uppercase block drop-shadow-[0_0_20px_#38bdf8]">
               LÔI QUANG MA VƯƠNG!
             </span>
-            <span className="text-xs font-mono text-blue-200 tracking-wider bg-slate-950/90 px-3 py-1 border border-cyan-400 rounded-xs inline-block mt-1">
+            <span className="text-[10px] sm:text-xs font-mono text-blue-200 bg-slate-950/90 px-3 py-0.5 border border-cyan-400 rounded-xs inline-block mt-1">
               [SẤM SÉT BARAN · 100% CHOÁNG VÁNG & PHÁ GIÁP]
             </span>
           </div>
         </div>
       )}
 
-      {/* 20. VOID CLEAVE (TRẢM KÍCH HƯ KHÔNG) - Magenta Reality Tear */}
+      {/* 22. VOID CLEAVE (skill-void-cleave) - Reality Fracture Dimension Tear */}
       {activeVFX === 'void_cleave' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-skill-void">
-          <div className="absolute w-[180%] h-8 bg-gradient-to-r from-transparent via-pink-500 to-transparent animate-blade-slash -rotate-30 shadow-[0_0_60px_#ec4899]" />
-          <div className="absolute w-[180%] h-8 bg-gradient-to-r from-transparent via-purple-600 to-transparent animate-blade-slash rotate-30 shadow-[0_0_60px_#a855f7]" />
-          <div className="absolute text-center animate-bounce">
-            <span className="font-black font-chakra text-3xl sm:text-5xl text-pink-300 tracking-widest drop-shadow-[0_0_35px_#ec4899] block uppercase">
+        <div className="relative w-full h-full flex items-center justify-center animate-vfx-voidrift">
+          <svg className="w-96 h-96 sm:w-[500px] sm:h-[500px] filter drop-shadow-[0_0_60px_#ec4899]" viewBox="0 0 200 200">
+            {/* Jagged Reality Rupture Tear */}
+            <polygon
+              points="20,180 80,120 70,110 130,60 115,50 180,20 160,50 175,60 110,120 125,130"
+              fill="#581c87"
+              stroke="#ec4899"
+              strokeWidth="3.5"
+            />
+            {/* Deep cosmos stars inside rift */}
+            <circle cx="100" cy="100" r="3" fill="#ffffff" className="animate-ping" />
+            <circle cx="70" cy="130" r="2" fill="#00f0ff" />
+            <circle cx="130" cy="70" r="2" fill="#f43f5e" />
+          </svg>
+          <div className="absolute text-center mt-36">
+            <span className="font-black font-chakra text-2xl sm:text-4xl text-pink-300 tracking-widest uppercase block drop-shadow-[0_0_20px_#ec4899]">
               TRẢM KÍCH HƯ KHÔNG!
             </span>
-            <span className="text-xs font-mono text-pink-100 tracking-wider bg-purple-950/90 px-3 py-1 border border-pink-500 rounded-xs inline-block mt-1">
+            <span className="text-[10px] sm:text-xs font-mono text-pink-100 bg-purple-950/90 px-3 py-0.5 border border-pink-500 rounded-xs inline-block mt-1">
               [VẾT RÁCH KHÔNG GIAN · CHÉM XUYÊN MỌI KẾT GIỚI]
             </span>
           </div>
         </div>
       )}
 
-      {/* 21. BOSS CLAW */}
+      {/* BOSS & GENERAL COMBAT ACTIONS */}
       {activeVFX === 'boss_claw' && (
-        <div className="relative w-full h-full flex items-center justify-center">
-          <div className="absolute w-[130%] h-5 bg-gradient-to-r from-transparent via-red-600 to-transparent animate-cross-slash rotate-25 shadow-[0_0_40px_#ef4444]" />
-          <div className="absolute w-[130%] h-5 bg-gradient-to-r from-transparent via-rose-500 to-transparent animate-cross-slash rotate-35 shadow-[0_0_40px_#f43f5e]" />
-          <div className="w-56 h-56 rounded-full bg-red-600/35 animate-ping shadow-[0_0_60px_#ef4444]" />
+        <div className="relative w-full h-full flex items-center justify-center animate-vfx-mutilatecrash">
+          <svg className="w-80 h-80 sm:w-[420px] sm:h-[420px] filter drop-shadow-[0_0_40px_#ef4444]" viewBox="0 0 200 200">
+            {/* Triple Demonic Beast Claw Gouges */}
+            <path d="M 40 40 Q 60 100 80 160" fill="none" stroke="#ef4444" strokeWidth="8" strokeLinecap="round" />
+            <path d="M 80 30 Q 100 100 120 170" fill="none" stroke="#dc2626" strokeWidth="10" strokeLinecap="round" />
+            <path d="M 120 40 Q 140 100 160 160" fill="none" stroke="#b91c1c" strokeWidth="8" strokeLinecap="round" />
+            <circle cx="100" cy="100" r="20" fill="#ef4444" opacity="0.6" className="animate-ping" />
+          </svg>
         </div>
       )}
 
-      {/* 22. BOSS COMBO */}
       {activeVFX === 'boss_combo' && (
-        <div className="relative w-full h-full flex items-center justify-center">
-          <div className="absolute w-[140%] h-6 bg-gradient-to-r from-transparent via-red-500 to-transparent animate-cross-slash rotate-45 shadow-[0_0_40px_#ef4444]" />
-          <div className="absolute w-[140%] h-6 bg-gradient-to-r from-transparent via-orange-500 to-transparent animate-cross-slash -rotate-45 shadow-[0_0_40px_#f97316]" />
-          <div className="absolute text-center animate-bounce">
-            <span className="font-black font-chakra text-3xl sm:text-5xl text-red-500 tracking-wider text-glow-red uppercase block">
-              COMBO CUỒNG NỘ!
+        <div className="relative w-full h-full flex items-center justify-center animate-vfx-rasakawhirl">
+          <svg className="w-88 h-88 sm:w-[460px] sm:h-[460px] filter drop-shadow-[0_0_50px_#f97316]" viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="75" fill="none" stroke="#ef4444" strokeWidth="4" strokeDasharray="10 5" className="animate-spin" />
+            <line x1="20" y1="20" x2="180" y2="180" stroke="#f97316" strokeWidth="8" strokeLinecap="round" />
+            <line x1="180" y1="20" x2="20" y2="180" stroke="#ef4444" strokeWidth="8" strokeLinecap="round" />
+          </svg>
+          <div className="absolute text-center mt-36">
+            <span className="font-black font-chakra text-2xl sm:text-4xl text-red-500 tracking-wider text-glow-red uppercase block">
+              LIÊN HOÀN CUỒNG BẠO!
             </span>
           </div>
         </div>
       )}
 
-      {/* 23. BOSS ULTIMATE */}
       {activeVFX === 'boss_ultimate' && (
-        <div className="absolute inset-0 bg-red-950/85 backdrop-blur-sm flex items-center justify-center animate-pulse z-50">
-          <div className="absolute w-[600px] h-[600px] rounded-full bg-red-600/50 animate-ping shadow-[0_0_120px_#ef4444]" />
+        <div className="absolute inset-0 bg-red-950/90 backdrop-blur-sm flex items-center justify-center animate-pulse z-50">
+          <div className="absolute w-[600px] h-[600px] rounded-full bg-red-600/40 blur-3xl animate-ping" />
           <div className="relative text-center space-y-4">
-            <h3 className="text-4xl sm:text-6xl font-black text-red-500 font-chakra text-glow-red tracking-wider uppercase animate-bounce">
+            <div className="text-7xl block mb-2 animate-bounce">🩸</div>
+            <h2 className="text-4xl sm:text-6xl font-black text-red-500 font-chakra text-glow-red tracking-wider uppercase">
               BÙNG NỔ NỘ KHÍ DIỆT THẾ!
-            </h3>
+            </h2>
+            <p className="text-xs sm:text-sm font-mono text-red-300">
+              [TRÙM GIẢI PHÓNG ĐÒN ĐÁNH HỦY DIỆT TOÀN DIỆN]
+            </p>
           </div>
         </div>
       )}
 
-      {/* 24. MONSTER EVADE */}
       {activeVFX === 'monster_evade' && (
-        <div className="relative w-full h-full flex items-center justify-center">
-          <div className="absolute w-64 h-64 rounded-full border-2 border-purple-400 bg-purple-900/20 animate-ping opacity-75" />
-          <div className="relative text-center animate-bounce">
+        <div className="relative w-full h-full flex items-center justify-center animate-vfx-shadowmirage">
+          <svg className="w-80 h-80 sm:w-[400px] sm:h-[400px] filter drop-shadow-[0_0_30px_#a855f7]" viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="60" fill="#581c87" opacity="0.3" stroke="#a855f7" strokeWidth="2" strokeDasharray="6 4" className="animate-ping" />
+          </svg>
+          <div className="absolute text-center">
             <span className="font-black font-chakra text-3xl sm:text-5xl text-purple-300 tracking-widest drop-shadow-[0_0_30px_#a855f7] block uppercase">
-              NÉ ĐÒN! (50/100)
+              NÉ ĐÒN! (MISS)
             </span>
           </div>
         </div>

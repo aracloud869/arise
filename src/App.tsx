@@ -35,6 +35,7 @@ import {
   INITIAL_MONSTER_MATERIALS,
 } from './data/talentsData';
 import { soundFx } from './utils/soundEffects';
+import { safeStorage } from './utils/safeStorage';
 import { HeaderHUD } from './components/HeaderHUD';
 import { NavigationTabs } from './components/NavigationTabs';
 import { StatusTab } from './components/tabs/StatusTab';
@@ -56,15 +57,19 @@ export default function App() {
 
   // Reset storage once if version is not v4_zero_start to ensure everything starts strictly from Level 1, 0 skills
   const APP_VERSION = 'v4_zero_start';
-  if (typeof window !== 'undefined' && localStorage.getItem('sl_app_version') !== APP_VERSION) {
-    localStorage.clear();
-    localStorage.setItem('sl_app_version', APP_VERSION);
+  try {
+    if (safeStorage.getItem('sl_app_version') !== APP_VERSION) {
+      safeStorage.clear();
+      safeStorage.setItem('sl_app_version', APP_VERSION);
+    }
+  } catch {
+    // Ignore storage restriction errors in incognito/strict iframe mode
   }
 
   // Persistence loader helper
   const loadStorage = <T,>(key: string, fallback: T): T => {
     try {
-      const saved = localStorage.getItem(key);
+      const saved = safeStorage.getItem(key);
       if (saved) return JSON.parse(saved);
     } catch {
       // fallback
@@ -176,9 +181,9 @@ export default function App() {
   // Daily Shop Auto-Reset & Rotating Stock
   useEffect(() => {
     const todayStr = new Date().toDateString();
-    const lastShopReset = localStorage.getItem('sl_shop_last_reset_date');
+    const lastShopReset = safeStorage.getItem('sl_shop_last_reset_date');
     if (lastShopReset !== todayStr) {
-      localStorage.setItem('sl_shop_last_reset_date', todayStr);
+      safeStorage.setItem('sl_shop_last_reset_date', todayStr);
       setShopItems((prevOwned) => getDailyShopSelection(todayStr, prevOwned));
     }
   }, []);
@@ -298,57 +303,66 @@ export default function App() {
     setTimeout(() => setAchievementPopup(null), 4200);
   }, [settings.screenShake, triggerParticles]);
 
+  // Safe persistence save helper
+  const saveStorage = (key: string, value: unknown) => {
+    try {
+      safeStorage.setItem(key, JSON.stringify(value));
+    } catch {
+      // Storage access blocked or quota exceeded
+    }
+  };
+
   // Sync to localStorage
   useEffect(() => {
-    localStorage.setItem('sl_stats', JSON.stringify(stats));
+    saveStorage('sl_stats', stats);
   }, [stats]);
   useEffect(() => {
-    localStorage.setItem('sl_daily_quests', JSON.stringify(dailyQuests));
+    saveStorage('sl_daily_quests', dailyQuests);
   }, [dailyQuests]);
   useEffect(() => {
-    localStorage.setItem('sl_custom_goals', JSON.stringify(customGoals));
+    saveStorage('sl_custom_goals', customGoals);
   }, [customGoals]);
   useEffect(() => {
-    localStorage.setItem('sl_streak', JSON.stringify(streak));
+    saveStorage('sl_streak', streak);
   }, [streak]);
   useEffect(() => {
-    localStorage.setItem('sl_best_streak', JSON.stringify(bestStreak));
+    saveStorage('sl_best_streak', bestStreak);
   }, [bestStreak]);
   useEffect(() => {
-    localStorage.setItem('sl_last_date', JSON.stringify(lastDateStr));
+    saveStorage('sl_last_date', lastDateStr);
   }, [lastDateStr]);
   useEffect(() => {
-    localStorage.setItem('sl_daily_claimed', JSON.stringify(dailyRewardClaimed));
+    saveStorage('sl_daily_claimed', dailyRewardClaimed);
   }, [dailyRewardClaimed]);
   useEffect(() => {
-    localStorage.setItem('sl_streak_rewards', JSON.stringify(streakRewards));
+    saveStorage('sl_streak_rewards', streakRewards);
   }, [streakRewards]);
   useEffect(() => {
-    localStorage.setItem('sl_shop', JSON.stringify(shopItems));
+    saveStorage('sl_shop', shopItems);
   }, [shopItems]);
   useEffect(() => {
-    localStorage.setItem('sl_skills', JSON.stringify(skills));
+    saveStorage('sl_skills', skills);
   }, [skills]);
   useEffect(() => {
-    localStorage.setItem('sl_shadows', JSON.stringify(shadowArmy));
+    saveStorage('sl_shadows', shadowArmy);
   }, [shadowArmy]);
   useEffect(() => {
-    localStorage.setItem('sl_novels', JSON.stringify(novels));
+    saveStorage('sl_novels', novels);
   }, [novels]);
   useEffect(() => {
-    localStorage.setItem('sl_logs', JSON.stringify(growthLogs));
+    saveStorage('sl_logs', growthLogs);
   }, [growthLogs]);
   useEffect(() => {
-    localStorage.setItem('sl_talent_nodes', JSON.stringify(talentNodes));
+    saveStorage('sl_talent_nodes', talentNodes);
   }, [talentNodes]);
   useEffect(() => {
-    localStorage.setItem('sl_talent_rank_tiers', JSON.stringify(talentRankTiers));
+    saveStorage('sl_talent_rank_tiers', talentRankTiers);
   }, [talentRankTiers]);
   useEffect(() => {
-    localStorage.setItem('sl_monster_materials', JSON.stringify(monsterMaterials));
+    saveStorage('sl_monster_materials', monsterMaterials);
   }, [monsterMaterials]);
   useEffect(() => {
-    localStorage.setItem('sl_settings', JSON.stringify(settings));
+    saveStorage('sl_settings', settings);
     soundFx.setEnabled(settings.soundEnabled);
     soundFx.setVolume(settings.sfxVolume);
   }, [settings]);
@@ -364,7 +378,7 @@ export default function App() {
         setLastDateStr(todayStr);
 
         // Check if user completed at least 1 task yesterday
-        const lastCredited = localStorage.getItem('sl_streak_credited_date');
+        const lastCredited = safeStorage.getItem('sl_streak_credited_date');
         const yesterdayStr = new Date(Date.now() - 86400000).toDateString();
         const hasAccomplishment = lastCredited === yesterdayStr || lastCredited === todayStr;
 
@@ -579,10 +593,10 @@ export default function App() {
   // Auto-increment streak when ANY single daily exercise or custom goal is completed!
   const checkAutoIncrementStreak = useCallback((missionName: string) => {
     const todayStr = new Date().toDateString();
-    const lastCreditedDate = localStorage.getItem('sl_streak_credited_date');
+    const lastCreditedDate = safeStorage.getItem('sl_streak_credited_date');
 
     if (lastCreditedDate !== todayStr) {
-      localStorage.setItem('sl_streak_credited_date', todayStr);
+      safeStorage.setItem('sl_streak_credited_date', todayStr);
       setStreak((prevStreak) => {
         const nextStreak = prevStreak + 1;
         setBestStreak((prevBest) => Math.max(prevBest, nextStreak));
@@ -647,11 +661,11 @@ export default function App() {
 
     setDailyRewardClaimed(true);
     const todayStr = new Date().toDateString();
-    const lastCreditedDate = localStorage.getItem('sl_streak_credited_date');
+    const lastCreditedDate = safeStorage.getItem('sl_streak_credited_date');
     let currentStreak = streak;
 
     if (lastCreditedDate !== todayStr) {
-      localStorage.setItem('sl_streak_credited_date', todayStr);
+      safeStorage.setItem('sl_streak_credited_date', todayStr);
       currentStreak = streak + 1;
       setStreak(currentStreak);
       if (currentStreak > bestStreak) {
@@ -1326,7 +1340,7 @@ export default function App() {
   };
 
   const handleResetData = () => {
-    localStorage.clear();
+    safeStorage.clear();
     setStats(INITIAL_PLAYER_STATS);
     setDailyQuests(INITIAL_DAILY_QUESTS);
     setCustomGoals(INITIAL_CUSTOM_GOALS);
