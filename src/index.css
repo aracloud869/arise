@@ -584,238 +584,238 @@
   100% { transform: scale(1.5) rotate(30deg); opacity: 0; }
 }
 .animate-vfx-razorslash {
-  animation: razorSonicSlash 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: razorSonicSlash 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* 2. Dagger Throw: Homing Pentagram Daggers */
 @keyframes daggerHomingBurst {
-  0% { transform: scale(0.2) translateY(80px); opacity: 0; }
-  30% { transform: scale(1.2) translateY(0); opacity: 1; filter: drop-shadow(0 0 30px #38bdf8); }
-  60% { transform: scale(1) translateY(-10px); opacity: 1; }
-  100% { transform: scale(1.4) translateY(-30px); opacity: 0; }
+  0% { transform: scale(0.2) translateY(50px); opacity: 0; }
+  35% { transform: scale(1.15) translateY(0); opacity: 1; filter: drop-shadow(0 0 25px #38bdf8); }
+  70% { transform: scale(1) translateY(-5px); opacity: 0.95; }
+  100% { transform: scale(1.3) translateY(-15px); opacity: 0; }
 }
 .animate-vfx-daggerburst {
-  animation: daggerHomingBurst 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  animation: daggerHomingBurst 0.38s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
 /* 3. Vital Strike: Tactical Ocular Crosshair Lock & Sudden Heart Laser */
 @keyframes sniperCrosshairLock {
-  0% { transform: scale(2.2) rotate(90deg); opacity: 0; }
-  40% { transform: scale(1) rotate(0deg); opacity: 1; filter: drop-shadow(0 0 40px #ef4444); }
-  70% { transform: scale(0.95); opacity: 1; filter: drop-shadow(0 0 60px #ffffff); }
-  100% { transform: scale(1.3); opacity: 0; }
+  0% { transform: scale(1.8) rotate(45deg); opacity: 0; }
+  40% { transform: scale(1) rotate(0deg); opacity: 1; filter: drop-shadow(0 0 35px #ef4444); }
+  75% { transform: scale(0.96); opacity: 1; filter: drop-shadow(0 0 50px #ffffff); }
+  100% { transform: scale(1.25); opacity: 0; }
 }
 .animate-vfx-vitalcrosshair {
-  animation: sniperCrosshairLock 0.65s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  animation: sniperCrosshairLock 0.38s cubic-bezier(0.19, 1, 0.22, 1) forwards;
 }
 
 /* 4. Venom Strike: Toxic Viper Acid Jaws */
 @keyframes venomViperSnap {
   0% { transform: scale(0.4) rotate(-15deg); opacity: 0; }
-  35% { transform: scale(1.25) rotate(5deg); opacity: 1; filter: drop-shadow(0 0 45px #22c55e) drop-shadow(0 0 70px #15803d); }
-  70% { transform: scale(1.1) rotate(0deg); opacity: 0.95; }
-  100% { transform: scale(1.5) rotate(15deg); opacity: 0; }
+  35% { transform: scale(1.2) rotate(5deg); opacity: 1; filter: drop-shadow(0 0 35px #22c55e); }
+  75% { transform: scale(1.05) rotate(0deg); opacity: 0.95; }
+  100% { transform: scale(1.4) rotate(15deg); opacity: 0; }
 }
 .animate-vfx-venomsnap {
-  animation: venomViperSnap 0.65s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  animation: venomViperSnap 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
 /* 5. Rasaka Flurry: Blood Vortex Hurricane */
 @keyframes rasakaBloodWhirl {
   0% { transform: scale(0.3) rotate(0deg); opacity: 0; }
-  45% { transform: scale(1.3) rotate(360deg); opacity: 1; filter: drop-shadow(0 0 50px #c084fc) drop-shadow(0 0 80px #10b981); }
-  80% { transform: scale(1.1) rotate(540deg); opacity: 0.9; }
-  100% { transform: scale(1.6) rotate(720deg); opacity: 0; }
+  45% { transform: scale(1.2) rotate(270deg); opacity: 1; filter: drop-shadow(0 0 40px #c084fc); }
+  75% { transform: scale(1.05) rotate(360deg); opacity: 0.9; }
+  100% { transform: scale(1.4) rotate(480deg); opacity: 0; }
 }
 .animate-vfx-rasakawhirl {
-  animation: rasakaBloodWhirl 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: rasakaBloodWhirl 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* 6. Mutilate: Armor-Cracking Heavy Execution Cleave */
 @keyframes mutilateCleaveCrash {
-  0% { transform: translateY(-80px) scale(0.5); opacity: 0; }
-  35% { transform: translateY(0) scale(1.3); opacity: 1; filter: drop-shadow(0 0 60px #f43f5e) drop-shadow(0 0 90px #dc2626); }
-  65% { transform: translateY(5px) scale(1.05); opacity: 1; }
-  100% { transform: translateY(20px) scale(1.5); opacity: 0; }
+  0% { transform: translateY(-50px) scale(0.5); opacity: 0; }
+  35% { transform: translateY(0) scale(1.25); opacity: 1; filter: drop-shadow(0 0 50px #f43f5e); }
+  70% { transform: translateY(5px) scale(1.02); opacity: 1; }
+  100% { transform: translateY(15px) scale(1.35); opacity: 0; }
 }
 .animate-vfx-mutilatecrash {
-  animation: mutilateCleaveCrash 0.7s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+  animation: mutilateCleaveCrash 0.38s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
 }
 
 /* 7. Kamish Wrath: Volcanic Dragon Monarch Magma Jaws */
 @keyframes kamishDragonVolcano {
-  0% { transform: scale(0.2) translateY(90px); opacity: 0; }
-  35% { transform: scale(1.35) translateY(-10px); opacity: 1; filter: drop-shadow(0 0 70px #f59e0b) drop-shadow(0 0 100px #ea580c); }
-  75% { transform: scale(1.15) translateY(0); opacity: 1; }
-  100% { transform: scale(1.7) translateY(-30px); opacity: 0; }
+  0% { transform: scale(0.3) translateY(50px); opacity: 0; }
+  40% { transform: scale(1.25) translateY(0); opacity: 1; filter: drop-shadow(0 0 50px #f59e0b); }
+  75% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1.45) translateY(-15px); opacity: 0; }
 }
 .animate-vfx-kamishvolcano {
-  animation: kamishDragonVolcano 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: kamishDragonVolcano 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* 8. Shadow Step: Phasing Triple Silhouette Mirage */
 @keyframes shadowMirageShift {
-  0% { transform: translateX(-80px) scale(0.6); opacity: 0; }
-  30% { transform: translateX(0) scale(1.15); opacity: 1; filter: drop-shadow(0 0 45px #6366f1); }
-  70% { transform: translateX(20px) scale(1); opacity: 0.9; }
-  100% { transform: translateX(80px) scale(1.4); opacity: 0; }
+  0% { transform: translateX(-50px) scale(0.7); opacity: 0; }
+  35% { transform: translateX(0) scale(1.1); opacity: 1; filter: drop-shadow(0 0 35px #6366f1); }
+  75% { transform: translateX(10px) scale(1); opacity: 0.9; }
+  100% { transform: translateX(50px) scale(1.3); opacity: 0; }
 }
 .animate-vfx-shadowmirage {
-  animation: shadowMirageShift 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: shadowMirageShift 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* 9. Stealth: Hexagonal Camouflage Matrix Grid */
 @keyframes stealthHexDistort {
-  0% { opacity: 0; transform: scale(0.8); backdrop-filter: blur(0px); }
-  35% { opacity: 1; transform: scale(1.05); backdrop-filter: blur(10px); filter: drop-shadow(0 0 60px #00e5ff); }
-  75% { opacity: 0.95; transform: scale(1); backdrop-filter: blur(6px); }
-  100% { opacity: 0; transform: scale(1.2); }
+  0% { opacity: 0; transform: scale(0.8); }
+  35% { opacity: 1; transform: scale(1.05); filter: drop-shadow(0 0 45px #00e5ff); }
+  75% { opacity: 0.9; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.15); }
 }
 .animate-vfx-stealthhex {
-  animation: stealthHexDistort 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: stealthHexDistort 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* 10. Bloodlust: Demonic Red Glare & Panic Shockwave */
 @keyframes bloodlustDemonicPulse {
-  0% { transform: scale(0.3); opacity: 0; filter: contrast(1); }
-  30% { transform: scale(1.35); opacity: 1; filter: contrast(2) drop-shadow(0 0 80px #ef4444); }
-  70% { transform: scale(1.1); opacity: 1; }
-  100% { transform: scale(1.6); opacity: 0; }
+  0% { transform: scale(0.4); opacity: 0; }
+  35% { transform: scale(1.25); opacity: 1; filter: drop-shadow(0 0 60px #ef4444); }
+  75% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1.45); opacity: 0; }
 }
 .animate-vfx-bloodlustpulse {
-  animation: bloodlustDemonicPulse 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: bloodlustDemonicPulse 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* 11. Quicksilver: Golden Clockwork Chronometer Warp */
 @keyframes quicksilverChronometer {
-  0% { transform: scale(0.3) rotate(0deg); opacity: 0; }
-  40% { transform: scale(1.25) rotate(180deg); opacity: 1; filter: drop-shadow(0 0 60px #eab308) drop-shadow(0 0 90px #f59e0b); }
-  75% { transform: scale(1.05) rotate(300deg); opacity: 0.95; }
-  100% { transform: scale(1.5) rotate(420deg); opacity: 0; }
+  0% { transform: scale(0.4) rotate(0deg); opacity: 0; }
+  40% { transform: scale(1.18) rotate(120deg); opacity: 1; filter: drop-shadow(0 0 45px #eab308); }
+  75% { transform: scale(1.02) rotate(200deg); opacity: 0.9; }
+  100% { transform: scale(1.35) rotate(280deg); opacity: 0; }
 }
 .animate-vfx-quicksilverclock {
-  animation: quicksilverChronometer 0.7s ease-out forwards;
+  animation: quicksilverChronometer 0.4s ease-out forwards;
 }
 
 /* 12. Ruler's Authority: Ethereal Giant Starlight Hand Slam */
 @keyframes authorityGravitySlam {
-  0% { transform: translateY(-130px) scale(0.6); opacity: 0; }
-  40% { transform: translateY(0) scale(1.3); opacity: 1; filter: drop-shadow(0 0 70px #00e5ff) drop-shadow(0 0 100px #0284c7); }
-  75% { transform: translateY(10px) scale(1.1); opacity: 1; }
-  100% { transform: translateY(30px) scale(1.5); opacity: 0; }
+  0% { transform: translateY(-70px) scale(0.6); opacity: 0; }
+  40% { transform: translateY(0) scale(1.2); opacity: 1; filter: drop-shadow(0 0 55px #00e5ff); }
+  75% { transform: translateY(5px) scale(1.05); opacity: 1; }
+  100% { transform: translateY(15px) scale(1.35); opacity: 0; }
 }
 .animate-vfx-authorityslam {
-  animation: authorityGravitySlam 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: authorityGravitySlam 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* 13. Spatial Collapse: Gravitational Black Hole Singularity */
 @keyframes blackHoleAccretion {
-  0% { transform: scale(0.1) rotate(0deg); opacity: 0; }
-  40% { transform: scale(1.35) rotate(180deg); opacity: 1; filter: drop-shadow(0 0 80px #7e22ce) drop-shadow(0 0 110px #00e5ff); }
-  75% { transform: scale(0.95) rotate(360deg); opacity: 1; }
-  100% { transform: scale(1.6) rotate(540deg); opacity: 0; }
+  0% { transform: scale(0.2) rotate(0deg); opacity: 0; }
+  45% { transform: scale(1.25) rotate(180deg); opacity: 1; filter: drop-shadow(0 0 60px #7e22ce); }
+  75% { transform: scale(1) rotate(270deg); opacity: 1; }
+  100% { transform: scale(1.4) rotate(360deg); opacity: 0; }
 }
 .animate-vfx-blackhole {
-  animation: blackHoleAccretion 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: blackHoleAccretion 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* 14. Shadow Exchange: Dual Swirling Abyssal Vortex */
 @keyframes shadowPortalSwirl {
-  0% { transform: scale(0.3) rotate(-90deg); opacity: 0; }
-  35% { transform: scale(1.2) rotate(0deg); opacity: 1; filter: drop-shadow(0 0 60px #a855f7); }
-  70% { transform: scale(1.05) rotate(45deg); opacity: 0.95; }
-  100% { transform: scale(1.5) rotate(90deg); opacity: 0; }
+  0% { transform: scale(0.4) rotate(-45deg); opacity: 0; }
+  40% { transform: scale(1.15) rotate(0deg); opacity: 1; filter: drop-shadow(0 0 45px #a855f7); }
+  75% { transform: scale(1.02) rotate(30deg); opacity: 0.9; }
+  100% { transform: scale(1.35) rotate(60deg); opacity: 0; }
 }
 .animate-vfx-shadowportal {
-  animation: shadowPortalSwirl 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: shadowPortalSwirl 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* 15. Arise: Colossal Shadow Monarch Summoning Eruption */
 @keyframes ariseMonarchSummon {
-  0% { transform: scale(0.3) translateY(60px); opacity: 0; }
-  35% { transform: scale(1.2) translateY(-10px); opacity: 1; filter: drop-shadow(0 0 100px #a855f7) drop-shadow(0 0 140px #6b21a8); }
+  0% { transform: scale(0.4) translateY(40px); opacity: 0; }
+  40% { transform: scale(1.18) translateY(-5px); opacity: 1; filter: drop-shadow(0 0 75px #a855f7); }
   75% { transform: scale(1.05) translateY(0); opacity: 1; }
-  100% { transform: scale(1.4) translateY(-20px); opacity: 0; }
+  100% { transform: scale(1.35) translateY(-10px); opacity: 0; }
 }
 .animate-vfx-ariseburst {
-  animation: ariseMonarchSummon 0.95s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: ariseMonarchSummon 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* 16. Shadow Extraction: Siphoning Soul Core Wisps */
 @keyframes soulExtractionPull {
-  0% { transform: scale(0.4) translateY(40px); opacity: 0; }
-  40% { transform: scale(1.25) translateY(-20px); opacity: 1; filter: drop-shadow(0 0 60px #34d399) drop-shadow(0 0 90px #a855f7); }
-  75% { transform: scale(1.1) translateY(-40px); opacity: 0.9; }
-  100% { transform: scale(1.5) translateY(-70px); opacity: 0; }
+  0% { transform: scale(0.5) translateY(30px); opacity: 0; }
+  40% { transform: scale(1.18) translateY(-15px); opacity: 1; filter: drop-shadow(0 0 45px #34d399); }
+  75% { transform: scale(1.05) translateY(-25px); opacity: 0.9; }
+  100% { transform: scale(1.35) translateY(-45px); opacity: 0; }
 }
 .animate-vfx-soulextraction {
-  animation: soulExtractionPull 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: soulExtractionPull 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* 17. Monarch Domain: Ocean of Obsidian Shadows */
 @keyframes monarchDomainExpansion {
-  0% { transform: scale(0.4); opacity: 0; }
-  35% { transform: scale(1.15); opacity: 1; filter: drop-shadow(0 0 90px #9333ea); }
+  0% { transform: scale(0.5); opacity: 0; }
+  40% { transform: scale(1.12); opacity: 1; filter: drop-shadow(0 0 65px #9333ea); }
   75% { transform: scale(1); opacity: 0.95; }
-  100% { transform: scale(1.3); opacity: 0; }
+  100% { transform: scale(1.25); opacity: 0; }
 }
 .animate-vfx-monarchdomain {
-  animation: monarchDomainExpansion 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: monarchDomainExpansion 0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* 18. Shadow Armor: Obsidian Hexagonal Barrier Plate Snap */
 @keyframes shadowArmorSnap {
-  0% { transform: scale(1.8) rotate(45deg); opacity: 0; }
-  40% { transform: scale(1) rotate(0deg); opacity: 1; filter: drop-shadow(0 0 60px #a855f7) drop-shadow(0 0 90px #38bdf8); }
-  75% { transform: scale(1.05); opacity: 0.95; }
-  100% { transform: scale(1.3); opacity: 0; }
+  0% { transform: scale(1.5) rotate(30deg); opacity: 0; }
+  40% { transform: scale(1) rotate(0deg); opacity: 1; filter: drop-shadow(0 0 50px #a855f7); }
+  75% { transform: scale(1.02); opacity: 0.95; }
+  100% { transform: scale(1.25); opacity: 0; }
 }
 .animate-vfx-shadowarmor {
-  animation: shadowArmorSnap 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  animation: shadowArmorSnap 0.42s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
 /* 19. Dragon Fear: Acoustic Roar Paralyzing Shockwave */
 @keyframes dragonRoarShockwave {
-  0% { transform: scale(0.2); opacity: 0; }
-  35% { transform: scale(1.4); opacity: 1; filter: drop-shadow(0 0 80px #f59e0b) drop-shadow(0 0 110px #fbbf24); }
-  70% { transform: scale(1.2); opacity: 0.9; }
-  100% { transform: scale(1.7); opacity: 0; }
+  0% { transform: scale(0.3); opacity: 0; }
+  40% { transform: scale(1.25); opacity: 1; filter: drop-shadow(0 0 55px #f59e0b); }
+  75% { transform: scale(1.1); opacity: 0.9; }
+  100% { transform: scale(1.45); opacity: 0; }
 }
 .animate-vfx-dragonroar {
-  animation: dragonRoarShockwave 0.75s ease-out forwards;
+  animation: dragonRoarShockwave 0.42s ease-out forwards;
 }
 
 /* 20. Dragon Breath: Cosmic White-Hot Plasma Inferno Torrent */
 @keyframes dragonPlasmaBeam {
   0% { transform: scaleX(0.1) scaleY(0.4); opacity: 0; }
-  30% { transform: scaleX(1.3) scaleY(1.4); opacity: 1; filter: drop-shadow(0 0 80px #ef4444) drop-shadow(0 0 120px #f59e0b); }
-  75% { transform: scaleX(1.1) scaleY(1.1); opacity: 0.95; }
-  100% { transform: scaleX(1.6) scaleY(1.6); opacity: 0; }
+  35% { transform: scaleX(1.2) scaleY(1.2); opacity: 1; filter: drop-shadow(0 0 65px #ef4444); }
+  75% { transform: scaleX(1.05) scaleY(1.05); opacity: 0.95; }
+  100% { transform: scaleX(1.45) scaleY(1.45); opacity: 0; }
 }
 .animate-vfx-dragonbeam {
-  animation: dragonPlasmaBeam 0.85s ease-out forwards;
+  animation: dragonPlasmaBeam 0.45s ease-out forwards;
 }
 
 /* 21. Demon Lightning: Heavenly Branched Thunder Torrent */
 @keyframes demonThunderStrike {
-  0% { transform: scaleY(0.1) translateY(-100%); opacity: 0; }
-  25% { transform: scaleY(1.3) translateY(0); opacity: 1; filter: drop-shadow(0 0 80px #38bdf8) drop-shadow(0 0 120px #ffffff); }
-  65% { transform: scaleY(1.1) translateY(10px); opacity: 1; }
-  100% { transform: scaleY(1.5) translateY(30px); opacity: 0; }
+  0% { transform: scaleY(0.1) translateY(-60%); opacity: 0; }
+  30% { transform: scaleY(1.2) translateY(0); opacity: 1; filter: drop-shadow(0 0 60px #38bdf8); }
+  70% { transform: scaleY(1.05) translateY(5px); opacity: 1; }
+  100% { transform: scaleY(1.35) translateY(15px); opacity: 0; }
 }
 .animate-vfx-demonthunder {
-  animation: demonThunderStrike 0.65s ease-out forwards;
+  animation: demonThunderStrike 0.38s ease-out forwards;
 }
 
 /* 22. Void Cleave: Reality Rupture Dimension Rift */
 @keyframes voidRuptureTear {
-  0% { transform: scale(0.2) rotate(-45deg); opacity: 0; }
-  35% { transform: scale(1.35) rotate(-15deg); opacity: 1; filter: drop-shadow(0 0 80px #ec4899) drop-shadow(0 0 110px #8b5cf6); }
-  75% { transform: scale(1.1) rotate(-5deg); opacity: 0.95; }
-  100% { transform: scale(1.7) rotate(15deg); opacity: 0; }
+  0% { transform: scale(0.3) rotate(-30deg); opacity: 0; }
+  40% { transform: scale(1.25) rotate(-10deg); opacity: 1; filter: drop-shadow(0 0 60px #ec4899); }
+  75% { transform: scale(1.05) rotate(0deg); opacity: 0.95; }
+  100% { transform: scale(1.45) rotate(15deg); opacity: 0; }
 }
 .animate-vfx-voidrift {
-  animation: voidRuptureTear 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: voidRuptureTear 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* 1. Slash Skill Animation Class (Sharp Plasma Razor Cut) */

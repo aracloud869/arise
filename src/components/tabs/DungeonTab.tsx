@@ -231,20 +231,37 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
     }, 1200);
   };
 
-  const triggerVFX = (type: VFXType, duration = 800) => {
+  const vfxTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Safety Auto-Recovery Timer to prevent any input lockout or freezing ("bị đơ")
+  useEffect(() => {
+    if (isActing && currentTurn === 'player') {
+      const safetyUnlock = setTimeout(() => {
+        setIsActing(false);
+      }, 850);
+      return () => clearTimeout(safetyUnlock);
+    }
+  }, [isActing, currentTurn]);
+
+  const triggerVFX = (type: VFXType, duration = 400) => {
+    if (vfxTimeoutRef.current) {
+      clearTimeout(vfxTimeoutRef.current);
+    }
     setActiveVFX(type);
-    setTimeout(() => setActiveVFX(null), duration);
+    vfxTimeoutRef.current = setTimeout(() => {
+      setActiveVFX(null);
+    }, duration);
   };
 
   const triggerGroundImpact = (intensity: 'normal' | 'heavy' | 'colossal' = 'heavy') => {
     setGroundImpactIntensity(intensity);
     setGroundImpactActive(true);
-    setTimeout(() => setGroundImpactActive(false), 950);
+    setTimeout(() => setGroundImpactActive(false), 500);
   };
 
   const triggerScreenShake = () => {
     setScreenShake(true);
-    setTimeout(() => setScreenShake(false), 450);
+    setTimeout(() => setScreenShake(false), 300);
   };
 
   // Start Dungeon Raid
@@ -350,7 +367,7 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
     setIsActing(true);
     setIsHunterAttacking(true);
     soundFx.playSlash();
-    triggerVFX('basic_slash', 500);
+    triggerVFX('basic_slash', 350);
 
     // Dynamic Monster Evade Chance Check based on Monster Agility
     const isEvaded = Math.random() < (enemyDodgeRate / 100);
@@ -361,17 +378,17 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
       if (isEvaded) {
         setIsMonsterEvading(true);
         soundFx.playEvadeSound(); // Wind whoosh evasion sound
-        triggerVFX('monster_evade', 650);
+        triggerVFX('monster_evade', 350);
         addFloatingText('MISS!', 'status', 'boss'); // Neon MISS! text
         setCombatLogs((prev) => [
           ...prev,
           `[NÉ TRÁNH - MISS]: ${enemyName} đã kích hoạt Thân Pháp Mờ Ảo né tránh hoàn toàn đòn đánh! (Tỷ lệ né: ${enemyDodgeRate}%)`,
         ]);
-        setTimeout(() => setIsMonsterEvading(false), 650);
+        setTimeout(() => setIsMonsterEvading(false), 350);
 
         setTimeout(() => {
           advanceToEnemyTurn(enemyCurrentHp);
-        }, 600);
+        }, 180);
         return;
       }
 
@@ -397,16 +414,16 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
       setEnemyCurrentHp(nextEnemyHp);
       setEnemyRage((prev) => Math.min(100, prev + Math.floor(damage / 12) + 5));
 
-      setTimeout(() => setIsMonsterHurt(false), 300);
+      setTimeout(() => setIsMonsterHurt(false), 200);
 
       if (nextEnemyHp <= 0) {
         handleWaveClear();
       } else {
         setTimeout(() => {
           advanceToEnemyTurn(nextEnemyHp);
-        }, 600);
+        }, 200);
       }
-    }, 350);
+    }, 180);
   };
 
   // Cast Skill in Dungeon (Only Unlocked & Equipped in 5-deck)
@@ -439,96 +456,96 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
 
     if (skId === 'skill-slash') {
       soundFx.playSlash();
-      triggerVFX('basic_slash', 750);
+      triggerVFX('basic_slash', 350);
       triggerGroundImpact('heavy');
     } else if (skId === 'skill-dagger-throw') {
       soundFx.playSlash();
-      triggerVFX('dagger_throw', 800);
+      triggerVFX('dagger_throw', 350);
       triggerGroundImpact('heavy');
     } else if (skId === 'skill-rasaka-fang') {
       soundFx.playVenom();
-      triggerVFX('venom_strike', 850);
+      triggerVFX('venom_strike', 380);
       triggerGroundImpact('heavy');
       setPoisonTurnsRemaining(3);
     } else if (skId === 'skill-mutilate') {
       soundFx.playSlash();
-      triggerVFX('mutilate_x', 850);
+      triggerVFX('mutilate_x', 380);
       triggerGroundImpact('colossal');
     } else if (skId === 'skill-kamish-wrath') {
       soundFx.playBossRoar();
-      triggerVFX('kamish_wrath', 950);
+      triggerVFX('kamish_wrath', 420);
       triggerGroundImpact('colossal');
     } else if (skId === 'skill-shadow-step') {
       soundFx.playStealth();
-      triggerVFX('shadow_step', 750);
+      triggerVFX('shadow_step', 350);
       setIsStealthed(true);
       addFloatingText('BỘ PHÁP BÓNG ĐÊM!', 'status', 'player');
     } else if (skId === 'skill-stealth') {
       soundFx.playStealth();
-      triggerVFX('stealth_invisible', 850);
+      triggerVFX('stealth_invisible', 380);
       setIsStealthed(true);
       addFloatingText('TÀNG HÌNH ẨN THÂN!', 'status', 'player');
     } else if (skId === 'skill-bloodlust') {
       soundFx.playBossRoar();
-      triggerVFX('bloodlust_aura', 850);
+      triggerVFX('bloodlust_aura', 380);
       addFloatingText('SÁT KHÍ ÁP ĐẢO!', 'status', 'boss');
     } else if (skId === 'skill-quicksilver') {
       soundFx.playStealth();
-      triggerVFX('quicksilver', 800);
+      triggerVFX('quicksilver', 380);
       addFloatingText('TỐC BỘ THẦN TỐC!', 'status', 'player');
     } else if (skId === 'skill-authority') {
       soundFx.playAuthority();
-      triggerVFX('ruler_authority', 900);
+      triggerVFX('ruler_authority', 400);
       triggerGroundImpact('colossal');
       setIsEnemyStunned(true);
       addFloatingText('CHOÁNG VÁNG!', 'status', 'boss');
     } else if (skId === 'skill-spatial-collapse') {
       soundFx.playAuthority();
-      triggerVFX('spatial_collapse', 900);
+      triggerVFX('spatial_collapse', 400);
       triggerGroundImpact('colossal');
     } else if (skId === 'skill-shadow-exchange') {
       soundFx.playStealth();
-      triggerVFX('shadow_exchange', 800);
+      triggerVFX('shadow_exchange', 380);
       setIsStealthed(true);
       addFloatingText('HOÁN ĐỔI BÓNG TỐI!', 'status', 'player');
     } else if (skId === 'skill-arise') {
       soundFx.playArise();
-      triggerVFX('arise', 1100);
+      triggerVFX('arise', 450);
       triggerGroundImpact('colossal');
     } else if (skId === 'skill-shadow-extraction') {
       soundFx.playArise();
-      triggerVFX('shadow_extraction', 900);
+      triggerVFX('shadow_extraction', 400);
       triggerGroundImpact('heavy');
     } else if (skId === 'skill-monarch-domain') {
       soundFx.playArise();
-      triggerVFX('monarch_domain', 1000);
+      triggerVFX('monarch_domain', 420);
       triggerGroundImpact('colossal');
     } else if (skId === 'skill-shadow-armor') {
       soundFx.playGuardSound();
-      triggerVFX('shadow_armor', 800);
+      triggerVFX('shadow_armor', 380);
       addFloatingText('HẮC GIÁP HỘ THỂ!', 'status', 'player');
     } else if (skId === 'skill-dragon-fear') {
       soundFx.playBossRoar();
-      triggerVFX('dragon_fear', 900);
+      triggerVFX('dragon_fear', 400);
       setIsEnemyStunned(true);
       addFloatingText('LONG UY UY ÁP!', 'status', 'boss');
     } else if (skId === 'skill-dragon-breath') {
       soundFx.playBossRoar();
-      triggerVFX('dragon_breath', 1000);
+      triggerVFX('dragon_breath', 420);
       triggerGroundImpact('colossal');
     } else if (skId === 'skill-demon-lightning') {
       soundFx.playAuthority();
-      triggerVFX('demon_lightning', 850);
+      triggerVFX('demon_lightning', 380);
       triggerGroundImpact('colossal');
       setIsEnemyStunned(true);
       addFloatingText('LÔI QUANG CHOÁNG!', 'status', 'boss');
     } else if (skId === 'skill-void-cleave') {
       soundFx.playSlash();
-      triggerVFX('void_cleave', 950);
+      triggerVFX('void_cleave', 400);
       triggerGroundImpact('colossal');
     } else {
       soundFx.playSlash();
-      triggerVFX('basic_slash', 750);
+      triggerVFX('basic_slash', 350);
       triggerGroundImpact('heavy');
     }
 
@@ -552,16 +569,16 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
       setEnemyCurrentHp(nextEnemyHp);
       setEnemyRage((prev) => Math.min(100, prev + 15));
 
-      setTimeout(() => setIsMonsterHurt(false), 350);
+      setTimeout(() => setIsMonsterHurt(false), 200);
 
       if (nextEnemyHp <= 0) {
         handleWaveClear();
       } else {
         setTimeout(() => {
           advanceToEnemyTurn(nextEnemyHp);
-        }, 650);
+        }, 220);
       }
-    }, 450);
+    }, 200);
   };
 
   // Guard Action
@@ -580,7 +597,7 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
     setCurrentTurn('boss');
     setIsActing(true);
 
-    const delay = fastSpeed ? 350 : 700;
+    const delay = fastSpeed ? 60 : 150;
     setTimeout(() => {
       executeEnemyAction(latestEnemyHp);
     }, delay);
@@ -631,7 +648,7 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
 
     setIsMonsterAttacking(true);
     soundFx.playBossRoar();
-    triggerVFX(isBoss ? 'boss_combo' : 'boss_claw', 800);
+    triggerVFX(isBoss ? 'boss_combo' : 'boss_claw', 350);
 
     setCombatLogs((prev) => [
       ...prev,
@@ -666,18 +683,18 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
         return nextHp;
       });
 
-      setTimeout(() => setIsHunterHurt(false), 200);
+      setTimeout(() => setIsHunterHurt(false), 150);
 
       if (hitsExecuted < numHits) {
-        setTimeout(executeSingleHit, fastSpeed ? 200 : 350);
+        setTimeout(executeSingleHit, fastSpeed ? 100 : 180);
       } else {
         setIsMonsterAttacking(false);
         setIsGuarding(false);
-        setTimeout(endEnemyTurn, 400);
+        setTimeout(endEnemyTurn, fastSpeed ? 80 : 180);
       }
     };
 
-    setTimeout(executeSingleHit, 300);
+    setTimeout(executeSingleHit, fastSpeed ? 80 : 150);
   };
 
   const endEnemyTurn = () => {
@@ -739,6 +756,8 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
     soundFx.playVictoryFanfare();
     soundFx.setBgmMode('ambient');
     setBattleState('victory');
+    setIsActing(false);
+    setActiveVFX(null);
 
     if (activeGate.dungeonType === 'tower') {
       setTowerFloor((f) => f + 1);
@@ -758,6 +777,8 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
     soundFx.playFatigueAlert();
     soundFx.setBgmMode('ambient');
     setBattleState('defeat');
+    setIsActing(false);
+    setActiveVFX(null);
     onDefeat();
   };
 
@@ -766,6 +787,8 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
     onRaidStateChange?.(false);
     setBattleState('idle');
     setActiveGate(null);
+    setIsActing(false);
+    setActiveVFX(null);
   };
 
   // Filtered Gates for standard dungeon mode
@@ -776,9 +799,6 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
 
   return (
     <div className={`w-full max-w-7xl mx-auto p-1.5 sm:p-4 box-border space-y-3 sm:space-y-4 ${screenShake ? 'animate-screen-shake' : ''}`}>
-      {/* VFX Overlay Container */}
-      <CombatVFX activeVFX={activeVFX} />
-
       {/* Floating Damage & Status Texts */}
       {floatingTexts.map((ft) => (
         <div
@@ -1317,8 +1337,11 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
             />
           </div>
 
-          {/* 3. Battlefield Arena (Monster and Hunter Visuals + Ground Impact Effect + Ghosting) */}
-          <div className="grid grid-cols-2 gap-2 p-1 bg-slate-950/70 border border-slate-800 rounded-xs h-24 sm:h-32 items-center justify-center relative shrink-0 overflow-hidden">
+          {/* 3. Battlefield Arena (Monster and Hunter Visuals + Ground Impact Effect + Ghosting + High-Impact VFX) */}
+          <div className="grid grid-cols-2 gap-2 p-1 bg-slate-950/70 border border-slate-800 rounded-xs h-28 sm:h-36 items-center justify-center relative shrink-0 overflow-hidden">
+            {/* Dynamic Combat VFX overlaying directly on combat models */}
+            <CombatVFX activeVFX={activeVFX} />
+
             {/* Ground Impact Particle Dust & Shockwaves Component */}
             <GroundImpactEffect
               active={groundImpactActive}
