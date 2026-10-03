@@ -17,6 +17,7 @@ import { soundFx } from '../../utils/soundEffects';
 import { HunterVisual } from '../dungeon/HunterVisual';
 import { SkillLoadoutDeck } from '../skills/SkillLoadoutDeck';
 import { getSkillRank, RANK_STYLE_CONFIGS } from '../../utils/skillRank';
+import { StatusCanvasVFX } from '../status/StatusCanvasVFX';
 
 interface StatusTabProps {
   stats: PlayerStats;
@@ -45,15 +46,47 @@ export const StatusTab: React.FC<StatusTabProps> = ({
   const [manaBurnAnim, setManaBurnAnim] = useState(false);
   const [lastUsedSkill, setLastUsedSkill] = useState<string | null>(null);
   const [hoveredStat, setHoveredStat] = useState<string | null>(null);
+  const [customInputs, setCustomInputs] = useState<Record<string, string>>({
+    strength: '',
+    vitality: '',
+    agility: '',
+    intelligence: '',
+    perception: '',
+  });
+  const [globalQuickAmount, setGlobalQuickAmount] = useState<string>('10');
 
   const hasUnusedPoints = stats.statPoints > 0;
 
   const handleAllocate = (key: keyof Pick<PlayerStats, 'strength' | 'agility' | 'intelligence' | 'vitality' | 'perception'>, amt: number) => {
-    if (stats.statPoints < amt) return;
+    if (stats.statPoints < amt || amt <= 0) return;
     soundFx.playStatAllocated();
     onAllocateStat(key, amt);
     setAllocatedTemp(key);
     setTimeout(() => setAllocatedTemp(null), 800);
+  };
+
+  const handleCustomInputChange = (key: string, val: string) => {
+    const cleaned = val.replace(/[^0-9]/g, '');
+    setCustomInputs((prev) => ({ ...prev, [key]: cleaned }));
+  };
+
+  const handleApplyCustom = (key: keyof Pick<PlayerStats, 'strength' | 'agility' | 'intelligence' | 'vitality' | 'perception'>) => {
+    const parsed = parseInt(customInputs[key], 10);
+    if (isNaN(parsed) || parsed <= 0) return;
+    const actualAmt = Math.min(parsed, stats.statPoints);
+    if (actualAmt > 0) {
+      handleAllocate(key, actualAmt);
+      setCustomInputs((prev) => ({ ...prev, [key]: '' }));
+    }
+  };
+
+  const handleApplyGlobalQuick = (key: keyof Pick<PlayerStats, 'strength' | 'agility' | 'intelligence' | 'vitality' | 'perception'>) => {
+    const parsed = parseInt(globalQuickAmount, 10);
+    if (isNaN(parsed) || parsed <= 0) return;
+    const actualAmt = Math.min(parsed, stats.statPoints);
+    if (actualAmt > 0) {
+      handleAllocate(key, actualAmt);
+    }
   };
 
   const handleCastSkill = (skill: Skill) => {
@@ -256,7 +289,7 @@ export const StatusTab: React.FC<StatusTabProps> = ({
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6">
             {/* Left: Animated Hunter Model with Mana Burn Aura */}
             <div className="relative flex flex-col items-center shrink-0">
-              <div className={`relative transition-all duration-300 ${manaBurnAnim ? 'scale-110 drop-shadow-[0_0_35px_#00e5ff]' : ''}`}>
+              <div className={`relative transition-all duration-300 ${manaBurnAnim ? 'scale-105' : ''}`}>
                 <HunterVisual
                   isAttacking={manaBurnAnim}
                   isHurt={false}
@@ -265,10 +298,8 @@ export const StatusTab: React.FC<StatusTabProps> = ({
                   className="w-32 h-32 sm:w-40 sm:h-40"
                 />
 
-                {/* Mana Burn active energy ring */}
-                {manaBurnAnim && (
-                  <div className="absolute inset-0 rounded-full border-2 border-cyan-300 shadow-[0_0_30px_#00e5ff] animate-ping pointer-events-none" />
-                )}
+                {/* High-Performance Canvas Particle System (Zero Layout Thrashing) */}
+                <StatusCanvasVFX isManaBurning={manaBurnAnim} activeSkillName={lastUsedSkill} />
               </div>
 
               <div className="mt-1 text-center">
@@ -451,23 +482,112 @@ export const StatusTab: React.FC<StatusTabProps> = ({
       {/* 3D-PERSPECTIVE HOLOGRAPHIC GRID: 5 CORE PLAYER ATTRIBUTES */}
       {/* ========================================================================= */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between pb-2 border-b border-cyan-500/20">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-cyan-500/20">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 border-t-2 border-l-2 border-cyan-400" />
             <h2 className="text-base sm:text-lg font-black text-white font-chakra tracking-wide uppercase flex items-center gap-2">
               <span>MA TRẬN THUỘC TÍNH 3D HOLOGRAPHIC (CORE ATTRIBUTES)</span>
             </h2>
           </div>
-          <span className="text-[11px] font-mono text-cyan-400 hidden sm:inline">
-            [HOLOGRAPHIC TILT & PERSPECTIVE GRID]
+          <span className="text-[11px] font-mono text-cyan-400">
+            [ĐIỂM CÒN LẠI: <strong className="text-amber-300 font-bold">{stats.statPoints}</strong>]
           </span>
+        </div>
+
+        {/* Master Quick Custom Allocation Toolbar */}
+        <div className="p-3 bg-gradient-to-r from-slate-950 via-[#041124] to-slate-950 border border-cyan-500/40 rounded-xs shadow-[0_0_20px_rgba(0,229,255,0.15)] space-y-2.5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-cyan-500/20 pb-2">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
+              <span className="text-xs sm:text-sm font-black font-chakra text-white tracking-wide uppercase flex items-center gap-1.5">
+                <span>⚡ CÔNG CỤ NHẬP CHỈ SỐ CỘNG NHANH (QUICK ALLOCATOR)</span>
+              </span>
+            </div>
+            <span className="text-[10px] font-mono text-slate-400">
+              Nhập số điểm mong muốn rồi bấm nút chỉ số tương ứng
+            </span>
+          </div>
+
+          <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5">
+            {/* Input Box & Quick Preset Pills */}
+            <div className="flex flex-wrap items-center gap-1.5 flex-1">
+              <div className="relative flex-1 min-w-[140px] max-w-[200px]">
+                <input
+                  type="number"
+                  min={1}
+                  max={stats.statPoints}
+                  value={globalQuickAmount}
+                  onChange={(e) => setGlobalQuickAmount(e.target.value.replace(/[^0-9]/g, ''))}
+                  placeholder="Số điểm muốn cộng..."
+                  disabled={stats.statPoints <= 0}
+                  className="w-full py-1.5 px-2.5 bg-slate-900/90 border border-cyan-500/60 focus:border-cyan-300 rounded-xs text-xs font-mono text-cyan-200 outline-none text-center font-bold placeholder:text-slate-600 disabled:opacity-40"
+                />
+              </div>
+
+              {/* Quick number presets: +5, +10, +20, +50, MAX */}
+              <div className="flex items-center gap-1">
+                {[5, 10, 20, 50].map((num) => (
+                  <button
+                    key={num}
+                    type="button"
+                    onClick={() => setGlobalQuickAmount(String(num))}
+                    className={`px-2 py-1 rounded-xs border text-[10px] font-mono font-bold transition-all cursor-pointer ${
+                      globalQuickAmount === String(num)
+                        ? 'bg-cyan-900/90 border-cyan-300 text-cyan-100 shadow-[0_0_8px_rgba(0,229,255,0.4)]'
+                        : 'bg-slate-900 border-slate-700 text-slate-300 hover:border-slate-500'
+                    }`}
+                  >
+                    +{num}
+                  </button>
+                ))}
+
+                {stats.statPoints > 0 && (
+                  <button
+                    key="max-btn"
+                    type="button"
+                    onClick={() => setGlobalQuickAmount(String(stats.statPoints))}
+                    className="px-2 py-1 bg-amber-950/90 hover:bg-amber-900 border border-amber-400 text-amber-300 rounded-xs text-[10px] font-mono font-bold transition-all cursor-pointer shadow-[0_0_8px_rgba(245,158,11,0.3)]"
+                    title="Điền toàn bộ điểm còn lại"
+                  >
+                    MAX ({stats.statPoints})
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* One-click Allocate buttons for each of the 5 stats */}
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="text-[10px] font-mono text-slate-400 hidden xl:inline">Cộng nhanh:</span>
+              {statItems.map((item) => {
+                const amt = Math.min(parseInt(globalQuickAmount, 10) || 0, stats.statPoints);
+                const canApply = stats.statPoints > 0 && amt > 0;
+                return (
+                  <button
+                    key={item.key}
+                    type="button"
+                    disabled={!canApply}
+                    onClick={() => handleApplyGlobalQuick(item.key)}
+                    className={`px-2.5 py-1.5 rounded-xs border text-xs font-chakra font-black transition-all flex items-center gap-1 ${
+                      canApply
+                        ? `${item.badgeColor} hover:brightness-125 cursor-pointer shadow-[0_0_10px_rgba(0,229,255,0.25)] active:scale-95`
+                        : 'bg-slate-900 border-slate-800 text-slate-600 cursor-not-allowed opacity-40'
+                    }`}
+                    title={`Cộng ${amt} điểm vào ${item.label}`}
+                  >
+                    <span>+{amt > 0 ? amt : ''}</span>
+                    <span>{item.shortKey}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
 
         {/* 3D Perspective Grid Container */}
         <div
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4 [perspective:1200px]"
         >
-          {statItems.map((item, idx) => {
+          {statItems.map((item) => {
             const Icon = item.icon;
             const isRecentlyAllocated = allocatedTemp === item.key;
             const isHovered = hoveredStat === item.key;
@@ -477,7 +597,7 @@ export const StatusTab: React.FC<StatusTabProps> = ({
                 key={item.key}
                 onMouseEnter={() => setHoveredStat(item.key)}
                 onMouseLeave={() => setHoveredStat(null)}
-                className={`group relative p-4 rounded-sm border transition-all duration-300 ease-out [transform-style:preserve-3d] ${
+                className={`group relative p-4 rounded-sm border transition-all duration-300 ease-out [transform-style:preserve-3d] flex flex-col justify-between ${
                   item.borderColor
                 } ${
                   hasUnusedPoints
@@ -501,85 +621,140 @@ export const StatusTab: React.FC<StatusTabProps> = ({
                 {/* Holographic Scanline Overlay */}
                 <div className="absolute inset-0 bg-[linear-gradient(rgba(0,229,255,0.02)_1px,transparent_1px)] bg-[size:100%_4px] pointer-events-none rounded-sm" />
 
-                {/* Card Top: Icon, Code Badge & Core Value */}
-                <div className="flex items-center justify-between gap-2 mb-2 relative z-10 [transform:translateZ(10px)]">
-                  <div className="flex items-center gap-2">
-                    <div className="p-2 rounded-xs bg-slate-950/90 border border-slate-700 group-hover:border-cyan-400 transition-colors shadow-inner">
-                      <Icon className="w-5 h-5" />
+                <div>
+                  {/* Card Top: Icon, Code Badge & Core Value */}
+                  <div className="flex items-center justify-between gap-2 mb-2 relative z-10 [transform:translateZ(10px)]">
+                    <div className="flex items-center gap-2">
+                      <div className="p-2 rounded-xs bg-slate-950/90 border border-slate-700 group-hover:border-cyan-400 transition-colors shadow-inner">
+                        <Icon className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <span className={`text-[10px] font-mono font-black px-1.5 py-0.2 rounded-xs border ${item.badgeColor}`}>
+                          {item.shortKey}
+                        </span>
+                      </div>
                     </div>
-                    <div>
-                      <span className={`text-[10px] font-mono font-black px-1.5 py-0.2 rounded-xs border ${item.badgeColor}`}>
-                        {item.shortKey}
+
+                    {/* Main Numeric Stat Display with 3D Depth */}
+                    <div className="text-right">
+                      <span className="text-2xl sm:text-3xl font-black font-orbitron text-white tracking-wider drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+                        {item.value}
                       </span>
                     </div>
                   </div>
 
-                  {/* Main Numeric Stat Display with 3D Depth */}
-                  <div className="text-right">
-                    <span className="text-2xl sm:text-3xl font-black font-orbitron text-white tracking-wider drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
-                      {item.value}
+                  {/* Attribute Name & Description */}
+                  <div className="space-y-1 mb-3 relative z-10">
+                    <h3 className="text-sm font-black text-white font-chakra tracking-wide">
+                      {item.label}
+                    </h3>
+                    <span className="text-[10px] font-mono text-cyan-400/80 block">
+                      {item.sublabel}
                     </span>
+                    <p className="text-[11px] text-slate-300 leading-tight line-clamp-2">
+                      {item.desc}
+                    </p>
                   </div>
+
+                  {/* Stat Potential Growth Indicator inside card */}
+                  {hasUnusedPoints && (
+                    <div className="mb-3 p-1.5 bg-slate-950/90 border border-cyan-500/30 rounded-xs text-[10px] font-mono text-cyan-300 flex items-center justify-between animate-pulse">
+                      <span>TIỀM NĂNG:</span>
+                      <span className="font-bold text-amber-300">{item.potentialBoost}</span>
+                    </div>
+                  )}
                 </div>
 
-                {/* Attribute Name & Description */}
-                <div className="space-y-1 mb-3 relative z-10">
-                  <h3 className="text-sm font-black text-white font-chakra tracking-wide">
-                    {item.label}
-                  </h3>
-                  <span className="text-[10px] font-mono text-cyan-400/80 block">
-                    {item.sublabel}
-                  </span>
-                  <p className="text-[11px] text-slate-300 leading-tight line-clamp-2">
-                    {item.desc}
-                  </p>
-                </div>
-
-                {/* Stat Potential Growth Indicator inside card */}
-                {hasUnusedPoints && (
-                  <div className="mb-3 p-1.5 bg-slate-950/90 border border-cyan-500/30 rounded-xs text-[10px] font-mono text-cyan-300 flex items-center justify-between animate-pulse">
-                    <span>TIỀM NĂNG:</span>
-                    <span className="font-bold text-amber-300">{item.potentialBoost}</span>
-                  </div>
-                )}
-
-                {/* Action Controls: +1 / +5 Point Allocation */}
-                <div className="pt-2 border-t border-slate-800/80 flex items-center gap-1.5 relative z-10">
-                  <button
-                    onClick={() => handleAllocate(item.key, 1)}
-                    disabled={stats.statPoints < 1}
-                    className={`flex-1 py-1.5 px-2 bg-slate-900/90 border border-cyan-500/40 text-xs font-chakra font-black rounded-xs transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                      stats.statPoints >= 1
-                        ? 'text-cyan-200 hover:border-cyan-300 hover:bg-cyan-950 hover:shadow-[0_0_12px_rgba(0,229,255,0.4)]'
-                        : 'opacity-40 border-slate-800 text-slate-600 cursor-not-allowed'
-                    }`}
-                  >
-                    <PlusIcon className="w-3.5 h-3.5" />
-                    <span>+1</span>
-                  </button>
-
-                  <button
-                    onClick={() => handleAllocate(item.key, 5)}
-                    disabled={stats.statPoints < 5}
-                    className={`flex-1 py-1.5 px-2 bg-slate-900/90 border border-cyan-500/40 text-xs font-chakra font-black rounded-xs transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                      stats.statPoints >= 5
-                        ? 'text-cyan-200 hover:border-cyan-300 hover:bg-cyan-950 hover:shadow-[0_0_12px_rgba(0,229,255,0.4)]'
-                        : 'opacity-40 border-slate-800 text-slate-600 cursor-not-allowed'
-                    }`}
-                  >
-                    <PlusIcon className="w-3.5 h-3.5" />
-                    <span>+5</span>
-                  </button>
-
-                  {stats.statPoints >= 10 && (
+                {/* Action Controls: Preset + Custom Allocation Input */}
+                <div className="pt-2 border-t border-slate-800/80 space-y-2 relative z-10">
+                  {/* Preset quick buttons row */}
+                  <div className="flex items-center gap-1">
                     <button
+                      type="button"
+                      onClick={() => handleAllocate(item.key, 1)}
+                      disabled={stats.statPoints < 1}
+                      className={`flex-1 py-1 px-1.5 bg-slate-900/90 border border-cyan-500/40 text-[11px] font-chakra font-black rounded-xs transition-all cursor-pointer flex items-center justify-center gap-0.5 ${
+                        stats.statPoints >= 1
+                          ? 'text-cyan-200 hover:border-cyan-300 hover:bg-cyan-950 hover:shadow-[0_0_10px_rgba(0,229,255,0.4)]'
+                          : 'opacity-40 border-slate-800 text-slate-600 cursor-not-allowed'
+                      }`}
+                    >
+                      <span>+1</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleAllocate(item.key, 5)}
+                      disabled={stats.statPoints < 5}
+                      className={`flex-1 py-1 px-1.5 bg-slate-900/90 border border-cyan-500/40 text-[11px] font-chakra font-black rounded-xs transition-all cursor-pointer flex items-center justify-center gap-0.5 ${
+                        stats.statPoints >= 5
+                          ? 'text-cyan-200 hover:border-cyan-300 hover:bg-cyan-950 hover:shadow-[0_0_10px_rgba(0,229,255,0.4)]'
+                          : 'opacity-40 border-slate-800 text-slate-600 cursor-not-allowed'
+                      }`}
+                    >
+                      <span>+5</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleAllocate(item.key, 10)}
+                      disabled={stats.statPoints < 10}
+                      className={`flex-1 py-1 px-1.5 bg-slate-900/90 border border-cyan-500/40 text-[11px] font-chakra font-black rounded-xs transition-all cursor-pointer flex items-center justify-center gap-0.5 ${
+                        stats.statPoints >= 10
+                          ? 'text-cyan-200 hover:border-cyan-300 hover:bg-cyan-950 hover:shadow-[0_0_10px_rgba(0,229,255,0.4)]'
+                          : 'opacity-40 border-slate-800 text-slate-600 cursor-not-allowed'
+                      }`}
+                    >
+                      <span>+10</span>
+                    </button>
+
+                    <button
+                      type="button"
                       onClick={() => handleAllocate(item.key, stats.statPoints)}
-                      className="py-1.5 px-2 bg-amber-950/80 border border-amber-400 text-[10px] font-mono font-bold text-amber-300 hover:bg-amber-900 rounded-xs cursor-pointer"
-                      title="Cộng tất cả điểm tiềm năng"
+                      disabled={stats.statPoints <= 0}
+                      className={`py-1 px-2 border text-[10px] font-mono font-bold rounded-xs cursor-pointer transition-all ${
+                        stats.statPoints > 0
+                          ? 'bg-amber-950/90 border-amber-400 text-amber-300 hover:bg-amber-900 shadow-[0_0_8px_rgba(245,158,11,0.3)]'
+                          : 'opacity-40 border-slate-800 bg-slate-900 text-slate-600 cursor-not-allowed'
+                      }`}
+                      title={`Cộng toàn bộ ${stats.statPoints} điểm còn lại`}
                     >
                       MAX
                     </button>
-                  )}
+                  </div>
+
+                  {/* Custom Amount Input Row */}
+                  <div className="flex items-center gap-1">
+                    <div className="relative flex-1">
+                      <input
+                        type="number"
+                        min={1}
+                        max={stats.statPoints}
+                        value={customInputs[item.key] || ''}
+                        onChange={(e) => handleCustomInputChange(item.key, e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') handleApplyCustom(item.key);
+                        }}
+                        placeholder={stats.statPoints > 0 ? `Tự nhập (max ${stats.statPoints})` : 'Hết điểm'}
+                        disabled={stats.statPoints <= 0}
+                        className="w-full py-1 px-2 bg-slate-950/95 border border-slate-700 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 rounded-xs text-xs font-mono text-cyan-200 outline-none text-center placeholder:text-slate-600 disabled:opacity-40"
+                      />
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleApplyCustom(item.key)}
+                      disabled={stats.statPoints <= 0 || !customInputs[item.key] || parseInt(customInputs[item.key], 10) <= 0}
+                      className={`py-1 px-2.5 border text-[10px] font-chakra font-black rounded-xs transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 ${
+                        stats.statPoints > 0 && customInputs[item.key] && parseInt(customInputs[item.key], 10) > 0
+                          ? 'bg-gradient-to-r from-cyan-950 to-blue-900 hover:from-cyan-900 hover:to-blue-800 border-cyan-400 text-cyan-200 shadow-[0_0_10px_rgba(0,229,255,0.4)]'
+                          : 'border-slate-800 bg-slate-900 text-slate-600 cursor-not-allowed opacity-40'
+                      }`}
+                      title="Áp dụng điểm tự nhập"
+                    >
+                      <span>+ CỘNG</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             );

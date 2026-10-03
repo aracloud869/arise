@@ -1289,21 +1289,61 @@ export default function App() {
     );
   };
 
-  // Export / Import / Reset System
+  // Helper to copy text to clipboard with fallback
+  const copyTextToClipboard = (text: string) => {
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(text).catch(() => {
+        fallbackCopyText(text);
+      });
+    } else {
+      fallbackCopyText(text);
+    }
+  };
+
+  const fallbackCopyText = (text: string) => {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    textArea.style.top = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+      document.execCommand('copy');
+    } catch {
+      // ignore
+    }
+    document.body.removeChild(textArea);
+  };
+
+  // Comprehensive 100% Full System Backup Package
+  const createFullBackup = () => ({
+    version: APP_VERSION,
+    exportDate: new Date().toISOString(),
+    stats,
+    dailyQuests,
+    customGoals,
+    streak,
+    bestStreak,
+    lastDateStr,
+    dailyRewardClaimed,
+    streakRewards,
+    shopItems,
+    skills,
+    shadowArmy,
+    // CRITICAL: Complete Talent Tree & Progression Data
+    talentNodes,
+    talentRankTiers,
+    monsterMaterials,
+    novels,
+    growthLogs,
+    settings,
+  });
+
+  // Export 100% Full JSON File
   const handleExportData = () => {
-    const backup = {
-      stats,
-      dailyQuests,
-      customGoals,
-      streak,
-      bestStreak,
-      streakRewards,
-      shopItems,
-      skills,
-      shadowArmy,
-      growthLogs,
-      settings,
-    };
+    const backup = createFullBackup();
     const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -1311,6 +1351,155 @@ export default function App() {
     a.download = `solo_leveling_system_backup_${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
+    soundFx.playLevelUp();
+    addNotification(
+      'XUẤT TOÀN DIỆN THÀNH CÔNG',
+      'Đã xuất full 100% dữ liệu Hệ Thống (Cây Tài Năng, Nguyên Liệu, Kỹ Năng, Quân Đoàn và Chỉ Số)!',
+      'level'
+    );
+  };
+
+  // Copy Full JSON Text to Clipboard
+  const handleCopyData = () => {
+    const backup = createFullBackup();
+    const jsonStr = JSON.stringify(backup, null, 2);
+    copyTextToClipboard(jsonStr);
+    addNotification(
+      'ĐÃ SAO CHÉP MÃ JSON',
+      'Đã sao chép 100% mã sao lưu Hệ Thống (bao gồm Cây Tài Năng) vào bộ nhớ tạm!',
+      'level'
+    );
+  };
+
+  // Unified Restorer for File or Pasted JSON Text
+  const processImportData = (data: any): boolean => {
+    if (!data || typeof data !== 'object') return false;
+
+    try {
+      // 1. Player Stats
+      if (data.stats && typeof data.stats === 'object') {
+        setStats((prev) => ({ ...prev, ...data.stats }));
+        saveStorage('sl_stats', { ...stats, ...data.stats });
+      }
+
+      // 2. Daily Quests
+      if (Array.isArray(data.dailyQuests)) {
+        setDailyQuests(data.dailyQuests);
+        saveStorage('sl_daily_quests', data.dailyQuests);
+      }
+
+      // 3. Custom Goals
+      if (Array.isArray(data.customGoals)) {
+        setCustomGoals(data.customGoals);
+        saveStorage('sl_custom_goals', data.customGoals);
+      }
+
+      // 4. Streaks & Daily State
+      if (typeof data.streak === 'number') {
+        setStreak(data.streak);
+        saveStorage('sl_streak', data.streak);
+      }
+      if (typeof data.bestStreak === 'number') {
+        setBestStreak(data.bestStreak);
+        saveStorage('sl_best_streak', data.bestStreak);
+      }
+      if (data.lastDateStr) {
+        setLastDateStr(data.lastDateStr);
+        saveStorage('sl_last_date', data.lastDateStr);
+      }
+      if (typeof data.dailyRewardClaimed === 'boolean') {
+        setDailyRewardClaimed(data.dailyRewardClaimed);
+        saveStorage('sl_daily_claimed', data.dailyRewardClaimed);
+      }
+      if (Array.isArray(data.streakRewards)) {
+        setStreakRewards(data.streakRewards);
+        saveStorage('sl_streak_rewards', data.streakRewards);
+      }
+
+      // 5. Shop & Equipment
+      if (Array.isArray(data.shopItems)) {
+        setShopItems(data.shopItems);
+        saveStorage('sl_shop', data.shopItems);
+      }
+
+      // 6. Skills - Merge with INITIAL_SKILLS so new skills are not lost
+      if (Array.isArray(data.skills)) {
+        const savedMap = new Map<string, Skill>(data.skills.map((s: Skill) => [s.id, s]));
+        const mergedSkills = INITIAL_SKILLS.map((initSk) => {
+          const saved = savedMap.get(initSk.id);
+          return saved ? { ...initSk, ...saved } : initSk;
+        });
+        setSkills(mergedSkills);
+        saveStorage('sl_skills', mergedSkills);
+      }
+
+      // 7. Shadow Army
+      if (Array.isArray(data.shadowArmy)) {
+        setShadowArmy(data.shadowArmy);
+        saveStorage('sl_shadows', data.shadowArmy);
+      }
+
+      // 8. CRITICAL: TALENT NODES (Cây Tài Năng)
+      if (Array.isArray(data.talentNodes)) {
+        const savedMap = new Map<string, TalentNode>(data.talentNodes.map((n: TalentNode) => [n.id, n]));
+        const mergedNodes = INITIAL_TALENT_NODES.map((initNode) => {
+          const saved = savedMap.get(initNode.id);
+          return saved ? { ...initNode, ...saved } : initNode;
+        });
+        setTalentNodes(mergedNodes);
+        saveStorage('sl_talent_nodes', mergedNodes);
+      }
+
+      // 9. CRITICAL: TALENT RANK TIERS (Bậc Đột Phá Tài Năng)
+      if (Array.isArray(data.talentRankTiers)) {
+        const savedMap = new Map<string, TalentRankTier>(data.talentRankTiers.map((t: TalentRankTier) => [t.rank, t]));
+        const mergedTiers = INITIAL_TALENT_RANK_TIERS.map((initTier) => {
+          const saved = savedMap.get(initTier.rank);
+          return saved ? { ...initTier, ...saved } : initTier;
+        });
+        setTalentRankTiers(mergedTiers);
+        saveStorage('sl_talent_rank_tiers', mergedTiers);
+      }
+
+      // 10. CRITICAL: MONSTER MATERIALS (Nguyên Liệu Quái Vật)
+      if (Array.isArray(data.monsterMaterials)) {
+        const savedMap = new Map<string, MonsterMaterial>(data.monsterMaterials.map((m: MonsterMaterial) => [m.id, m]));
+        const mergedMaterials = INITIAL_MONSTER_MATERIALS.map((initMat) => {
+          const saved = savedMap.get(initMat.id);
+          return saved ? { ...initMat, count: saved.count ?? initMat.count } : initMat;
+        });
+        setMonsterMaterials(mergedMaterials);
+        saveStorage('sl_monster_materials', mergedMaterials);
+      }
+
+      // 11. Novels
+      if (Array.isArray(data.novels)) {
+        setNovels(data.novels);
+        saveStorage('sl_novels', data.novels);
+      }
+
+      // 12. Growth Logs
+      if (Array.isArray(data.growthLogs)) {
+        setGrowthLogs(data.growthLogs);
+        saveStorage('sl_logs', data.growthLogs);
+      }
+
+      // 13. Settings
+      if (data.settings && typeof data.settings === 'object') {
+        setSettings((prev) => ({ ...prev, ...data.settings }));
+        saveStorage('sl_settings', { ...settings, ...data.settings });
+      }
+
+      soundFx.playLevelUp();
+      addNotification(
+        'KHÔI PHỤC TOÀN DIỆN THÀNH CÔNG',
+        'Đã khôi phục 100% dữ liệu Hệ Thống & Cây Tài Năng chính xác!',
+        'level'
+      );
+      return true;
+    } catch {
+      return false;
+    }
   };
 
   const handleImportData = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1321,22 +1510,28 @@ export default function App() {
     reader.onload = (event) => {
       try {
         const data = JSON.parse(event.target?.result as string);
-        if (data.stats) setStats(data.stats);
-        if (data.dailyQuests) setDailyQuests(data.dailyQuests);
-        if (data.customGoals) setCustomGoals(data.customGoals);
-        if (data.streak !== undefined) setStreak(data.streak);
-        if (data.bestStreak !== undefined) setBestStreak(data.bestStreak);
-        if (data.shopItems) setShopItems(data.shopItems);
-        if (data.skills) setSkills(data.skills);
-        if (data.shadowArmy) setShadowArmy(data.shadowArmy);
-        if (data.growthLogs) setGrowthLogs(data.growthLogs);
-        soundFx.playLevelUp();
-        alert('Đã khôi phục dữ liệu Hệ Thống thành công!');
+        const success = processImportData(data);
+        if (success) {
+          alert('Đã khôi phục thành công 100% dữ liệu Hệ Thống và Cây Tài Năng!');
+        } else {
+          alert('File dữ liệu không đúng cấu trúc hoặc bị hỏng!');
+        }
       } catch {
         alert('File dữ liệu không hợp lệ!');
       }
     };
     reader.readAsText(file);
+    // Reset file input value so selecting the same file triggers onChange
+    e.target.value = '';
+  };
+
+  const handleImportJsonText = (jsonText: string): boolean => {
+    try {
+      const data = JSON.parse(jsonText);
+      return processImportData(data);
+    } catch {
+      return false;
+    }
   };
 
   const handleResetData = () => {
@@ -1346,13 +1541,34 @@ export default function App() {
     setCustomGoals(INITIAL_CUSTOM_GOALS);
     setStreak(0);
     setBestStreak(0);
+    setLastDateStr(new Date().toDateString());
+    setDailyRewardClaimed(false);
     setStreakRewards(INITIAL_STREAK_REWARDS);
     setShopItems(INITIAL_SHOP_ITEMS);
     setSkills(INITIAL_SKILLS);
     setShadowArmy(INITIAL_SHADOW_SOLDIERS);
     setNovels(INITIAL_NOVELS);
     setGrowthLogs(INITIAL_GROWTH_LOGS);
+    setTalentNodes(INITIAL_TALENT_NODES);
+    setTalentRankTiers(INITIAL_TALENT_RANK_TIERS);
+    setMonsterMaterials(INITIAL_MONSTER_MATERIALS);
     soundFx.playSystemNotification();
+    addNotification(
+      'HỆ THỐNG ĐÃ ĐẶT LẠI',
+      'Toàn bộ dữ liệu đã được khôi phục về trạng thái khởi nguyên Cấp 1, Hạng E.',
+      'penalty'
+    );
+  };
+
+  const backupSummary = {
+    level: stats.level,
+    rank: stats.rank,
+    gold: stats.gold,
+    unlockedTalents: talentNodes.filter((n) => n.unlocked).length,
+    totalTalents: talentNodes.length,
+    materialsCount: monsterMaterials.reduce((sum, m) => sum + (m.count || 0), 0),
+    skillsCount: skills.filter((s) => s.unlocked).length,
+    shadowsCount: shadowArmy.length,
   };
 
   const recoveryPotionItem = shopItems.find((i) => i.id === 'item-full-recovery-potion');
@@ -1503,6 +1719,7 @@ export default function App() {
             materials={monsterMaterials}
             onUnlockTalentNode={handleUnlockTalentNode}
             onBreakthroughRank={handleBreakthroughRank}
+            onExportData={handleExportData}
           />
         )}
 
@@ -1564,7 +1781,10 @@ export default function App() {
             onUpdateSettings={(newSet) => setSettings((s) => ({ ...s, ...newSet }))}
             onResetData={handleResetData}
             onExportData={handleExportData}
+            onCopyData={handleCopyData}
             onImportData={handleImportData}
+            onImportJsonText={handleImportJsonText}
+            backupSummary={backupSummary}
           />
         )}
       </main>

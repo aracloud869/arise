@@ -1428,19 +1428,15 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
 
           {/* 3. Battlefield Arena (Monster and Hunter Visuals + Ground Impact Effect + Ghosting + High-Impact VFX) */}
           <div className="grid grid-cols-2 gap-2 p-1 bg-slate-950/70 border border-slate-800 rounded-xs h-28 sm:h-36 items-center justify-center relative shrink-0 overflow-hidden">
-            {/* Dynamic Combat VFX overlaying directly on combat models */}
-            <CombatVFX activeVFX={activeVFX} />
+            {/* Dynamic Hardware-Accelerated Canvas Combat VFX & Ground Impact Particles */}
+            <CombatVFX
+              activeVFX={activeVFX}
+              groundImpactActive={groundImpactActive}
+              groundImpactIntensity={groundImpactIntensity}
+            />
 
             {/* Small Floating Damage & Effectiveness Pop-ups Overlay directly above combatants */}
             <CombatDamageOverlay items={combatPopups} />
-
-            {/* Ground Impact Particle Dust & Shockwaves Component */}
-            <GroundImpactEffect
-              active={groundImpactActive}
-              intensity={groundImpactIntensity}
-              xPercent={25}
-              yPercent={65}
-            />
 
             {/* Monster Visual Model with Ghosting Evasion */}
             <div className="flex flex-col items-center justify-center relative z-10">

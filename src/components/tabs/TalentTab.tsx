@@ -15,6 +15,7 @@ interface TalentTabProps {
   materials: MonsterMaterial[];
   onUnlockTalentNode: (nodeId: string) => boolean;
   onBreakthroughRank: (rank: 'E' | 'D' | 'C' | 'B' | 'A' | 'S') => boolean;
+  onExportData?: () => void;
 }
 
 export const TalentTab: React.FC<TalentTabProps> = ({
@@ -24,6 +25,7 @@ export const TalentTab: React.FC<TalentTabProps> = ({
   materials,
   onUnlockTalentNode,
   onBreakthroughRank,
+  onExportData,
 }) => {
   const [selectedRank, setSelectedRank] = useState<'E' | 'D' | 'C' | 'B' | 'A' | 'S' | 'Monarch'>('E');
   const [specializationFilter, setSpecializationFilter] = useState<'all' | 'combat' | 'agility' | 'monarch'>('all');
@@ -366,6 +368,20 @@ export const TalentTab: React.FC<TalentTabProps> = ({
                 {totalUnlockedNodes} / {talentNodes.length} Mạch
               </span>
             </div>
+
+            {onExportData && (
+              <button
+                type="button"
+                onClick={() => {
+                  soundFx.playClick();
+                  onExportData();
+                }}
+                title="Xuất sao lưu 100% dữ liệu Hệ Thống & Cây Tài Năng"
+                className="px-3 py-2 bg-cyan-950/90 hover:bg-cyan-900 border border-cyan-400 text-cyan-200 text-xs font-bold font-chakra rounded-xs cursor-pointer shadow-[0_0_12px_rgba(0,229,255,0.3)] flex items-center gap-1.5 transition-all"
+              >
+                <span>💾 XUẤT FULL DỮ LIỆU</span>
+              </button>
+            )}
           </div>
         </div>
 
