@@ -23,6 +23,12 @@ export type VFXType =
   | 'dragon_breath'
   | 'demon_lightning'
   | 'void_cleave'
+  | 'companion_igris'
+  | 'companion_beru'
+  | 'companion_tusk'
+  | 'companion_tank'
+  | 'companion_kaisel'
+  | 'companion_bellion'
   | 'boss_claw'
   | 'boss_combo'
   | 'boss_ultimate'
@@ -66,7 +72,7 @@ export const CombatVFX: React.FC<CombatVFXProps> = ({
       return;
     }
 
-    // Set resolution with devicePixelRatio for ultra-sharp canvas rendering
+    // High resolution scaling for retina displays
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const rect = canvas.getBoundingClientRect();
     const width = rect.width || 360;
@@ -81,111 +87,173 @@ export const CombatVFX: React.FC<CombatVFXProps> = ({
     const hunterX = width * 0.74;
     const hunterY = height * 0.50;
 
-    // Generate particles depending on effect
+    // Generate specialized particles
     const particles: Particle[] = [];
     const startTime = performance.now();
-    const duration = activeVFX === 'arise' || activeVFX === 'monarch_domain' || activeVFX === 'boss_ultimate' ? 520 : 400;
+    const isBigSkill =
+      activeVFX === 'arise' ||
+      activeVFX === 'monarch_domain' ||
+      activeVFX === 'boss_ultimate' ||
+      activeVFX === 'companion_bellion' ||
+      activeVFX === 'companion_beru' ||
+      activeVFX === 'companion_tusk';
 
-    // Initialize particles based on VFX type
-    if (activeVFX === 'basic_slash') {
-      for (let i = 0; i < 20; i++) {
+    const duration = isBigSkill ? 560 : 420;
+
+    // Spawn Particles per VFX Type
+    if (activeVFX === 'basic_slash' || activeVFX === 'quicksilver') {
+      for (let i = 0; i < 28; i++) {
         const angle = Math.random() * Math.PI * 2;
-        const speed = 2 + Math.random() * 4.5;
+        const speed = 2 + Math.random() * 5.5;
         particles.push({
           x: monsterX + (Math.random() * 20 - 10),
           y: monsterY + (Math.random() * 20 - 10),
           vx: Math.cos(angle) * speed,
           vy: Math.sin(angle) * speed,
-          size: 1.5 + Math.random() * 2.5,
+          size: 1.5 + Math.random() * 2.8,
           color: Math.random() > 0.4 ? '#00e5ff' : '#ffffff',
-          alpha: 1,
-          life: 0,
-          maxLife: 20 + Math.random() * 15,
-        });
-      }
-    } else if (activeVFX === 'venom_strike') {
-      for (let i = 0; i < 24; i++) {
-        const angle = (Math.PI / 2) + (Math.random() * 1.4 - 0.7);
-        const speed = 1.5 + Math.random() * 4;
-        particles.push({
-          x: monsterX + (Math.random() * 30 - 15),
-          y: monsterY - 10 + (Math.random() * 20 - 10),
-          vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed,
-          size: 2 + Math.random() * 3,
-          color: Math.random() > 0.3 ? '#22c55e' : '#86efac',
-          alpha: 1,
-          life: 0,
-          maxLife: 25 + Math.random() * 15,
-          gravity: 0.15,
-        });
-      }
-    } else if (activeVFX === 'rasaka_flurry' || activeVFX === 'mutilate_x') {
-      for (let i = 0; i < 30; i++) {
-        const angle = Math.random() * Math.PI * 2;
-        const speed = 2 + Math.random() * 5.5;
-        particles.push({
-          x: monsterX,
-          y: monsterY,
-          vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed,
-          size: 2 + Math.random() * 2.5,
-          color: Math.random() > 0.5 ? '#f43f5e' : '#a855f7',
           alpha: 1,
           life: 0,
           maxLife: 22 + Math.random() * 16,
         });
       }
-    } else if (activeVFX === 'kamish_wrath' || activeVFX === 'dragon_breath') {
-      for (let i = 0; i < 35; i++) {
-        const angle = (activeVFX === 'dragon_breath' ? -Math.PI : Math.random() * Math.PI * 2);
-        const speed = 2.5 + Math.random() * 6;
+    } else if (activeVFX === 'venom_strike' || activeVFX === 'rasaka_flurry') {
+      for (let i = 0; i < 32; i++) {
+        const angle = (Math.PI / 2) + (Math.random() * 1.6 - 0.8);
+        const speed = 1.8 + Math.random() * 4.5;
         particles.push({
-          x: activeVFX === 'dragon_breath' ? hunterX : monsterX,
+          x: monsterX + (Math.random() * 32 - 16),
+          y: monsterY - 10 + (Math.random() * 20 - 10),
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          size: 2 + Math.random() * 3.2,
+          color: Math.random() > 0.35 ? '#22c55e' : '#a855f7',
+          alpha: 1,
+          life: 0,
+          maxLife: 26 + Math.random() * 16,
+          gravity: 0.16,
+        });
+      }
+    } else if (activeVFX === 'vital_strike' || activeVFX === 'bloodlust_aura') {
+      for (let i = 0; i < 35; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 2.5 + Math.random() * 5.5;
+        particles.push({
+          x: monsterX,
+          y: monsterY,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          size: 2 + Math.random() * 3,
+          color: Math.random() > 0.4 ? '#ef4444' : '#f43f5e',
+          alpha: 1,
+          life: 0,
+          maxLife: 24 + Math.random() * 18,
+        });
+      }
+    } else if (activeVFX === 'kamish_wrath' || activeVFX === 'dragon_breath' || activeVFX === 'companion_tusk') {
+      for (let i = 0; i < 40; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 2.5 + Math.random() * 6.5;
+        particles.push({
+          x: monsterX + (Math.random() * 24 - 12),
           y: monsterY + (Math.random() * 24 - 12),
-          vx: activeVFX === 'dragon_breath' ? -(2 + Math.random() * 6) : Math.cos(angle) * speed,
-          vy: (Math.random() - 0.5) * 3,
-          size: 2 + Math.random() * 3.5,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 1,
+          size: 2.2 + Math.random() * 3.5,
           color: Math.random() > 0.5 ? '#f59e0b' : '#ef4444',
           alpha: 1,
           life: 0,
-          maxLife: 26 + Math.random() * 14,
-          gravity: -0.05,
+          maxLife: 28 + Math.random() * 18,
+          gravity: -0.06,
         });
       }
-    } else if (activeVFX === 'arise' || activeVFX === 'monarch_domain') {
-      for (let i = 0; i < 32; i++) {
+    } else if (
+      activeVFX === 'arise' ||
+      activeVFX === 'monarch_domain' ||
+      activeVFX === 'shadow_extraction' ||
+      activeVFX === 'companion_bellion'
+    ) {
+      for (let i = 0; i < 45; i++) {
         particles.push({
-          x: width * 0.15 + Math.random() * (width * 0.7),
-          y: height * 0.85 + Math.random() * 15,
-          vx: (Math.random() - 0.5) * 1.5,
-          vy: -(1.5 + Math.random() * 3.5),
-          size: 2.5 + Math.random() * 3.5,
+          x: width * 0.12 + Math.random() * (width * 0.76),
+          y: height * 0.88 + Math.random() * 15,
+          vx: (Math.random() - 0.5) * 2,
+          vy: -(2 + Math.random() * 4),
+          size: 2.5 + Math.random() * 3.8,
           color: Math.random() > 0.4 ? '#a855f7' : '#c084fc',
-          alpha: 0.9,
+          alpha: 0.95,
           life: 0,
-          maxLife: 30 + Math.random() * 20,
+          maxLife: 32 + Math.random() * 22,
+        });
+      }
+    } else if (activeVFX === 'companion_igris') {
+      for (let i = 0; i < 35; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 2.5 + Math.random() * 5.5;
+        particles.push({
+          x: monsterX + (Math.random() * 20 - 10),
+          y: monsterY + (Math.random() * 20 - 10),
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          size: 2.5 + Math.random() * 3,
+          color: Math.random() > 0.3 ? '#dc2626' : '#991b1b',
+          alpha: 1,
+          life: 0,
+          maxLife: 26 + Math.random() * 16,
+        });
+      }
+    } else if (activeVFX === 'companion_beru') {
+      for (let i = 0; i < 40; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 3.5 + Math.random() * 6;
+        particles.push({
+          x: monsterX,
+          y: monsterY,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          size: 2 + Math.random() * 3,
+          color: Math.random() > 0.5 ? '#eab308' : '#a855f7',
+          alpha: 1,
+          life: 0,
+          maxLife: 28 + Math.random() * 16,
+        });
+      }
+    } else if (activeVFX === 'companion_tank') {
+      for (let i = 0; i < 35; i++) {
+        const angle = Math.PI + Math.random() * Math.PI;
+        const speed = 2 + Math.random() * 5;
+        particles.push({
+          x: monsterX + (Math.random() * 30 - 15),
+          y: height * 0.78,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          size: 2.5 + Math.random() * 3.5,
+          color: Math.random() > 0.4 ? '#38bdf8' : '#e0f2fe',
+          alpha: 1,
+          life: 0,
+          maxLife: 25 + Math.random() * 15,
+          gravity: 0.12,
         });
       }
     }
 
     // Ground impact particles if triggered
     if (groundImpactActive) {
-      const dustCount = groundImpactIntensity === 'colossal' ? 24 : groundImpactIntensity === 'heavy' ? 16 : 10;
+      const dustCount = groundImpactIntensity === 'colossal' ? 28 : groundImpactIntensity === 'heavy' ? 18 : 12;
       for (let i = 0; i < dustCount; i++) {
-        const angle = Math.PI + (Math.random() * Math.PI); // Upward spray
-        const speed = 1.5 + Math.random() * 4;
+        const angle = Math.PI + (Math.random() * Math.PI);
+        const speed = 1.8 + Math.random() * 4.8;
         particles.push({
-          x: monsterX + (Math.random() * 30 - 15),
-          y: height * 0.75,
+          x: monsterX + (Math.random() * 34 - 17),
+          y: height * 0.78,
           vx: Math.cos(angle) * speed,
           vy: Math.sin(angle) * speed,
-          size: 2 + Math.random() * 3.5,
+          size: 2 + Math.random() * 3.6,
           color: Math.random() > 0.5 ? '#78716c' : '#38bdf8',
-          alpha: 0.8,
+          alpha: 0.85,
           life: 0,
-          maxLife: 20 + Math.random() * 15,
-          gravity: 0.12,
+          maxLife: 22 + Math.random() * 16,
+          gravity: 0.14,
         });
       }
     }
@@ -195,86 +263,81 @@ export const CombatVFX: React.FC<CombatVFXProps> = ({
     const render = (now: number) => {
       const elapsed = now - startTime;
       const progress = Math.min(1, elapsed / duration);
-      const easeProgress = 1 - Math.pow(1 - progress, 3); // Smooth ease-out
+      const easeProgress = 1 - Math.pow(1 - progress, 3);
+      const alpha = Math.max(0, 1 - progress);
 
       ctx.clearRect(0, 0, width, height);
 
       // =========================================================================
-      // DRAW CANVAS-BASED PROCEDURAL SKILL GEOMETRY
+      // DRAW PROCEDURAL CINEMATIC SKILL GEOMETRY
       // =========================================================================
 
       // 1. BASIC SLASH: Twin High-Speed Curved Plasma Blade Arcs
       if (activeVFX === 'basic_slash') {
-        const alpha = Math.max(0, 1 - progress);
         ctx.save();
         ctx.lineCap = 'round';
 
-        // Cyan blade crescent 1
+        // Outer glow
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = '#00e5ff';
+
         ctx.beginPath();
-        ctx.strokeStyle = `rgba(0, 229, 255, ${alpha * 0.9})`;
-        ctx.lineWidth = 9;
-        ctx.moveTo(monsterX - 50 + progress * 20, monsterY + 40 - progress * 10);
-        ctx.quadraticCurveTo(monsterX, monsterY - 15, monsterX + 50 + progress * 20, monsterY - 35);
+        ctx.strokeStyle = `rgba(0, 229, 255, ${alpha * 0.95})`;
+        ctx.lineWidth = 10;
+        ctx.moveTo(monsterX - 55 + progress * 20, monsterY + 45 - progress * 10);
+        ctx.quadraticCurveTo(monsterX, monsterY - 18, monsterX + 55 + progress * 20, monsterY - 40);
         ctx.stroke();
 
-        // White razor core 1
+        // White razor core
         ctx.beginPath();
         ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
-        ctx.lineWidth = 3;
-        ctx.moveTo(monsterX - 45 + progress * 20, monsterY + 38 - progress * 10);
-        ctx.quadraticCurveTo(monsterX, monsterY - 15, monsterX + 45 + progress * 20, monsterY - 33);
+        ctx.lineWidth = 3.5;
+        ctx.moveTo(monsterX - 50 + progress * 20, monsterY + 42 - progress * 10);
+        ctx.quadraticCurveTo(monsterX, monsterY - 18, monsterX + 50 + progress * 20, monsterY - 38);
         ctx.stroke();
 
-        // Counter Cross Blade 2
+        // Cross blade
         ctx.beginPath();
         ctx.strokeStyle = `rgba(56, 189, 248, ${alpha * 0.85})`;
-        ctx.lineWidth = 6;
-        ctx.moveTo(monsterX + 45 - progress * 15, monsterY + 35);
-        ctx.quadraticCurveTo(monsterX, monsterY - 5, monsterX - 45 - progress * 15, monsterY - 30);
+        ctx.lineWidth = 7;
+        ctx.moveTo(monsterX + 50 - progress * 15, monsterY + 38);
+        ctx.quadraticCurveTo(monsterX, monsterY - 8, monsterX - 50 - progress * 15, monsterY - 32);
         ctx.stroke();
 
-        // Flash Core
-        if (progress < 0.4) {
-          ctx.beginPath();
-          ctx.fillStyle = `rgba(255, 255, 255, ${(0.4 - progress) * 2.5})`;
-          ctx.arc(monsterX, monsterY, 16 * (1 + progress), 0, Math.PI * 2);
-          ctx.fill();
-        }
         ctx.restore();
       }
 
-      // 2. DAGGER THROW: 5 Converging Piercing Dagger Laser Beams
+      // 2. DAGGER THROW: 6 Converging Laser Piercing Daggers
       if (activeVFX === 'dagger_throw') {
-        const alpha = Math.max(0, 1 - progress);
         ctx.save();
         ctx.lineCap = 'round';
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = '#38bdf8';
 
-        // Target reticle
         ctx.beginPath();
-        ctx.strokeStyle = `rgba(56, 189, 248, ${alpha * 0.8})`;
-        ctx.lineWidth = 2;
-        ctx.arc(monsterX, monsterY, 24 * (1 - progress * 0.3), 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(56, 189, 248, ${alpha * 0.85})`;
+        ctx.lineWidth = 2.5;
+        ctx.arc(monsterX, monsterY, 26 * (1 - progress * 0.3), 0, Math.PI * 2);
         ctx.stroke();
 
-        // 5 Inward Dagger Streaks
-        const daggerAngles = [0, 1.25, 2.5, 3.75, 5.0];
+        const daggerAngles = [0, 1.05, 2.1, 3.14, 4.19, 5.24];
         daggerAngles.forEach((ang) => {
-          const dist = 70 * (1 - easeProgress);
-          const startX = monsterX + Math.cos(ang) * (dist + 30);
-          const startY = monsterY + Math.sin(ang) * (dist + 30);
+          const dist = 75 * (1 - easeProgress);
+          const startX = monsterX + Math.cos(ang) * (dist + 35);
+          const startY = monsterY + Math.sin(ang) * (dist + 35);
           const endX = monsterX + Math.cos(ang) * dist;
           const endY = monsterY + Math.sin(ang) * dist;
 
           ctx.beginPath();
-          ctx.strokeStyle = `rgba(0, 229, 255, ${alpha * 0.9})`;
-          ctx.lineWidth = 4;
+          ctx.strokeStyle = `rgba(0, 229, 255, ${alpha * 0.95})`;
+          ctx.lineWidth = 4.5;
           ctx.moveTo(startX, startY);
           ctx.lineTo(endX, endY);
           ctx.stroke();
 
           ctx.beginPath();
           ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
-          ctx.lineWidth = 1.8;
+          ctx.lineWidth = 2;
           ctx.moveTo(startX, startY);
           ctx.lineTo(endX, endY);
           ctx.stroke();
@@ -284,97 +347,100 @@ export const CombatVFX: React.FC<CombatVFXProps> = ({
 
       // 3. VITAL STRIKE: Crimson Sniper Reticle & Heart Laser Spike
       if (activeVFX === 'vital_strike') {
-        const alpha = Math.max(0, 1 - progress);
         ctx.save();
-        // Crosshair ring
+        ctx.shadowBlur = 18;
+        ctx.shadowColor = '#ef4444';
+
         ctx.beginPath();
-        ctx.strokeStyle = `rgba(239, 68, 68, ${alpha * 0.9})`;
-        ctx.lineWidth = 2.5;
-        ctx.arc(monsterX, monsterY, 32 * (1 - progress * 0.2), 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(239, 68, 68, ${alpha * 0.95})`;
+        ctx.lineWidth = 3;
+        ctx.arc(monsterX, monsterY, 35 * (1 - progress * 0.2), 0, Math.PI * 2);
         ctx.stroke();
 
-        // Cross lines
+        // Crosshairs
         ctx.beginPath();
-        ctx.moveTo(monsterX, monsterY - 45);
-        ctx.lineTo(monsterX, monsterY + 45);
-        ctx.moveTo(monsterX - 45, monsterY);
-        ctx.lineTo(monsterX + 45, monsterY);
-        ctx.stroke();
-
-        // Piercing heart laser spike
-        ctx.beginPath();
-        ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
-        ctx.lineWidth = 4.5;
         ctx.moveTo(monsterX, monsterY - 50);
         ctx.lineTo(monsterX, monsterY + 50);
+        ctx.moveTo(monsterX - 50, monsterY);
+        ctx.lineTo(monsterX + 50, monsterY);
         ctx.stroke();
 
-        ctx.beginPath();
-        ctx.fillStyle = `rgba(239, 68, 68, ${alpha * 0.7})`;
-        ctx.arc(monsterX, monsterY, 14, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      }
-
-      // 4. VENOM STRIKE: Dual Toxic Green Viper Fangs
-      if (activeVFX === 'venom_strike') {
-        const alpha = Math.max(0, 1 - progress);
-        ctx.save();
-        ctx.fillStyle = `rgba(34, 197, 94, ${alpha * 0.85})`;
-        ctx.strokeStyle = `rgba(134, 239, 172, ${alpha})`;
-        ctx.lineWidth = 2;
-
-        // Top-left Fang
-        ctx.beginPath();
-        ctx.moveTo(monsterX - 25, monsterY - 35);
-        ctx.quadraticCurveTo(monsterX - 5, monsterY - 5, monsterX, monsterY);
-        ctx.quadraticCurveTo(monsterX - 20, monsterY - 15, monsterX - 25, monsterY - 35);
-        ctx.fill();
-        ctx.stroke();
-
-        // Top-right Fang
-        ctx.beginPath();
-        ctx.moveTo(monsterX + 25, monsterY - 35);
-        ctx.quadraticCurveTo(monsterX + 5, monsterY - 5, monsterX, monsterY);
-        ctx.quadraticCurveTo(monsterX + 20, monsterY - 15, monsterX + 25, monsterY - 35);
-        ctx.fill();
-        ctx.stroke();
-        ctx.restore();
-      }
-
-      // 5. MUTILATE: Heavy Execution X-Cleave
-      if (activeVFX === 'mutilate_x') {
-        const alpha = Math.max(0, 1 - progress);
-        ctx.save();
-        ctx.lineCap = 'round';
-        const span = 45 * easeProgress;
-
-        // Line 1
-        ctx.beginPath();
-        ctx.strokeStyle = `rgba(244, 63, 94, ${alpha * 0.9})`;
-        ctx.lineWidth = 10;
-        ctx.moveTo(monsterX - span, monsterY - span);
-        ctx.lineTo(monsterX + span, monsterY + span);
-        ctx.stroke();
-
+        // Piercing heart spike
         ctx.beginPath();
         ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
-        ctx.lineWidth = 3.5;
-        ctx.moveTo(monsterX - span, monsterY - span);
-        ctx.lineTo(monsterX + span, monsterY + span);
+        ctx.lineWidth = 5;
+        ctx.moveTo(monsterX, monsterY - 55);
+        ctx.lineTo(monsterX, monsterY + 55);
         ctx.stroke();
 
-        // Line 2
         ctx.beginPath();
-        ctx.strokeStyle = `rgba(244, 63, 94, ${alpha * 0.9})`;
-        ctx.lineWidth = 10;
+        ctx.fillStyle = `rgba(239, 68, 68, ${alpha * 0.8})`;
+        ctx.arc(monsterX, monsterY, 16, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // 4. VENOM STRIKE & RASAKA FLURRY
+      if (activeVFX === 'venom_strike' || activeVFX === 'rasaka_flurry') {
+        ctx.save();
+        ctx.shadowBlur = 16;
+        ctx.shadowColor = '#22c55e';
+
+        // Dual Toxic Vipers Fangs
+        ctx.fillStyle = `rgba(34, 197, 94, ${alpha * 0.9})`;
+        ctx.strokeStyle = `rgba(134, 239, 172, ${alpha})`;
+        ctx.lineWidth = 2.5;
+
+        ctx.beginPath();
+        ctx.moveTo(monsterX - 30, monsterY - 40);
+        ctx.quadraticCurveTo(monsterX - 6, monsterY - 6, monsterX, monsterY);
+        ctx.quadraticCurveTo(monsterX - 22, monsterY - 18, monsterX - 30, monsterY - 40);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(monsterX + 30, monsterY - 40);
+        ctx.quadraticCurveTo(monsterX + 6, monsterY - 6, monsterX, monsterY);
+        ctx.quadraticCurveTo(monsterX + 22, monsterY - 18, monsterX + 30, monsterY - 40);
+        ctx.fill();
+        ctx.stroke();
+
+        if (activeVFX === 'rasaka_flurry') {
+          // Extra venom slash arcs
+          for (let i = 0; i < 4; i++) {
+            const rot = (Math.PI / 4) * i + progress * 2;
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(168, 85, 247, ${alpha * 0.85})`;
+            ctx.lineWidth = 4;
+            ctx.arc(monsterX, monsterY, 38 + i * 8, rot, rot + 1.2);
+            ctx.stroke();
+          }
+        }
+        ctx.restore();
+      }
+
+      // 5. MUTILATE X: Execution Cleave
+      if (activeVFX === 'mutilate_x') {
+        ctx.save();
+        ctx.lineCap = 'round';
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = '#f43f5e';
+        const span = 50 * easeProgress;
+
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(244, 63, 94, ${alpha * 0.95})`;
+        ctx.lineWidth = 11;
+        ctx.moveTo(monsterX - span, monsterY - span);
+        ctx.lineTo(monsterX + span, monsterY + span);
         ctx.moveTo(monsterX + span, monsterY - span);
         ctx.lineTo(monsterX - span, monsterY + span);
         ctx.stroke();
 
         ctx.beginPath();
         ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
-        ctx.lineWidth = 3.5;
+        ctx.lineWidth = 4;
+        ctx.moveTo(monsterX - span, monsterY - span);
+        ctx.lineTo(monsterX + span, monsterY + span);
         ctx.moveTo(monsterX + span, monsterY - span);
         ctx.lineTo(monsterX - span, monsterY + span);
         ctx.stroke();
@@ -383,39 +449,37 @@ export const CombatVFX: React.FC<CombatVFXProps> = ({
 
       // 6. KAMISH WRATH: Volcanic Dragon Magma Jaws
       if (activeVFX === 'kamish_wrath') {
-        const alpha = Math.max(0, 1 - progress);
         ctx.save();
-        ctx.fillStyle = `rgba(245, 158, 11, ${alpha * 0.8})`;
+        ctx.shadowBlur = 22;
+        ctx.shadowColor = '#f59e0b';
+        ctx.fillStyle = `rgba(245, 158, 11, ${alpha * 0.85})`;
         ctx.strokeStyle = `rgba(254, 240, 138, ${alpha})`;
-        ctx.lineWidth = 2.5;
+        ctx.lineWidth = 3;
 
-        // Upper Magma Jaw
         ctx.beginPath();
-        ctx.moveTo(monsterX - 45, monsterY - 30);
-        ctx.quadraticCurveTo(monsterX, monsterY - 45, monsterX + 45, monsterY - 10);
-        ctx.quadraticCurveTo(monsterX, monsterY - 15, monsterX - 45, monsterY - 30);
+        ctx.moveTo(monsterX - 52, monsterY - 35);
+        ctx.quadraticCurveTo(monsterX, monsterY - 50, monsterX + 52, monsterY - 12);
+        ctx.quadraticCurveTo(monsterX, monsterY - 18, monsterX - 52, monsterY - 35);
         ctx.fill();
         ctx.stroke();
 
-        // Lower Magma Jaw
         ctx.beginPath();
-        ctx.moveTo(monsterX - 45, monsterY + 30);
-        ctx.quadraticCurveTo(monsterX, monsterY + 45, monsterX + 45, monsterY + 10);
-        ctx.quadraticCurveTo(monsterX, monsterY + 15, monsterX - 45, monsterY + 30);
+        ctx.moveTo(monsterX - 52, monsterY + 35);
+        ctx.quadraticCurveTo(monsterX, monsterY + 50, monsterX + 52, monsterY + 12);
+        ctx.quadraticCurveTo(monsterX, monsterY + 18, monsterX - 52, monsterY + 35);
         ctx.fill();
         ctx.stroke();
         ctx.restore();
       }
 
-      // 7. STEALTH & SHADOW ARMOR: Hexagonal Crystalline Matrix
+      // 7. STEALTH & SHADOW ARMOR
       if (activeVFX === 'stealth_invisible' || activeVFX === 'shadow_armor') {
-        const alpha = Math.max(0, 1 - progress);
-        const color = activeVFX === 'shadow_armor' ? '129, 140, 248' : '0, 229, 255';
         ctx.save();
-        ctx.strokeStyle = `rgba(${color}, ${alpha * 0.85})`;
-        ctx.lineWidth = 2;
+        const color = activeVFX === 'shadow_armor' ? '129, 140, 248' : '0, 229, 255';
+        ctx.strokeStyle = `rgba(${color}, ${alpha * 0.9})`;
+        ctx.lineWidth = 2.5;
 
-        const hexRadius = 26 * (0.8 + progress * 0.25);
+        const hexRadius = 28 * (0.8 + progress * 0.25);
         for (let i = 0; i < 6; i++) {
           const ang = (Math.PI / 3) * i;
           const nextAng = (Math.PI / 3) * (i + 1);
@@ -431,145 +495,179 @@ export const CombatVFX: React.FC<CombatVFXProps> = ({
         ctx.restore();
       }
 
-      // 8. RULER'S AUTHORITY: Vertical Telekinetic Gravity Slam
+      // 8. BLOODLUST AURA: Demonic Giant Red Eye Glare
+      if (activeVFX === 'bloodlust_aura') {
+        ctx.save();
+        ctx.shadowBlur = 24;
+        ctx.shadowColor = '#dc2626';
+
+        // Outer red pulsing rings
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(220, 38, 38, ${alpha * 0.85})`;
+        ctx.lineWidth = 4;
+        ctx.arc(monsterX, monsterY, 45 * easeProgress, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Demonic Eye
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(185, 28, 28, ${alpha * 0.9})`;
+        ctx.ellipse(monsterX, monsterY, 32, 16, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Slit Pupil
+        ctx.beginPath();
+        ctx.fillStyle = '#000000';
+        ctx.ellipse(monsterX, monsterY, 5, 14, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // 9. RULER'S AUTHORITY: Vertical Gravitational Slam
       if (activeVFX === 'ruler_authority') {
-        const alpha = Math.max(0, 1 - progress);
         ctx.save();
         ctx.lineCap = 'round';
+        ctx.shadowBlur = 18;
+        ctx.shadowColor = '#00e5ff';
         const slamY = height * easeProgress;
 
         ctx.beginPath();
-        ctx.strokeStyle = `rgba(0, 229, 255, ${alpha * 0.8})`;
-        ctx.lineWidth = 8;
-        ctx.moveTo(monsterX - 25, 0);
-        ctx.lineTo(monsterX - 25, slamY);
-        ctx.moveTo(monsterX + 25, 0);
-        ctx.lineTo(monsterX + 25, slamY);
+        ctx.strokeStyle = `rgba(0, 229, 255, ${alpha * 0.9})`;
+        ctx.lineWidth = 10;
+        ctx.moveTo(monsterX - 28, 0);
+        ctx.lineTo(monsterX - 28, slamY);
+        ctx.moveTo(monsterX + 28, 0);
+        ctx.lineTo(monsterX + 28, slamY);
         ctx.stroke();
 
         ctx.beginPath();
         ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
-        ctx.lineWidth = 3;
+        ctx.lineWidth = 4;
         ctx.moveTo(monsterX, 0);
         ctx.lineTo(monsterX, slamY);
         ctx.stroke();
 
-        // Floor impact compression wave
         ctx.beginPath();
         ctx.strokeStyle = `rgba(0, 229, 255, ${alpha})`;
-        ctx.lineWidth = 3;
-        ctx.ellipse(monsterX, height * 0.78, 48 * easeProgress, 14 * easeProgress, 0, 0, Math.PI * 2);
+        ctx.lineWidth = 3.5;
+        ctx.ellipse(monsterX, height * 0.78, 52 * easeProgress, 16 * easeProgress, 0, 0, Math.PI * 2);
         ctx.stroke();
         ctx.restore();
       }
 
-      // 9. SPATIAL COLLAPSE: Singularity Black Hole & Accretion Ring
+      // 10. SPATIAL COLLAPSE: Singularity Black Hole Vortex
       if (activeVFX === 'spatial_collapse') {
-        const alpha = Math.max(0, 1 - progress);
         ctx.save();
-        const rot = progress * Math.PI * 4;
+        ctx.shadowBlur = 24;
+        ctx.shadowColor = '#a855f7';
+        const rot = progress * Math.PI * 5;
 
-        // Accretion Ring
         ctx.beginPath();
-        ctx.strokeStyle = `rgba(168, 85, 247, ${alpha * 0.9})`;
-        ctx.lineWidth = 3.5;
-        ctx.arc(monsterX, monsterY, 32, rot, rot + Math.PI * 1.4);
+        ctx.strokeStyle = `rgba(168, 85, 247, ${alpha * 0.95})`;
+        ctx.lineWidth = 4;
+        ctx.arc(monsterX, monsterY, 36, rot, rot + Math.PI * 1.5);
         ctx.stroke();
 
         ctx.beginPath();
-        ctx.strokeStyle = `rgba(0, 229, 255, ${alpha * 0.8})`;
-        ctx.lineWidth = 2.5;
-        ctx.arc(monsterX, monsterY, 44, rot + Math.PI, rot + Math.PI * 2.2);
+        ctx.strokeStyle = `rgba(0, 229, 255, ${alpha * 0.85})`;
+        ctx.lineWidth = 3;
+        ctx.arc(monsterX, monsterY, 48, rot + Math.PI, rot + Math.PI * 2.3);
         ctx.stroke();
 
-        // Pure black singularity core
         ctx.beginPath();
         ctx.fillStyle = '#000000';
-        ctx.arc(monsterX, monsterY, 18, 0, Math.PI * 2);
+        ctx.arc(monsterX, monsterY, 20, 0, Math.PI * 2);
         ctx.fill();
         ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
-        ctx.lineWidth = 1.5;
+        ctx.lineWidth = 2;
         ctx.stroke();
         ctx.restore();
       }
 
-      // 10. ARISE & MONARCH DOMAIN: Grand Summoning Arrays
-      if (activeVFX === 'arise' || activeVFX === 'monarch_domain') {
-        const alpha = Math.max(0, 1 - progress);
+      // 11. ARISE & MONARCH DOMAIN: Giant Demonic Runes
+      if (activeVFX === 'arise' || activeVFX === 'monarch_domain' || activeVFX === 'shadow_extraction') {
         ctx.save();
+        ctx.shadowBlur = 26;
+        ctx.shadowColor = '#a855f7';
         const floorY = height * 0.82;
-        const rx = width * 0.38 * easeProgress;
-        const ry = 18 * easeProgress;
+        const rx = width * 0.40 * easeProgress;
+        const ry = 20 * easeProgress;
 
-        // Summoning Circle
         ctx.beginPath();
-        ctx.strokeStyle = `rgba(168, 85, 247, ${alpha * 0.9})`;
-        ctx.lineWidth = 3;
+        ctx.strokeStyle = `rgba(168, 85, 247, ${alpha * 0.95})`;
+        ctx.lineWidth = 3.5;
         ctx.ellipse(width * 0.5, floorY, rx, ry, 0, 0, Math.PI * 2);
         ctx.stroke();
 
-        // Inner glowing ring
         ctx.beginPath();
-        ctx.strokeStyle = `rgba(192, 132, 252, ${alpha * 0.7})`;
-        ctx.lineWidth = 1.5;
-        ctx.ellipse(width * 0.5, floorY, rx * 0.65, ry * 0.65, 0, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(192, 132, 252, ${alpha * 0.75})`;
+        ctx.lineWidth = 2;
+        ctx.ellipse(width * 0.5, floorY, rx * 0.68, ry * 0.68, 0, 0, Math.PI * 2);
         ctx.stroke();
+
+        // Rising shadow pillars
+        for (let i = -3; i <= 3; i++) {
+          const px = width * 0.5 + (i * 38);
+          const py = floorY - (Math.sin(progress * Math.PI) * 45);
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(147, 51, 234, ${alpha * 0.7})`;
+          ctx.lineWidth = 3;
+          ctx.moveTo(px, floorY);
+          ctx.lineTo(px, py);
+          ctx.stroke();
+        }
         ctx.restore();
       }
 
-      // 11. DRAGON BREATH: Massive Azure-White Plasma Torrent
+      // 12. DRAGON BREATH: Massive Plasma Torrent
       if (activeVFX === 'dragon_breath') {
-        const alpha = Math.max(0, 1 - progress);
         ctx.save();
         ctx.lineCap = 'round';
-        const beamY = monsterY;
+        ctx.shadowBlur = 28;
+        ctx.shadowColor = '#00e5ff';
 
-        // Outer Flame Cyan Glow
         ctx.beginPath();
-        ctx.strokeStyle = `rgba(0, 229, 255, ${alpha * 0.7})`;
-        ctx.lineWidth = 24 * (1 - progress * 0.3);
-        ctx.moveTo(hunterX, beamY);
-        ctx.lineTo(monsterX - 40, beamY);
+        ctx.strokeStyle = `rgba(0, 229, 255, ${alpha * 0.8})`;
+        ctx.lineWidth = 28 * (1 - progress * 0.25);
+        ctx.moveTo(hunterX, monsterY);
+        ctx.lineTo(monsterX - 45, monsterY);
         ctx.stroke();
 
-        // Inner Core White Laser
         ctx.beginPath();
-        ctx.strokeStyle = `rgba(255, 255, 255, ${alpha * 0.95})`;
-        ctx.lineWidth = 8;
-        ctx.moveTo(hunterX, beamY);
-        ctx.lineTo(monsterX - 40, beamY);
+        ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+        ctx.lineWidth = 9;
+        ctx.moveTo(hunterX, monsterY);
+        ctx.lineTo(monsterX - 45, monsterY);
         ctx.stroke();
         ctx.restore();
       }
 
-      // 12. DEMON LIGHTNING: Procedural Crashing Lightning Bolt
+      // 13. DEMON LIGHTNING: 5 Jagged Heaven Bolts
       if (activeVFX === 'demon_lightning') {
-        const alpha = Math.max(0, 1 - progress);
         ctx.save();
         ctx.lineCap = 'round';
+        ctx.shadowBlur = 22;
+        ctx.shadowColor = '#38bdf8';
 
         const points = [
-          { x: monsterX + 5, y: 0 },
-          { x: monsterX - 18, y: height * 0.25 },
-          { x: monsterX + 16, y: height * 0.50 },
-          { x: monsterX - 12, y: height * 0.72 },
+          { x: monsterX + 6, y: 0 },
+          { x: monsterX - 22, y: height * 0.24 },
+          { x: monsterX + 20, y: height * 0.50 },
+          { x: monsterX - 15, y: height * 0.74 },
           { x: monsterX, y: monsterY },
         ];
 
-        // Cyan lightning aura
         ctx.beginPath();
-        ctx.strokeStyle = `rgba(0, 229, 255, ${alpha * 0.85})`;
-        ctx.lineWidth = 7;
+        ctx.strokeStyle = `rgba(0, 229, 255, ${alpha * 0.95})`;
+        ctx.lineWidth = 8;
         ctx.moveTo(points[0].x, points[0].y);
         for (let i = 1; i < points.length; i++) {
           ctx.lineTo(points[i].x, points[i].y);
         }
         ctx.stroke();
 
-        // White core bolt
         ctx.beginPath();
         ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
-        ctx.lineWidth = 2.5;
+        ctx.lineWidth = 3;
         ctx.moveTo(points[0].x, points[0].y);
         for (let i = 1; i < points.length; i++) {
           ctx.lineTo(points[i].x, points[i].y);
@@ -578,49 +676,193 @@ export const CombatVFX: React.FC<CombatVFXProps> = ({
         ctx.restore();
       }
 
-      // 13. VOID CLEAVE: Diagonal Reality Rift
+      // 14. VOID CLEAVE: Diagonal Reality Tear
       if (activeVFX === 'void_cleave') {
-        const alpha = Math.max(0, 1 - progress);
         ctx.save();
         ctx.lineCap = 'round';
+        ctx.shadowBlur = 26;
+        ctx.shadowColor = '#c084fc';
 
         ctx.beginPath();
-        ctx.strokeStyle = `rgba(168, 85, 247, ${alpha * 0.9})`;
-        ctx.lineWidth = 14;
-        ctx.moveTo(monsterX - 55, monsterY + 50);
-        ctx.lineTo(monsterX + 55, monsterY - 50);
+        ctx.strokeStyle = `rgba(168, 85, 247, ${alpha * 0.95})`;
+        ctx.lineWidth = 16;
+        ctx.moveTo(monsterX - 60, monsterY + 55);
+        ctx.lineTo(monsterX + 60, monsterY - 55);
         ctx.stroke();
 
         ctx.beginPath();
         ctx.strokeStyle = '#000000';
-        ctx.lineWidth = 6;
-        ctx.moveTo(monsterX - 55, monsterY + 50);
-        ctx.lineTo(monsterX + 55, monsterY - 50);
+        ctx.lineWidth = 7;
+        ctx.moveTo(monsterX - 60, monsterY + 55);
+        ctx.lineTo(monsterX + 60, monsterY - 55);
         ctx.stroke();
         ctx.restore();
       }
 
-      // 14. BOSS CLAW / BOSS COMBO
-      if (activeVFX === 'boss_claw' || activeVFX === 'boss_combo') {
-        const alpha = Math.max(0, 1 - progress);
+      // =========================================================================
+      // COMPANION SUMMON SIGNATURE VFX
+      // =========================================================================
+
+      // 15. COMPANION IGRIS: Blood-Red Claymore Overhead Cleave
+      if (activeVFX === 'companion_igris') {
         ctx.save();
         ctx.lineCap = 'round';
+        ctx.shadowBlur = 26;
+        ctx.shadowColor = '#dc2626';
 
-        [-16, 0, 16].forEach((offset) => {
+        // Massive Blood Cleave Arc
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(220, 38, 38, ${alpha * 0.95})`;
+        ctx.lineWidth = 14;
+        ctx.moveTo(monsterX - 65, monsterY - 45);
+        ctx.lineTo(monsterX + 65, monsterY + 45);
+        ctx.stroke();
+
+        // White razor edge
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+        ctx.lineWidth = 4;
+        ctx.moveTo(monsterX - 65, monsterY - 45);
+        ctx.lineTo(monsterX + 65, monsterY + 45);
+        ctx.stroke();
+
+        // Blood Cross Aura
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(239, 68, 68, ${alpha * 0.8})`;
+        ctx.lineWidth = 8;
+        ctx.moveTo(monsterX + 50, monsterY - 40);
+        ctx.lineTo(monsterX - 50, monsterY + 40);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // 16. COMPANION BERU: Supersonic Blitz Mantis Claw
+      if (activeVFX === 'companion_beru') {
+        ctx.save();
+        ctx.lineCap = 'round';
+        ctx.shadowBlur = 26;
+        ctx.shadowColor = '#eab308';
+
+        // Supersonic Blitz Trails
+        for (let i = -2; i <= 2; i++) {
+          const off = i * 16;
           ctx.beginPath();
-          ctx.strokeStyle = `rgba(239, 68, 68, ${alpha * 0.9})`;
-          ctx.lineWidth = 5;
-          ctx.moveTo(hunterX + offset - 25, hunterY - 35);
-          ctx.lineTo(hunterX + offset + 25, hunterY + 35);
+          ctx.strokeStyle = `rgba(234, 179, 8, ${alpha * 0.85})`;
+          ctx.lineWidth = 4.5;
+          ctx.moveTo(monsterX - 45 + off, monsterY + 35);
+          ctx.lineTo(monsterX + 45 + off, monsterY - 35);
+          ctx.stroke();
+        }
+
+        // Golden Impact Spark
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+        ctx.arc(monsterX, monsterY, 20 * (1 - progress * 0.5), 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // 17. COMPANION TUSK: Volcanic Pillar of Avarice
+      if (activeVFX === 'companion_tusk') {
+        ctx.save();
+        ctx.shadowBlur = 30;
+        ctx.shadowColor = '#f97316';
+
+        // Giant flame pillar
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(249, 115, 22, ${alpha * 0.85})`;
+        ctx.fillRect(monsterX - 32, 0, 64, height);
+
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.9})`;
+        ctx.fillRect(monsterX - 12, 0, 24, height);
+        ctx.restore();
+      }
+
+      // 18. COMPANION TANK: Arctic Bear Ground Smash
+      if (activeVFX === 'companion_tank') {
+        ctx.save();
+        ctx.shadowBlur = 22;
+        ctx.shadowColor = '#38bdf8';
+
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(56, 189, 248, ${alpha * 0.9})`;
+        ctx.lineWidth = 5;
+        ctx.ellipse(monsterX, height * 0.78, 55 * easeProgress, 18 * easeProgress, 0, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(255, 255, 255, ${alpha * 0.8})`;
+        ctx.lineWidth = 2.5;
+        ctx.ellipse(monsterX, height * 0.78, 38 * easeProgress, 12 * easeProgress, 0, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // 19. COMPANION BELLION: Centipede Blade Screen Cleave
+      if (activeVFX === 'companion_bellion') {
+        ctx.save();
+        ctx.lineCap = 'round';
+        ctx.shadowBlur = 28;
+        ctx.shadowColor = '#a855f7';
+
+        // Sweeping Centipede Blade Whip
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(168, 85, 247, ${alpha * 0.95})`;
+        ctx.lineWidth = 14;
+        ctx.moveTo(0, height * 0.65);
+        ctx.quadraticCurveTo(monsterX, height * 0.2, width, height * 0.75);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+        ctx.lineWidth = 4;
+        ctx.moveTo(0, height * 0.65);
+        ctx.quadraticCurveTo(monsterX, height * 0.2, width, height * 0.75);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // 20. BOSS ATTACKS: Claw / Combo / Ultimate
+      if (activeVFX === 'boss_claw' || activeVFX === 'boss_combo') {
+        ctx.save();
+        ctx.lineCap = 'round';
+        ctx.shadowBlur = 18;
+        ctx.shadowColor = '#ef4444';
+
+        [-18, 0, 18].forEach((offset) => {
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(239, 68, 68, ${alpha * 0.95})`;
+          ctx.lineWidth = 6;
+          ctx.moveTo(hunterX + offset - 28, hunterY - 38);
+          ctx.lineTo(hunterX + offset + 28, hunterY + 38);
           ctx.stroke();
 
           ctx.beginPath();
           ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
-          ctx.lineWidth = 1.8;
-          ctx.moveTo(hunterX + offset - 25, hunterY - 35);
-          ctx.lineTo(hunterX + offset + 25, hunterY + 35);
+          ctx.lineWidth = 2;
+          ctx.moveTo(hunterX + offset - 28, hunterY - 38);
+          ctx.lineTo(hunterX + offset + 28, hunterY + 38);
           ctx.stroke();
         });
+        ctx.restore();
+      }
+
+      if (activeVFX === 'boss_ultimate') {
+        ctx.save();
+        ctx.shadowBlur = 32;
+        ctx.shadowColor = '#dc2626';
+
+        // Apocalyptic Dark Nova detonating on player
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(220, 38, 38, ${alpha * 0.85})`;
+        ctx.arc(hunterX, hunterY, 50 * easeProgress, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+        ctx.arc(hunterX, hunterY, 20 * easeProgress, 0, Math.PI * 2);
+        ctx.fill();
         ctx.restore();
       }
 

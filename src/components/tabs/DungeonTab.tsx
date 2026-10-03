@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { PlayerStats, DungeonGate, Skill } from '../../types';
+import { PlayerStats, DungeonGate, Skill, ShadowSoldier } from '../../types';
 import {
   DungeonIcon,
   SkullBossIcon,
@@ -26,6 +26,7 @@ interface DungeonTabProps {
   stats: PlayerStats;
   dungeons: DungeonGate[];
   skills: Skill[];
+  shadowArmy?: ShadowSoldier[];
   onVictory: (gate: DungeonGate, rewards: { exp: number; gold: number; drops: string[] }) => void;
   onDefeat: () => void;
   onUseBattlePotion: () => boolean;
@@ -134,6 +135,7 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
   stats,
   dungeons,
   skills,
+  shadowArmy = [],
   onVictory,
   onDefeat,
   onUseBattlePotion,
@@ -167,6 +169,10 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
   const [turnCount, setTurnCount] = useState<number>(1);
   const [isActing, setIsActing] = useState<boolean>(false);
   const [fastSpeed, setFastSpeed] = useState<boolean>(false);
+
+  // Companion in combat
+  const deployedCompanion = shadowArmy.find((s) => s.isRecruited && s.isDeployed) || null;
+  const [companionCooldownTurns, setCompanionCooldownTurns] = useState<number>(0);
 
   // Current Enemy Stats
   const [enemyCurrentHp, setEnemyCurrentHp] = useState<number>(100);
@@ -647,6 +653,93 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
     }, 200);
   };
 
+  // Summon Companion In Combat Action
+  const handleSummonCompanionInCombat = () => {
+    if (battleState !== 'fighting' || currentTurn !== 'player' || isActing || !activeGate || waveTransitionMessage) return;
+    if (!deployedCompanion || companionCooldownTurns > 0) return;
+
+    setIsActing(true);
+    setIsHunterAttacking(true);
+    soundFx.playArise();
+
+    // Determine companion VFX type based on avatarType or ID
+    let companionVFX: VFXType = 'arise';
+    const cId = (deployedCompanion.avatarType || deployedCompanion.id).toLowerCase();
+    if (cId.includes('igris')) companionVFX = 'companion_igris';
+    else if (cId.includes('beru')) companionVFX = 'companion_beru';
+    else if (cId.includes('tusk')) companionVFX = 'companion_tusk';
+    else if (cId.includes('tank')) companionVFX = 'companion_tank';
+    else if (cId.includes('kaisel')) companionVFX = 'companion_kaisel';
+    else if (cId.includes('bellion')) companionVFX = 'companion_bellion';
+
+    triggerVFX(companionVFX, 520);
+    triggerGroundImpact('colossal');
+    setCompanionCooldownTurns(3);
+
+    addFloatingText(`TRIỆU HỒI: ${deployedCompanion.name.toUpperCase()}!`, 'status', 'player');
+    addCombatPopup(`TRIỆU HỒI: ${deployedCompanion.name}`, 'crit', deployedCompanion.signatureSkill || 'CHIẾN KỸ TRỢ THỦ', 'boss', 'S');
+
+    setTimeout(() => {
+      setIsHunterAttacking(false);
+      setIsMonsterHurt(true);
+      triggerScreenShake();
+
+      const companionLevel = deployedCompanion.level || 1;
+      const baseCompanionDmg = Math.round(
+        (deployedCompanion.combatDamage || 2000) * (1 + (stats.strength + stats.intelligence) * 0.005) * (1 + companionLevel * 0.1)
+      );
+      const isCrit = Math.random() < 0.55;
+      const damage = isCrit ? Math.round(baseCompanionDmg * 2.0) : baseCompanionDmg;
+
+      soundFx.playCrit();
+      addFloatingText(isCrit ? `BẠO KÍCH TRỢ THỦ! -${damage}` : `-${damage}`, 'crit', 'boss');
+
+      // Companion specific combat effect
+      const effect = deployedCompanion.combatEffect;
+      if (effect === 'heal') {
+        const healHp = Math.round(stats.maxHp * 0.35);
+        const healMp = Math.round(stats.maxMp * 0.35);
+        setPlayerCombatHp((prev) => Math.min(stats.maxHp, prev + healHp));
+        setPlayerCombatMp((prev) => Math.min(stats.maxMp, prev + healMp));
+        addFloatingText(`+${healHp} HP & MP!`, 'heal', 'player');
+        addCombatPopup(`+${healHp} HP/MP`, 'effectiveness', 'HOÀNG GIA TRỊ LIỆU', 'player');
+      } else if (effect === 'shield') {
+        const shieldAmt = Math.round(stats.maxHp * 0.30);
+        setPlayerCombatHp((prev) => Math.min(stats.maxHp, prev + shieldAmt));
+        addFloatingText(`HỘ THỂ +${shieldAmt} HP!`, 'heal', 'player');
+        addCombatPopup('LÁ CHẮN BĂNG', 'status', 'HẤP THỤ SÁT THƯƠNG', 'player');
+      } else if (effect === 'stun') {
+        setIsEnemyStunned(true);
+        addFloatingText('ĐỐI THỦ BỊ CHOÁNG!', 'status', 'boss');
+        addCombatPopup('CHOÁNG VÁNG', 'status', 'NGẮT CHIÊU ĐỐI THỦ', 'boss');
+      } else if (effect === 'burn') {
+        setEnemyRage(0);
+        addFloatingText('LONG THẦN THIÊU RỤI!', 'status', 'boss');
+        addCombatPopup('HỎA DIỆT GIÁP', 'status', 'XÓA TOÀN BỘ NỘ KHÍ', 'boss');
+      } else if (effect === 'bleed') {
+        addFloatingText('HUYẾT TRẢM TỬ THẦN!', 'status', 'boss');
+        addCombatPopup('XUẤT HUYẾT', 'status', 'XUYÊN GIÁP CỰC ĐẠI', 'boss');
+      }
+
+      setCombatLogs((prev) => [
+        ...prev,
+        `[👑 TRỢ THỦ XUẤT TRẬN: ${deployedCompanion.name} (Lv.${companionLevel})]: Thi triển [${deployedCompanion.signatureSkill || 'Tuyệt Kỹ'}] gây ${damage.toLocaleString()} sát thương ${isCrit ? '(SIÊU BẠO KÍCH!)' : ''} lên ${enemyName}!`,
+      ]);
+
+      const nextEnemyHp = Math.max(0, enemyCurrentHp - damage);
+      setEnemyCurrentHp(nextEnemyHp);
+      setTimeout(() => setIsMonsterHurt(false), 220);
+
+      if (nextEnemyHp <= 0) {
+        handleWaveClear();
+      } else {
+        setTimeout(() => {
+          advanceToEnemyTurn(nextEnemyHp);
+        }, 240);
+      }
+    }, 280);
+  };
+
   // Guard Action
   const handleGuardAction = () => {
     if (battleState !== 'fighting' || currentTurn !== 'player' || isActing || !activeGate || waveTransitionMessage) return;
@@ -783,6 +876,9 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
       }
       return updated;
     });
+
+    // Companion cooldown tick
+    setCompanionCooldownTurns((prev) => Math.max(0, prev - 1));
 
     // Mana natural regeneration
     setPlayerCombatMp((prev) => Math.min(stats.maxMp, prev + 5));
@@ -1532,6 +1628,48 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
                 </div>
                 <span className="text-[8px] sm:text-[9px] text-emerald-400 truncate">Hồi 100% HP/MP</span>
               </button>
+
+              {/* Summon Companion In Combat Button */}
+              {deployedCompanion ? (
+                <button
+                  onClick={handleSummonCompanionInCombat}
+                  disabled={currentTurn !== 'player' || isActing || companionCooldownTurns > 0}
+                  className={`p-1.5 rounded-xs border text-left cursor-pointer transition-all flex flex-col justify-between relative shadow-sm overflow-hidden ${
+                    companionCooldownTurns > 0 || currentTurn !== 'player' || isActing
+                      ? 'bg-purple-950/40 border-purple-900/50 text-purple-400/60 opacity-60'
+                      : 'bg-gradient-to-b from-purple-900 via-indigo-950 to-slate-950 border-purple-400 text-purple-200 shadow-[0_0_15px_rgba(168,85,247,0.4)] animate-pulse'
+                  }`}
+                  title={`${deployedCompanion.name}: ${deployedCompanion.signatureSkill}`}
+                >
+                  <div className="flex items-center justify-between">
+                    <CrownMonarchIcon className="w-3.5 h-3.5 text-purple-400" />
+                    <span className="text-[9px] font-mono font-bold text-purple-300">
+                      {companionCooldownTurns > 0 ? `CD: ${companionCooldownTurns}H` : '0 MP'}
+                    </span>
+                  </div>
+                  <div className="mt-0.5 font-bold text-[11px] sm:text-xs text-white font-chakra truncate">
+                    {deployedCompanion.name}
+                  </div>
+                  <span className="text-[8px] text-purple-300 truncate">
+                    {companionCooldownTurns > 0 ? `Chờ ${companionCooldownTurns} hiệp` : '👑 Triệu Hồi Trợ Thủ'}
+                  </span>
+                </button>
+              ) : (
+                <button
+                  disabled={true}
+                  className="p-1.5 bg-slate-950/40 border border-slate-800/60 rounded-xs text-left opacity-40 flex flex-col justify-between cursor-not-allowed"
+                  title="Vào Cửa Hàng để chiêu mộ Trợ Thủ Bóng Tối xuất chiến"
+                >
+                  <div className="flex items-center justify-between">
+                    <CrownMonarchIcon className="w-3.5 h-3.5 text-slate-500" />
+                    <span className="text-[9px] font-mono text-slate-500">Khóa</span>
+                  </div>
+                  <div className="mt-0.5 font-bold text-[11px] sm:text-xs text-slate-500 font-chakra truncate">
+                    Trợ Thủ
+                  </div>
+                  <span className="text-[8px] text-slate-500">Chưa Xuất Chiến</span>
+                </button>
+              )}
 
               {/* Only 5 Equipped Battle Skills Displayed */}
               {equippedBattleSkills.map((skill) => {

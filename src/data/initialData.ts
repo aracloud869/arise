@@ -267,6 +267,78 @@ export const ALL_ROTATING_SHOP_ITEMS: ShopItem[] = [
     quantity: 0,
     iconType: 'ring',
   },
+  {
+    id: 'item-elixir-supreme-awakening',
+    name: 'Thần Dược Thức Tỉnh Tối Thượng',
+    type: 'potion',
+    rank: 'S',
+    price: 6500,
+    description: 'Bảo dược ngưng tụ tinh hoa sinh mệnh của Ải Ma Vương, uống vào lập tức tăng vĩnh viễn +10 Điểm Thuộc Tính Tự Do!',
+    statsBonus: {},
+    equipped: false,
+    quantity: 0,
+    iconType: 'potion-purple',
+  },
+  {
+    id: 'item-orb-of-avarice',
+    name: 'Hạt Ngọc Tham Lam Avarice (Tusk)',
+    type: 'accessory',
+    rank: 'S',
+    price: 24000,
+    description: 'Bảo vật ma pháp của Đại Pháp Sư Tusk, nhân đôi uy lực của toàn bộ kỹ năng nguyên tố và ma thuật bóng tối.',
+    statsBonus: { intelligence: 75, perception: 40, mp: 800 },
+    equipped: false,
+    quantity: 0,
+    iconType: 'ring',
+  },
+  {
+    id: 'item-monarch-cloak',
+    name: 'Áo Choàng Hư Không Ashborn',
+    type: 'armor',
+    rank: 'Divine',
+    price: 45000,
+    description: 'Chiếc áo choàng cổ xưa dệt từ tinh hoa bóng tối nguyên thủy của Chúa Tể Ashborn, hộ thể tuyệt đối.',
+    statsBonus: { vitality: 95, strength: 50, intelligence: 60, hp: 1800, mp: 900 },
+    equipped: false,
+    quantity: 0,
+    iconType: 'armor-black',
+  },
+  {
+    id: 'item-demon-king-longsword',
+    name: 'Đại Kiếm Lôi Hỏa Baran',
+    type: 'weapon',
+    rank: 'S',
+    price: 28000,
+    description: 'Đại kiếm sấm sét rực cháy của Ma Vương Baran, giải phóng luồng lôi điện lan tỏa mỗi khi vung trúng đích.',
+    statsBonus: { strength: 110, agility: 85, intelligence: 45, perception: 45 },
+    equipped: false,
+    quantity: 0,
+    iconType: 'dagger-purple',
+  },
+  {
+    id: 'item-kamish-rune-stone',
+    name: 'Ma Thạch Long Thần Kamish',
+    type: 'accessory',
+    rank: 'Divine',
+    price: 60000,
+    description: 'Trái tim hóa thạch của Rồng Cổ Đại Kamish, giải phóng long uy làm suy yếu 30% giáp của mọi trùm hầm ngục.',
+    statsBonus: { strength: 120, agility: 80, perception: 70, hp: 1000 },
+    equipped: false,
+    quantity: 0,
+    iconType: 'ring',
+  },
+  {
+    id: 'item-supreme-relic-chalice',
+    name: 'Chén Thánh Tái Sinh Thần Thoại',
+    type: 'accessory',
+    rank: 'Divine',
+    price: 100000,
+    description: 'Tạo vật của Đấng Sáng Tạo Tối Cao, ban cho chủ nhân nguồn sinh mệnh bất tận và dòng chảy mana vĩnh cửu.',
+    statsBonus: { vitality: 150, intelligence: 150, strength: 80, agility: 80, hp: 3000, mp: 2000 },
+    equipped: false,
+    quantity: 0,
+    iconType: 'ring',
+  },
 ];
 
 export const INITIAL_SHOP_ITEMS: ShopItem[] = ALL_ROTATING_SHOP_ITEMS.map((item) => ({
@@ -801,7 +873,9 @@ export const INITIAL_SKILLS: Skill[] = [
   },
 ];
 
-export const INITIAL_SHADOW_SOLDIERS: ShadowSoldier[] = [];
+import { INITIAL_COMPANIONS } from './companionsData';
+
+export const INITIAL_SHADOW_SOLDIERS: ShadowSoldier[] = INITIAL_COMPANIONS;
 
 import { ALL_DUNGEON_GATES } from './dungeonGates';
 import { ALL_NOVELS_DATA } from './novelsData';

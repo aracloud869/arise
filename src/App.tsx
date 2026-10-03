@@ -1243,6 +1243,141 @@ export default function App() {
     addLog(`Nâng Cấp Kỹ Năng: ${skill.name}`, `Tăng lên Cấp ${skill.level + 1}.`, 'level');
   };
 
+  // Companion / Shadow Soldier Recruit Handler
+  const handleRecruitCompanion = (companionId: string) => {
+    const companion = shadowArmy.find((c) => c.id === companionId);
+    if (!companion || companion.isRecruited) return;
+
+    const goldCost = companion.recruitCostGold || 0;
+    if (stats.gold < goldCost) {
+      soundFx.playPenaltyWarning();
+      addNotification('KHÔNG ĐỦ VÀNG CHIÊU MỘ', `Cần ${goldCost.toLocaleString()} Vàng để chiêu mộ ${companion.name}!`, 'penalty');
+      return;
+    }
+
+    if (companion.recruitCostMaterialId && companion.recruitCostMaterialCount) {
+      const mat = monsterMaterials.find((m) => m.id === companion.recruitCostMaterialId);
+      if (!mat || mat.count < companion.recruitCostMaterialCount) {
+        soundFx.playPenaltyWarning();
+        addNotification('THIẾU NGUYÊN LIỆU CHIÊU MỘ', `Bạn chưa đủ ${mat?.name || 'nguyên liệu'} (cần ${companion.recruitCostMaterialCount})!`, 'penalty');
+        return;
+      }
+    }
+
+    // Deduct gold & materials
+    setStats((prev) => ({ ...prev, gold: prev.gold - goldCost }));
+    if (companion.recruitCostMaterialId && companion.recruitCostMaterialCount) {
+      setMonsterMaterials((prev) =>
+        prev.map((m) =>
+          m.id === companion.recruitCostMaterialId
+            ? { ...m, count: Math.max(0, m.count - (companion.recruitCostMaterialCount || 0)) }
+            : m
+        )
+      );
+    }
+
+    // Mark recruited and auto-deploy
+    setShadowArmy((prev) =>
+      prev.map((c) => {
+        if (c.id === companionId) {
+          return { ...c, isRecruited: true, isDeployed: true };
+        }
+        return { ...c, isDeployed: false };
+      })
+    );
+
+    soundFx.playArise();
+    triggerParticles('purple');
+    triggerEpicMilestone(
+      'milestone',
+      `CHIÊU MỘ THÀNH CÔNG: ${companion.name.toUpperCase()}!`,
+      `Trợ thủ trung thành đã gia nhập hàng ngũ Quân Đoàn Xuất Chiến!`,
+      `KỸ NĂNG: ${companion.signatureSkill}`
+    );
+    addLog('Chiêu Mộ Trợ Thủ', `Đã chiêu mộ thành công trợ thủ chiến lược: ${companion.name}.`, 'shop');
+  };
+
+  // Companion Upgrade Handler
+  const handleUpgradeCompanion = (companionId: string) => {
+    const companion = shadowArmy.find((c) => c.id === companionId);
+    if (!companion || !companion.isRecruited) return;
+    const currentLevel = companion.level || 1;
+    const maxLevel = companion.maxLevel || 10;
+    if (currentLevel >= maxLevel) return;
+
+    const goldCost = (companion.upgradeCostGold || 3000) * currentLevel;
+    if (stats.gold < goldCost) {
+      soundFx.playPenaltyWarning();
+      addNotification('KHÔNG ĐỦ VÀNG NÂNG CẤP', `Cần ${goldCost.toLocaleString()} Vàng để thăng cấp ${companion.name}!`, 'penalty');
+      return;
+    }
+
+    if (companion.upgradeCostMaterialId && companion.upgradeCostMaterialCount) {
+      const mat = monsterMaterials.find((m) => m.id === companion.upgradeCostMaterialId);
+      if (!mat || mat.count < companion.upgradeCostMaterialCount) {
+        soundFx.playPenaltyWarning();
+        addNotification('THIẾU NGUYÊN LIỆU NÂNG CẤP', `Bạn chưa đủ ${mat?.name || 'nguyên liệu'} (cần ${companion.upgradeCostMaterialCount})!`, 'penalty');
+        return;
+      }
+    }
+
+    // Deduct
+    setStats((prev) => ({ ...prev, gold: prev.gold - goldCost }));
+    if (companion.upgradeCostMaterialId && companion.upgradeCostMaterialCount) {
+      setMonsterMaterials((prev) =>
+        prev.map((m) =>
+          m.id === companion.upgradeCostMaterialId
+            ? { ...m, count: Math.max(0, m.count - (companion.upgradeCostMaterialCount || 0)) }
+            : m
+        )
+      );
+    }
+
+    // Upgrade level, power, and combat damage
+    setShadowArmy((prev) =>
+      prev.map((c) => {
+        if (c.id === companionId) {
+          const nextLevel = (c.level || 1) + 1;
+          const powerBonus = Math.round((c.power || 1000) * 1.25);
+          const damageBonus = Math.round((c.combatDamage || 1500) * 1.25);
+          return {
+            ...c,
+            level: nextLevel,
+            power: powerBonus,
+            combatDamage: damageBonus,
+          };
+        }
+        return c;
+      })
+    );
+
+    soundFx.playStatAllocated();
+    triggerParticles('gold');
+    addNotification(
+      'THĂNG CẤP TRỢ THỦ THÀNH CÔNG',
+      `${companion.name} đã đột phá lên Cấp ${currentLevel + 1}! Sức mạnh chiến đấu gia tăng +25%.`,
+      'level'
+    );
+    addLog(`Thăng Cấp Trợ Thủ: ${companion.name}`, `Đạt Cấp ${currentLevel + 1} (Chiến lực tăng).`, 'shop');
+  };
+
+  // Companion Deploy / Toggle Active in Combat
+  const handleDeployCompanion = (companionId: string) => {
+    setShadowArmy((prev) =>
+      prev.map((c) => {
+        if (c.id === companionId) {
+          const newDeployed = !c.isDeployed;
+          if (newDeployed) {
+            soundFx.playClick();
+            addNotification('XUẤT CHIẾN TRỢ THỦ', `${c.name} đã được chỉ định xuất chiến trong các trận Hầm Ngục!`, 'level');
+          }
+          return { ...c, isDeployed: newDeployed };
+        }
+        return { ...c, isDeployed: false };
+      })
+    );
+  };
+
   // Novel - Simulate new chapter publishing & auto-notification
   const handleTriggerNewChapter = (novelId: string) => {
     setNovels((prev) =>
@@ -1728,6 +1863,7 @@ export default function App() {
             stats={stats}
             dungeons={INITIAL_DUNGEONS}
             skills={skills}
+            shadowArmy={shadowArmy}
             onVictory={handleDungeonVictory}
             onDefeat={() => {
               setStats((s) => ({ ...s, fatigue: Math.min(s.maxFatigue, s.fatigue + 25) }));
@@ -1748,11 +1884,16 @@ export default function App() {
           <ShopTab
             stats={stats}
             shopItems={shopItems}
+            shadowArmy={shadowArmy}
+            monsterMaterials={monsterMaterials}
             onBuyItem={handleBuyShopItem}
             onToggleEquipItem={handleToggleEquipItem}
             onDrinkPotion={handleDrinkPotion}
             onManualResetShop={handleManualResetShop}
             timeUntilShopReset={timeRemainingStr}
+            onRecruitCompanion={handleRecruitCompanion}
+            onUpgradeCompanion={handleUpgradeCompanion}
+            onDeployCompanion={handleDeployCompanion}
           />
         )}
 

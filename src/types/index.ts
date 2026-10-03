@@ -177,6 +177,21 @@ export interface ShadowSoldier {
   power: number;
   avatarType: string;
   description: string;
+  level?: number;
+  maxLevel?: number;
+  combatRole?: 'dps' | 'tank' | 'healer' | 'mage' | 'assassin';
+  signatureSkill?: string;
+  signatureSkillDesc?: string;
+  combatDamage?: number;
+  combatEffect?: 'bleed' | 'stun' | 'shield' | 'heal' | 'burn';
+  isRecruited?: boolean;
+  isDeployed?: boolean;
+  recruitCostGold?: number;
+  recruitCostMaterialId?: string;
+  recruitCostMaterialCount?: number;
+  upgradeCostGold?: number;
+  upgradeCostMaterialId?: string;
+  upgradeCostMaterialCount?: number;
 }
 
 export interface GrowthLog {
