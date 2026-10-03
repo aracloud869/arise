@@ -16,6 +16,7 @@ import {
 import { soundFx } from '../../utils/soundEffects';
 import { HunterVisual } from '../dungeon/HunterVisual';
 import { SkillLoadoutDeck } from '../skills/SkillLoadoutDeck';
+import { getSkillRank, RANK_STYLE_CONFIGS } from '../../utils/skillRank';
 
 interface StatusTabProps {
   stats: PlayerStats;
@@ -347,21 +348,31 @@ export const StatusTab: React.FC<StatusTabProps> = ({
                     <span className="text-[9px] text-cyan-300 font-mono">(-25 MP)</span>
                   </button>
 
-                  {skills.filter((s) => s.unlocked).map((sk) => (
-                    <button
-                      key={sk.id}
-                      onClick={() => handleCastSkill(sk)}
-                      disabled={stats.mp < sk.mpCost}
-                      className={`px-2.5 py-1 rounded-xs border text-[11px] font-chakra font-bold flex items-center gap-1 transition-all cursor-pointer ${
-                        stats.mp >= sk.mpCost
-                          ? 'bg-slate-900/90 border-cyan-500/60 text-white hover:border-cyan-300 hover:text-cyan-200 hover:bg-cyan-950/60'
-                          : 'bg-slate-900/60 border-slate-800 text-slate-600 cursor-not-allowed'
-                      }`}
-                    >
-                      <span>{sk.name}</span>
-                      <span className="text-[9px] text-cyan-400 font-mono">(-{sk.mpCost} MP)</span>
-                    </button>
-                  ))}
+                  {skills.filter((s) => s.unlocked).map((sk) => {
+                    const isReady = stats.mp >= sk.mpCost;
+                    const rank = getSkillRank(sk);
+                    const rankCfg = RANK_STYLE_CONFIGS[rank];
+                    const pulseClass = isReady ? rankCfg.readyPulseClass : '';
+
+                    return (
+                      <button
+                        key={sk.id}
+                        onClick={() => handleCastSkill(sk)}
+                        disabled={!isReady}
+                        className={`px-2.5 py-1 rounded-xs border text-[11px] font-chakra font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                          isReady
+                            ? `bg-slate-900/90 ${pulseClass} border-cyan-500/70 text-white hover:border-cyan-300 hover:text-cyan-200`
+                            : 'bg-slate-900/60 border-slate-800 text-slate-600 cursor-not-allowed opacity-60'
+                        }`}
+                      >
+                        <span className={`px-1 py-0.2 rounded-xs text-[8px] font-black font-orbitron border ${rankCfg.badgeBorder} ${rankCfg.badgeBg} ${rankCfg.badgeText}`}>
+                          [{rank}]
+                        </span>
+                        <span>{sk.name}</span>
+                        <span className="text-[9px] text-cyan-400 font-mono">(-{sk.mpCost} MP)</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>

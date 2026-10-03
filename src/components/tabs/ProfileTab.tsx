@@ -9,6 +9,7 @@ import {
   CheckIcon,
 } from '../icons/SystemIcons';
 import { soundFx } from '../../utils/soundEffects';
+import { getSkillRank, RANK_STYLE_CONFIGS } from '../../utils/skillRank';
 
 interface ProfileTabProps {
   stats: PlayerStats;
@@ -121,24 +122,33 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
               {Array.from({ length: 5 }, (_, i) => {
                 const eqSkill = skills.filter((s) => (s.type === 'active' || !s.type) && s.unlocked && s.equipped)[i];
+                if (eqSkill) {
+                  const rank = getSkillRank(eqSkill);
+                  const rankCfg = RANK_STYLE_CONFIGS[rank];
+
+                  return (
+                    <div
+                      key={i}
+                      className={`h-11 px-2 rounded-xs border flex flex-col items-center justify-center relative text-center shrink-0 bg-gradient-to-b ${rankCfg.gradientBg} ${rankCfg.readyPulseClass} border-cyan-400 shadow-[0_0_12px_rgba(0,229,255,0.4)]`}
+                    >
+                      <span className={`text-[8px] font-orbitron font-extrabold px-1 rounded-xs border ${rankCfg.badgeBorder} ${rankCfg.badgeBg} ${rankCfg.badgeText}`}>
+                        [{rank}]
+                      </span>
+                      <span className="text-[10px] font-chakra font-black text-cyan-200 line-clamp-1 mt-0.5 max-w-[70px]">
+                        {eqSkill.name}
+                      </span>
+                    </div>
+                  );
+                }
+
                 return (
                   <div
                     key={i}
-                    className={`w-10 h-10 rounded-xs border flex flex-col items-center justify-center relative text-center shrink-0 ${
-                      eqSkill
-                        ? 'bg-gradient-to-b from-cyan-950 to-blue-950 border-cyan-400 shadow-[0_0_10px_rgba(0,229,255,0.4)]'
-                        : 'bg-slate-950/80 border-dashed border-slate-800 text-slate-600'
-                    }`}
+                    className="w-11 h-11 rounded-xs border flex flex-col items-center justify-center relative text-center shrink-0 bg-slate-950/80 border-dashed border-slate-800 text-slate-600"
                   >
-                    {eqSkill ? (
-                      <span className="text-[9px] font-chakra font-black text-cyan-200 line-clamp-1 px-0.5">
-                        {eqSkill.name.slice(0, 5)}
-                      </span>
-                    ) : (
-                      <span className="text-[9px] font-mono font-bold text-slate-600">
-                        O-{i + 1}
-                      </span>
-                    )}
+                    <span className="text-[9px] font-mono font-bold text-slate-600">
+                      O-{i + 1}
+                    </span>
                   </div>
                 );
               })}

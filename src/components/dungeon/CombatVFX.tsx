@@ -37,428 +37,468 @@ export const CombatVFX: React.FC<CombatVFXProps> = ({ activeVFX }) => {
   if (!activeVFX) return null;
 
   return (
-    <div className="absolute inset-0 pointer-events-none z-40 overflow-hidden flex items-center justify-center">
-      {/* 1. BASIC SLASH (skill-slash) - High-Speed Twin Plasma Scythe Slash */}
+    <div
+      key={activeVFX}
+      className="absolute inset-0 pointer-events-none z-40 overflow-hidden flex items-center justify-center select-none"
+    >
+      {/* ========================================================================= */}
+      {/* 1. BASIC SLASH: Twin High-Speed Cyan Plasma Scythe Arcs */}
+      {/* ========================================================================= */}
       {activeVFX === 'basic_slash' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-vfx-razorslash">
-          <svg className="w-full h-full max-w-[280px] max-h-[160px] filter drop-shadow-[0_0_25px_#00f0ff]" viewBox="0 0 200 120">
-            {/* Razor 1 */}
+        <div className="absolute left-[15%] sm:left-[22%] top-1/2 -translate-y-1/2 w-44 sm:w-60 h-28 sm:h-36 animate-vfx-razorslash">
+          <svg className="w-full h-full" viewBox="0 0 200 120">
+            <defs>
+              <linearGradient id="slashGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
+                <stop offset="50%" stopColor="#00e5ff" stopOpacity="0.9" />
+                <stop offset="100%" stopColor="#0077ff" stopOpacity="0" />
+              </linearGradient>
+              <linearGradient id="slashGrad2" x1="100%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#38bdf8" stopOpacity="1" />
+                <stop offset="60%" stopColor="#0284c7" stopOpacity="0.8" />
+                <stop offset="100%" stopColor="#0369a1" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            {/* Primary Slash Wave */}
             <path
-              d="M 10 110 Q 90 60 190 10"
+              d="M 15 110 Q 95 40 185 15"
+              fill="none"
+              stroke="url(#slashGrad1)"
+              strokeWidth="9"
+              strokeLinecap="round"
+            />
+            {/* White-Hot Core Blade */}
+            <path
+              d="M 25 105 Q 100 45 175 22"
               fill="none"
               stroke="#ffffff"
-              strokeWidth="5"
+              strokeWidth="3.5"
               strokeLinecap="round"
             />
+            {/* Cross Counter Slash Wave */}
             <path
-              d="M 20 115 Q 95 65 190 20"
+              d="M 185 105 Q 100 50 20 25"
               fill="none"
-              stroke="#00e5ff"
-              strokeWidth="12"
-              opacity="0.85"
+              stroke="url(#slashGrad2)"
+              strokeWidth="6"
               strokeLinecap="round"
             />
-            {/* Cross Razor 2 */}
-            <path
-              d="M 190 110 Q 105 60 10 10"
-              fill="none"
-              stroke="#38bdf8"
-              strokeWidth="8"
-              opacity="0.9"
-              strokeLinecap="round"
-            />
-            {/* Center impact spark */}
-            <circle cx="100" cy="60" r="14" fill="#ffffff" className="animate-ping" />
+            {/* Impact Flash Core */}
+            <circle cx="100" cy="55" r="16" fill="#00e5ff" opacity="0.8" className="animate-ping" />
+            <circle cx="100" cy="55" r="8" fill="#ffffff" />
           </svg>
         </div>
       )}
 
-      {/* 2. DAGGER THROW (skill-dagger-throw) - 5 Converging Piercing Cyan Laser Blades */}
+      {/* ========================================================================= */}
+      {/* 2. DAGGER THROW: 5 Converging Piercing Dagger Beams */}
+      {/* ========================================================================= */}
       {activeVFX === 'dagger_throw' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-vfx-daggerburst">
-          <svg className="w-full h-full max-w-[280px] max-h-[160px] filter drop-shadow-[0_0_20px_#38bdf8]" viewBox="0 0 200 120">
-            {/* Lock Reticle */}
-            <circle cx="100" cy="60" r="28" fill="none" stroke="#38bdf8" strokeWidth="2" strokeDasharray="6 3" />
-            <circle cx="100" cy="60" r="6" fill="#00e5ff" className="animate-ping" />
-            {/* Converging Daggers */}
+        <div className="absolute left-[12%] sm:left-[20%] top-1/2 -translate-y-1/2 w-48 sm:w-64 h-32 sm:h-40 animate-vfx-daggerburst">
+          <svg className="w-full h-full" viewBox="0 0 200 120">
+            <defs>
+              <linearGradient id="daggerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#ffffff" />
+                <stop offset="60%" stopColor="#38bdf8" />
+                <stop offset="100%" stopColor="#0284c7" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            {/* Target Reticle */}
+            <circle cx="95" cy="60" r="26" fill="none" stroke="#38bdf8" strokeWidth="2.5" strokeDasharray="6 3" />
+            <circle cx="95" cy="60" r="10" fill="#00e5ff" opacity="0.6" className="animate-ping" />
+            {/* Converging Dagger Paths */}
             {[
-              { x1: 20, y1: 15, x2: 90, y2: 55 },
-              { x1: 180, y1: 15, x2: 110, y2: 55 },
-              { x1: 15, y1: 60, x2: 85, y2: 60 },
-              { x1: 185, y1: 60, x2: 115, y2: 60 },
-              { x1: 100, y1: 115, x2: 100, y2: 70 },
+              { x1: 15, y1: 15, x2: 85, y2: 55 },
+              { x1: 175, y1: 20, x2: 105, y2: 55 },
+              { x1: 10, y1: 60, x2: 80, y2: 60 },
+              { x1: 180, y1: 65, x2: 110, y2: 60 },
+              { x1: 95, y1: 110, x2: 95, y2: 70 },
             ].map((d, i) => (
               <g key={i}>
-                <line x1={d.x1} y1={d.y1} x2={d.x2} y2={d.y2} stroke="#ffffff" strokeWidth="3" strokeLinecap="round" />
-                <line x1={d.x1} y1={d.y1} x2={d.x2} y2={d.y2} stroke="#38bdf8" strokeWidth="7" opacity="0.75" strokeLinecap="round" />
+                <line x1={d.x1} y1={d.y1} x2={d.x2} y2={d.y2} stroke="url(#daggerGrad)" strokeWidth="6" strokeLinecap="round" />
+                <line x1={d.x1} y1={d.y1} x2={d.x2} y2={d.y2} stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" />
               </g>
             ))}
           </svg>
         </div>
       )}
 
-      {/* 3. VITAL STRIKE (skill-vital-strike) - High-Tech Red Sniper Reticle & Critical Heart Pierce */}
+      {/* ========================================================================= */}
+      {/* 3. VITAL STRIKE: Crimson Sniper Lock & Lethal Heart Pierce */}
+      {/* ========================================================================= */}
       {activeVFX === 'vital_strike' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-vfx-vitalcrosshair">
-          <svg className="w-full h-full max-w-[280px] max-h-[160px] filter drop-shadow-[0_0_30px_#ef4444]" viewBox="0 0 200 120">
-            {/* Concentric red sniper rings */}
-            <circle cx="100" cy="60" r="45" fill="none" stroke="#ef4444" strokeWidth="2.5" />
-            <circle cx="100" cy="60" r="25" fill="none" stroke="#f87171" strokeWidth="1.5" strokeDasharray="4 2" />
-            <circle cx="100" cy="60" r="8" fill="#dc2626" className="animate-ping" />
-            {/* Sniper cross lines */}
-            <line x1="20" y1="60" x2="180" y2="60" stroke="#ef4444" strokeWidth="2" />
-            <line x1="100" y1="5" x2="100" y2="115" stroke="#ef4444" strokeWidth="2" />
-            {/* Central laser perforation */}
-            <line x1="0" y1="60" x2="200" y2="60" stroke="#ffffff" strokeWidth="4" />
+        <div className="absolute left-[16%] sm:left-[24%] top-1/2 -translate-y-1/2 w-44 sm:w-56 h-32 sm:h-40 animate-vfx-vitalcrosshair">
+          <svg className="w-full h-full" viewBox="0 0 160 140">
+            <defs>
+              <radialGradient id="vitalRadial" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
+                <stop offset="50%" stopColor="#ef4444" stopOpacity="0.8" />
+                <stop offset="100%" stopColor="#991b1b" stopOpacity="0" />
+              </radialGradient>
+            </defs>
+            {/* Sniper Crosshairs */}
+            <circle cx="80" cy="70" r="38" fill="none" stroke="#ef4444" strokeWidth="2.5" strokeDasharray="8 4" />
+            <circle cx="80" cy="70" r="20" fill="url(#vitalRadial)" />
+            <line x1="80" y1="15" x2="80" y2="125" stroke="#ef4444" strokeWidth="2" />
+            <line x1="25" y1="70" x2="135" y2="70" stroke="#ef4444" strokeWidth="2" />
+            {/* Lethal Heart-Piercing Spike */}
+            <polygon points="80,10 88,60 80,120 72,60" fill="#ffffff" />
+            <circle cx="80" cy="70" r="14" fill="#ef4444" opacity="0.8" className="animate-ping" />
           </svg>
         </div>
       )}
 
-      {/* 4. VENOM STRIKE (skill-venom) - Toxic Emerald Viper Venom Acid Jaws */}
+      {/* ========================================================================= */}
+      {/* 4. VENOM STRIKE: Toxic Viper Emerald Acid Fangs */}
+      {/* ========================================================================= */}
       {activeVFX === 'venom_strike' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-vfx-venomsnap">
-          <svg className="w-full h-full max-w-[280px] max-h-[160px] filter drop-shadow-[0_0_30px_#22c55e]" viewBox="0 0 200 120">
-            {/* Toxic biohazard arcs */}
-            <path d="M 30 35 Q 100 5 170 35" fill="none" stroke="#86efac" strokeWidth="6" strokeLinecap="round" />
-            <path d="M 30 85 Q 100 115 170 85" fill="none" stroke="#86efac" strokeWidth="6" strokeLinecap="round" />
-            {/* Acid Fangs */}
-            <polygon points="65,35 80,35 72,75" fill="#ffffff" stroke="#22c55e" strokeWidth="2" />
-            <polygon points="120,35 135,35 128,75" fill="#ffffff" stroke="#22c55e" strokeWidth="2" />
-            {/* Dissolving venom bubbles */}
-            <circle cx="72" cy="78" r="5" fill="#4ade80" className="animate-ping" />
-            <circle cx="128" cy="78" r="5" fill="#4ade80" className="animate-ping" />
-            <circle cx="100" cy="60" r="16" fill="#15803d" opacity="0.75" className="animate-pulse" />
-          </svg>
-        </div>
-      )}
-
-      {/* 5. RASAKA FLURRY (skill-rasaka-fang) - Blood Poison 8-Blade Storm Cyclone */}
-      {activeVFX === 'rasaka_flurry' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-vfx-rasakawhirl">
-          <svg className="w-full h-full max-w-[280px] max-h-[160px] filter drop-shadow-[0_0_30px_#c084fc]" viewBox="0 0 200 120">
-            <circle cx="100" cy="60" r="50" fill="none" stroke="#a855f7" strokeWidth="3" strokeDasharray="8 4" />
-            {[0, 60, 120, 180, 240, 300].map((deg, i) => (
-              <path
-                key={i}
-                d="M 100 15 Q 130 40 100 60"
-                fill="none"
-                stroke={i % 2 === 0 ? '#10b981' : '#c084fc'}
-                strokeWidth="4"
-                strokeLinecap="round"
-                transform={`rotate(${deg} 100 60)`}
-              />
-            ))}
-            <circle cx="100" cy="60" r="18" fill="#7e22ce" opacity="0.8" className="animate-ping" />
-          </svg>
-        </div>
-      )}
-
-      {/* 6. MUTILATE X (skill-mutilate) - Heavy Armor-Cracking Blood Red X Cleave */}
-      {activeVFX === 'mutilate_x' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-vfx-mutilatecrash">
-          <svg className="w-full h-full max-w-[280px] max-h-[160px] filter drop-shadow-[0_0_40px_#f43f5e]" viewBox="0 0 200 120">
-            {/* Giant X-Cut */}
-            <line x1="20" y1="15" x2="180" y2="105" stroke="#ffffff" strokeWidth="5" strokeLinecap="round" />
-            <line x1="20" y1="15" x2="180" y2="105" stroke="#f43f5e" strokeWidth="14" opacity="0.9" strokeLinecap="round" />
-            <line x1="180" y1="15" x2="20" y2="105" stroke="#ffffff" strokeWidth="5" strokeLinecap="round" />
-            <line x1="180" y1="15" x2="20" y2="105" stroke="#dc2626" strokeWidth="14" opacity="0.9" strokeLinecap="round" />
-            {/* Core Impact */}
-            <circle cx="100" cy="60" r="20" fill="#ffffff" className="animate-ping" />
-          </svg>
-        </div>
-      )}
-
-      {/* 7. KAMISH WRATH (skill-kamish-wrath) - Colossal Magma Dragon Head Inferno */}
-      {activeVFX === 'kamish_wrath' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-vfx-kamishvolcano">
-          <svg className="w-full h-full max-w-[280px] max-h-[160px] filter drop-shadow-[0_0_45px_#f59e0b]" viewBox="0 0 200 120">
-            {/* Dragon Maw Silhouette */}
-            <path
-              d="M 40 100 Q 50 40 100 25 Q 150 40 160 100 Q 130 115 100 95 Q 70 115 40 100 Z"
-              fill="#7c2d12"
-              stroke="#f59e0b"
-              strokeWidth="4"
-            />
-            {/* Glowing Golden Eyes */}
-            <ellipse cx="80" cy="55" rx="7" ry="3.5" fill="#fef08a" transform="rotate(-15 80 55)" />
-            <ellipse cx="120" cy="55" rx="7" ry="3.5" fill="#fef08a" transform="rotate(15 120 55)" />
-            {/* Magma burst */}
-            <circle cx="100" cy="60" r="24" fill="#fbbf24" opacity="0.8" className="animate-ping" />
-          </svg>
-        </div>
-      )}
-
-      {/* 8. SHADOW STEP (skill-shadow-step) - Tri-Phase Dimensional Shadow Mirage Dash */}
-      {activeVFX === 'shadow_step' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-vfx-shadowmirage">
-          <svg className="w-full h-full max-w-[280px] max-h-[160px] filter drop-shadow-[0_0_30px_#6366f1]" viewBox="0 0 200 120">
-            {[-35, 0, 35].map((offset, i) => (
-              <g key={i} transform={`translate(${offset}, 0)`} opacity={0.4 + i * 0.3}>
-                <ellipse cx="100" cy="95" rx="20" ry="6" fill="#1e1b4b" />
-                <path d="M 90 95 L 96 35 L 104 35 L 110 95 Z" fill="#312e81" stroke="#6366f1" strokeWidth="1.5" />
-                <circle cx="100" cy="28" r="9" fill="#1e1b4b" stroke="#818cf8" strokeWidth="1.5" />
-              </g>
-            ))}
-            {/* Kinetic trail */}
-            <line x1="20" y1="60" x2="180" y2="60" stroke="#00f0ff" strokeWidth="3" strokeDasharray="12 6" />
-          </svg>
-        </div>
-      )}
-
-      {/* 9. STEALTH (skill-stealth) - Hexagonal Camouflage Matrix & Cyan Piercing Eyes */}
-      {activeVFX === 'stealth_invisible' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-vfx-stealthhex">
-          <svg className="w-full h-full max-w-[280px] max-h-[160px] filter drop-shadow-[0_0_30px_#00e5ff]" viewBox="0 0 200 120">
-            {/* Hex Grid */}
+        <div className="absolute left-[14%] sm:left-[22%] top-1/2 -translate-y-1/2 w-48 sm:w-60 h-32 sm:h-40 animate-vfx-venomsnap">
+          <svg className="w-full h-full" viewBox="0 0 180 140">
+            <defs>
+              <linearGradient id="venomGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#4ade80" />
+                <stop offset="60%" stopColor="#16a34a" />
+                <stop offset="100%" stopColor="#14532d" />
+              </linearGradient>
+            </defs>
+            {/* Top Venomous Fang */}
+            <path d="M 50 15 Q 90 60 90 70 Q 75 45 50 15 Z" fill="url(#venomGrad)" stroke="#86efac" strokeWidth="2" />
+            <path d="M 130 15 Q 90 60 90 70 Q 105 45 130 15 Z" fill="url(#venomGrad)" stroke="#86efac" strokeWidth="2" />
+            {/* Acid Splash Splatters */}
             {[
-              { x: 100, y: 30 },
-              { x: 65, y: 50 },
-              { x: 135, y: 50 },
-              { x: 100, y: 70 },
-              { x: 65, y: 90 },
-              { x: 135, y: 90 },
+              { cx: 70, cy: 75, r: 6 },
+              { cx: 110, cy: 75, r: 5 },
+              { cx: 90, cy: 95, r: 9 },
+              { cx: 60, cy: 110, r: 4 },
+              { cx: 120, cy: 110, r: 4 },
+            ].map((p, i) => (
+              <circle key={i} cx={p.cx} cy={p.cy} r={p.r} fill="#22c55e" opacity="0.85" />
+            ))}
+            <circle cx="90" cy="70" r="14" fill="#a7f3d0" opacity="0.7" className="animate-ping" />
+          </svg>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* 5. RASAKA FLURRY: Blood Whirlwind & Rapid Crescent Dance */}
+      {/* ========================================================================= */}
+      {activeVFX === 'rasaka_flurry' && (
+        <div className="absolute left-[12%] sm:left-[20%] top-1/2 -translate-y-1/2 w-52 sm:w-68 h-36 sm:h-44 animate-vfx-rasakawhirl">
+          <svg className="w-full h-full" viewBox="0 0 200 160">
+            <defs>
+              <linearGradient id="rasakaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#f43f5e" />
+                <stop offset="50%" stopColor="#c084fc" />
+                <stop offset="100%" stopColor="#7c3aed" />
+              </linearGradient>
+            </defs>
+            <circle cx="100" cy="80" r="55" fill="none" stroke="url(#rasakaGrad)" strokeWidth="6" strokeDasharray="25 15" />
+            <circle cx="100" cy="80" r="35" fill="none" stroke="#ffffff" strokeWidth="3" strokeDasharray="15 10" />
+            {/* Quad Crescent Slashes */}
+            <path d="M 45 45 Q 100 80 155 45" fill="none" stroke="#f43f5e" strokeWidth="6" strokeLinecap="round" />
+            <path d="M 155 115 Q 100 80 45 115" fill="none" stroke="#c084fc" strokeWidth="6" strokeLinecap="round" />
+            <path d="M 45 115 Q 100 80 45 45" fill="none" stroke="#ffffff" strokeWidth="3.5" strokeLinecap="round" />
+            <path d="M 155 45 Q 100 80 155 115" fill="none" stroke="#38bdf8" strokeWidth="3.5" strokeLinecap="round" />
+            <circle cx="100" cy="80" r="18" fill="#ec4899" opacity="0.8" className="animate-ping" />
+          </svg>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* 6. MUTILATE: Massive Armor-Cracking Heavy Execution Cleave */}
+      {/* ========================================================================= */}
+      {activeVFX === 'mutilate_x' && (
+        <div className="absolute left-[14%] sm:left-[22%] top-1/2 -translate-y-1/2 w-52 sm:w-68 h-36 sm:h-44 animate-vfx-mutilatecrash">
+          <svg className="w-full h-full" viewBox="0 0 200 160">
+            <defs>
+              <linearGradient id="mutilateGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#ffffff" />
+                <stop offset="40%" stopColor="#f43f5e" />
+                <stop offset="100%" stopColor="#881337" />
+              </linearGradient>
+            </defs>
+            {/* Giant X-Cleave Line 1 */}
+            <line x1="20" y1="20" x2="180" y2="140" stroke="url(#mutilateGrad)" strokeWidth="12" strokeLinecap="round" />
+            <line x1="20" y1="20" x2="180" y2="140" stroke="#ffffff" strokeWidth="4" strokeLinecap="round" />
+            {/* Giant X-Cleave Line 2 */}
+            <line x1="180" y1="20" x2="20" y2="140" stroke="url(#mutilateGrad)" strokeWidth="12" strokeLinecap="round" />
+            <line x1="180" y1="20" x2="20" y2="140" stroke="#ffffff" strokeWidth="4" strokeLinecap="round" />
+            {/* Center Shatter Explosion */}
+            <polygon points="100,50 115,90 100,110 85,90" fill="#ffffff" />
+            <circle cx="100" cy="80" r="24" fill="#e11d48" opacity="0.85" className="animate-ping" />
+          </svg>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* 7. KAMISH WRATH: Volcanic Dragon Magma Jaws & Ash Burst */}
+      {/* ========================================================================= */}
+      {activeVFX === 'kamish_wrath' && (
+        <div className="absolute left-[10%] sm:left-[18%] top-1/2 -translate-y-1/2 w-56 sm:w-72 h-36 sm:h-48 animate-vfx-kamishvolcano">
+          <svg className="w-full h-full" viewBox="0 0 220 160">
+            <defs>
+              <linearGradient id="kamishGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#fde047" />
+                <stop offset="50%" stopColor="#f97316" />
+                <stop offset="100%" stopColor="#dc2626" />
+              </linearGradient>
+            </defs>
+            {/* Dragon Magma Jaws */}
+            <path d="M 30 30 Q 110 10 190 60 Q 110 50 30 30 Z" fill="url(#kamishGrad)" stroke="#ffffff" strokeWidth="2" />
+            <path d="M 30 130 Q 110 150 190 100 Q 110 110 30 130 Z" fill="url(#kamishGrad)" stroke="#ffffff" strokeWidth="2" />
+            {/* Burning Ember Sparks */}
+            <circle cx="110" cy="80" r="28" fill="#f59e0b" opacity="0.75" className="animate-ping" />
+            <circle cx="110" cy="80" r="14" fill="#ffffff" />
+          </svg>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* 8. SHADOW STEP: Fast Triple Mirage Teleport Behind Target */}
+      {/* ========================================================================= */}
+      {activeVFX === 'shadow_step' && (
+        <div className="absolute inset-0 flex items-center justify-around animate-vfx-shadowmirage">
+          <div className="w-24 h-24 bg-gradient-to-r from-purple-600/60 to-cyan-500/40 rounded-full blur-md animate-pulse" />
+          <div className="w-28 h-28 bg-gradient-to-r from-cyan-400/80 to-blue-600/50 rounded-full blur-lg animate-ping" />
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* 9. STEALTH: Hexagonal Tactical Camouflage Cloak Around Hunter */}
+      {/* ========================================================================= */}
+      {activeVFX === 'stealth_invisible' && (
+        <div className="absolute right-[14%] sm:right-[20%] top-1/2 -translate-y-1/2 w-44 sm:w-56 h-36 sm:h-44 animate-vfx-stealthhex">
+          <svg className="w-full h-full" viewBox="0 0 160 140">
+            {/* Hexagonal Shield Network */}
+            {[
+              { cx: 80, cy: 50, r: 24 },
+              { cx: 50, cy: 90, r: 22 },
+              { cx: 110, cy: 90, r: 22 },
             ].map((hex, i) => (
               <polygon
                 key={i}
-                points={`${hex.x},${hex.y - 14} ${hex.x + 12},${hex.y - 7} ${hex.x + 12},${hex.y + 7} ${hex.x},${hex.y + 14} ${hex.x - 12},${hex.y + 7} ${hex.x - 12},${hex.y - 7}`}
+                points={`${hex.cx},${hex.cy - hex.r} ${hex.cx + hex.r * 0.86},${hex.cy - hex.r * 0.5} ${hex.cx + hex.r * 0.86},${hex.cy + hex.r * 0.5} ${hex.cx},${hex.cy + hex.r} ${hex.cx - hex.r * 0.86},${hex.cy + hex.r * 0.5} ${hex.cx - hex.r * 0.86},${hex.cy - hex.r * 0.5}`}
                 fill="none"
                 stroke="#00e5ff"
-                strokeWidth="1.5"
-                opacity={0.5 + (i % 3) * 0.2}
+                strokeWidth="2.5"
+                opacity="0.9"
               />
             ))}
-            {/* Glowing Cyan Monarch Eyes */}
-            <ellipse cx="85" cy="60" rx="9" ry="3.5" fill="#00f0ff" className="animate-pulse" />
-            <ellipse cx="115" cy="60" rx="9" ry="3.5" fill="#00f0ff" className="animate-pulse" />
+            <circle cx="80" cy="75" r="26" fill="#00e5ff" opacity="0.3" className="animate-ping" />
           </svg>
         </div>
       )}
 
-      {/* 10. BLOODLUST (skill-bloodlust) - Demonic Red Eye Gaze & Fear Shockwave */}
+      {/* ========================================================================= */}
+      {/* 10. BLOODLUST: Crimson Demonic Gaze & Terror Shockwaves */}
+      {/* ========================================================================= */}
       {activeVFX === 'bloodlust_aura' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-vfx-bloodlustpulse">
-          <svg className="w-full h-full max-w-[280px] max-h-[160px] filter drop-shadow-[0_0_35px_#ef4444]" viewBox="0 0 200 120">
-            {/* Shockwave Rings */}
-            <circle cx="100" cy="60" r="55" fill="none" stroke="#ef4444" strokeWidth="2" opacity="0.6" className="animate-ping" />
-            {/* Demonic Eye */}
-            <path d="M 40 60 Q 100 20 160 60 Q 100 100 40 60 Z" fill="#450a0a" stroke="#ef4444" strokeWidth="3" />
-            <circle cx="100" cy="60" r="18" fill="#ef4444" />
-            <ellipse cx="100" cy="60" rx="4" ry="16" fill="#000000" />
-          </svg>
+        <div className="absolute inset-0 flex items-center justify-center animate-vfx-bloodlustpulse">
+          <div className="w-56 h-56 rounded-full border-4 border-red-500/80 bg-red-950/40 shadow-[0_0_50px_rgba(239,68,68,0.8)] animate-ping" />
         </div>
       )}
 
-      {/* 11. QUICKSILVER (skill-quicksilver) - Golden Clockwork Time-Dilation Dial */}
+      {/* ========================================================================= */}
+      {/* 11. QUICKSILVER: Chrono Acceleration Glyph Around Hunter */}
+      {/* ========================================================================= */}
       {activeVFX === 'quicksilver' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-vfx-quicksilverclock">
-          <svg className="w-full h-full max-w-[280px] max-h-[160px] filter drop-shadow-[0_0_30px_#eab308]" viewBox="0 0 200 120">
-            <circle cx="100" cy="60" r="48" fill="none" stroke="#eab308" strokeWidth="3" />
-            <circle cx="100" cy="60" r="40" fill="none" stroke="#fef08a" strokeWidth="1.5" strokeDasharray="6 3" />
-            {/* Clock hands */}
-            <line x1="100" y1="60" x2="100" y2="25" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" />
-            <line x1="100" y1="60" x2="130" y2="60" stroke="#facc15" strokeWidth="3" strokeLinecap="round" />
-            <circle cx="100" cy="60" r="5" fill="#eab308" />
+        <div className="absolute right-[14%] sm:right-[20%] top-1/2 -translate-y-1/2 w-48 sm:w-60 h-36 sm:h-44 animate-vfx-quicksilverclock">
+          <svg className="w-full h-full" viewBox="0 0 180 140">
+            <circle cx="90" cy="70" r="45" fill="none" stroke="#facc15" strokeWidth="3" strokeDasharray="12 6" />
+            <circle cx="90" cy="70" r="25" fill="none" stroke="#ffffff" strokeWidth="2" />
+            <line x1="90" y1="70" x2="90" y2="40" stroke="#facc15" strokeWidth="3.5" strokeLinecap="round" />
+            <line x1="90" y1="70" x2="115" y2="70" stroke="#ffffff" strokeWidth="3.5" strokeLinecap="round" />
+            <circle cx="90" cy="70" r="14" fill="#eab308" opacity="0.75" className="animate-ping" />
           </svg>
         </div>
       )}
 
-      {/* 12. RULER'S AUTHORITY (skill-authority) - Divine Cosmic Telekinetic Starlight Hand */}
+      {/* ========================================================================= */}
+      {/* 12. RULER'S AUTHORITY: Invisible Gravitational Slam From Heavens */}
+      {/* ========================================================================= */}
       {activeVFX === 'ruler_authority' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-vfx-authorityslam">
-          <svg className="w-full h-full max-w-[280px] max-h-[160px] filter drop-shadow-[0_0_40px_#00e5ff]" viewBox="0 0 200 120">
-            {/* Gravity Rings */}
-            <circle cx="100" cy="70" r="50" fill="none" stroke="#00e5ff" strokeWidth="2" opacity="0.7" className="animate-ping" />
-            {/* Ethereal Hand Palm */}
-            <rect x="65" y="55" width="70" height="40" rx="10" fill="#0284c7" stroke="#00e5ff" strokeWidth="2.5" opacity="0.85" />
-            <path d="M 70 55 L 70 15 Q 77 5 84 15 L 84 55" stroke="#ffffff" strokeWidth="4" fill="#0369a1" />
-            <path d="M 87 55 L 87 5 Q 95 -3 103 5 L 103 55" stroke="#ffffff" strokeWidth="4" fill="#0369a1" />
-            <path d="M 106 55 L 106 12 Q 113 4 120 12 L 120 55" stroke="#ffffff" strokeWidth="4" fill="#0369a1" />
-            <path d="M 123 55 L 123 25 Q 129 18 135 25 L 135 55" stroke="#ffffff" strokeWidth="4" fill="#0369a1" />
-            <circle cx="100" cy="75" r="8" fill="#ffffff" className="animate-pulse" />
-          </svg>
+        <div className="absolute left-[12%] sm:left-[20%] top-0 bottom-0 w-52 sm:w-64 flex flex-col items-center justify-center animate-vfx-authorityslam">
+          <div className="w-full h-12 bg-gradient-to-b from-cyan-400 via-blue-500 to-transparent blur-xs opacity-90" />
+          <div className="w-48 h-8 rounded-full border-2 border-cyan-300 bg-cyan-950/80 shadow-[0_0_30px_#00e5ff] animate-ping" />
         </div>
       )}
 
-      {/* 13. SPATIAL COLLAPSE (skill-spatial-collapse) - Gravitational Singularity Black Hole */}
+      {/* ========================================================================= */}
+      {/* 13. SPATIAL COLLAPSE: Gravitational Singularity Black Hole */}
+      {/* ========================================================================= */}
       {activeVFX === 'spatial_collapse' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-vfx-blackhole">
-          <svg className="w-full h-full max-w-[280px] max-h-[160px] filter drop-shadow-[0_0_35px_#7e22ce]" viewBox="0 0 200 120">
-            <circle cx="100" cy="60" r="50" fill="none" stroke="#7e22ce" strokeWidth="4" strokeDasharray="10 5" />
-            <circle cx="100" cy="60" r="35" fill="none" stroke="#00e5ff" strokeWidth="2" strokeDasharray="6 3" />
-            {/* Event Horizon Void */}
-            <circle cx="100" cy="60" r="22" fill="#000000" stroke="#ffffff" strokeWidth="1.5" />
-            <circle cx="100" cy="60" r="8" fill="#c084fc" className="animate-ping" />
+        <div className="absolute left-[14%] sm:left-[22%] top-1/2 -translate-y-1/2 w-48 sm:w-60 h-36 sm:h-44 animate-vfx-blackhole">
+          <svg className="w-full h-full" viewBox="0 0 160 140">
+            <circle cx="80" cy="70" r="22" fill="#000000" stroke="#38bdf8" strokeWidth="4" />
+            <circle cx="80" cy="70" r="40" fill="none" stroke="#a855f7" strokeWidth="3" strokeDasharray="14 8" />
+            <circle cx="80" cy="70" r="55" fill="none" stroke="#00e5ff" strokeWidth="2" strokeDasharray="8 6" />
+            <circle cx="80" cy="70" r="10" fill="#ffffff" className="animate-ping" />
           </svg>
         </div>
       )}
 
-      {/* 14. SHADOW EXCHANGE (skill-shadow-exchange) - Dual Swirling Void Gateways */}
+      {/* ========================================================================= */}
+      {/* 14. SHADOW EXCHANGE: Abyssal Shadow Portal */}
+      {/* ========================================================================= */}
       {activeVFX === 'shadow_exchange' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-vfx-shadowportal">
-          <svg className="w-full h-full max-w-[280px] max-h-[160px] filter drop-shadow-[0_0_30px_#a855f7]" viewBox="0 0 200 120">
-            <ellipse cx="65" cy="60" rx="24" ry="42" fill="#1e1b4b" stroke="#a855f7" strokeWidth="3" />
-            <ellipse cx="135" cy="60" rx="24" ry="42" fill="#1e1b4b" stroke="#00f0ff" strokeWidth="3" />
-            <line x1="65" y1="60" x2="135" y2="60" stroke="#c084fc" strokeWidth="2" strokeDasharray="4 2" />
-          </svg>
+        <div className="absolute right-[14%] sm:right-[20%] bottom-2 w-48 sm:w-60 h-24 animate-vfx-shadowportal">
+          <div className="w-full h-12 rounded-[100%] bg-gradient-to-r from-purple-900 via-slate-950 to-indigo-900 border-2 border-purple-400 shadow-[0_0_35px_#a855f7] animate-pulse" />
         </div>
       )}
 
-      {/* 15. ARISE (skill-arise) - THE MONARCH AWAKENING: Giant Violet Shadow Eruption */}
+      {/* ========================================================================= */}
+      {/* 15. ARISE: Grand Shadow Monarch Legion Summoning Array */}
+      {/* ========================================================================= */}
       {activeVFX === 'arise' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-vfx-ariseburst">
-          <svg className="w-full h-full max-w-[300px] max-h-[180px] filter drop-shadow-[0_0_50px_#a855f7]" viewBox="0 0 200 120">
-            {/* Ground Shadow Ocean */}
-            <ellipse cx="100" cy="95" rx="80" ry="20" fill="#2e1065" stroke="#a855f7" strokeWidth="3" opacity="0.8" />
-            {/* Monarch Crown Glyph */}
-            <polygon points="70,55 80,30 100,45 120,30 130,55 100,65" fill="#a855f7" stroke="#ffffff" strokeWidth="2" />
-            {/* Erupting Shadow Pillars */}
-            <path d="M 60 95 Q 75 40 85 10" fill="none" stroke="#c084fc" strokeWidth="5" strokeLinecap="round" />
-            <path d="M 140 95 Q 125 40 115 10" fill="none" stroke="#c084fc" strokeWidth="5" strokeLinecap="round" />
-            <circle cx="100" cy="45" r="16" fill="#00e5ff" opacity="0.6" className="animate-ping" />
-          </svg>
+        <div className="absolute inset-0 flex flex-col items-center justify-center animate-vfx-ariseburst">
+          {/* Summoning Runic Floor Array */}
+          <div className="w-64 sm:w-96 h-28 sm:h-36 rounded-[100%] border-2 border-purple-400/90 bg-purple-950/40 shadow-[0_0_50px_rgba(168,85,247,0.9)] flex items-center justify-center relative overflow-hidden">
+            <div className="w-48 sm:w-72 h-16 sm:h-20 rounded-[100%] border border-cyan-400/80 animate-ping" />
+            <span className="font-chakra font-black text-xl sm:text-3xl text-purple-200 tracking-[0.25em] drop-shadow-[0_0_20px_#a855f7]">
+              ARISE · TRỖI DẬY
+            </span>
+          </div>
         </div>
       )}
 
-      {/* 16. SHADOW EXTRACTION (skill-shadow-extraction) - Siphoning Glowing Teal Soul Flames */}
+      {/* ========================================================================= */}
+      {/* 16. SHADOW EXTRACTION: Soul Extraction Vortex */}
+      {/* ========================================================================= */}
       {activeVFX === 'shadow_extraction' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-vfx-soulextraction">
-          <svg className="w-full h-full max-w-[280px] max-h-[160px] filter drop-shadow-[0_0_35px_#34d399]" viewBox="0 0 200 120">
-            <path d="M 85 105 Q 70 65 95 25" fill="none" stroke="#34d399" strokeWidth="4" strokeLinecap="round" />
-            <path d="M 115 105 Q 130 65 105 25" fill="none" stroke="#6ee7b7" strokeWidth="4" strokeLinecap="round" />
-            <circle cx="100" cy="25" r="12" fill="#34d399" className="animate-ping" />
-            <circle cx="100" cy="25" r="5" fill="#ffffff" />
+        <div className="absolute left-[15%] sm:left-[22%] top-1/2 -translate-y-1/2 w-48 sm:w-60 h-36 sm:h-44 animate-vfx-soulextraction">
+          <svg className="w-full h-full" viewBox="0 0 160 140">
+            <path d="M 80 120 Q 50 70 80 20 Q 110 70 80 120 Z" fill="none" stroke="#c084fc" strokeWidth="4" />
+            <circle cx="80" cy="70" r="18" fill="#a855f7" opacity="0.8" className="animate-ping" />
           </svg>
         </div>
       )}
 
-      {/* 17. MONARCH DOMAIN (skill-monarch-domain) - Obsidian Shadow Floor Rune Matrix */}
+      {/* ========================================================================= */}
+      {/* 17. MONARCH'S DOMAIN: Infinite Shadow Ocean Expanding Over Battlefield */}
+      {/* ========================================================================= */}
       {activeVFX === 'monarch_domain' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-vfx-monarchdomain">
-          <svg className="w-full h-full max-w-[300px] max-h-[160px] filter drop-shadow-[0_0_40px_#9333ea]" viewBox="0 0 200 120">
-            <ellipse cx="100" cy="65" rx="85" ry="35" fill="#180828" stroke="#a855f7" strokeWidth="3" opacity="0.9" />
-            <ellipse cx="100" cy="65" rx="55" ry="22" fill="none" stroke="#c084fc" strokeWidth="2" strokeDasharray="8 4" />
-            <circle cx="100" cy="65" r="14" fill="#a855f7" opacity="0.6" className="animate-pulse" />
-          </svg>
+        <div className="absolute inset-0 bg-gradient-to-t from-purple-950/90 via-slate-950/80 to-transparent flex items-center justify-center animate-vfx-monarchdomain">
+          <div className="w-72 sm:w-[32rem] h-20 sm:h-28 rounded-[100%] border-2 border-purple-400 shadow-[0_0_60px_#a855f7] flex items-center justify-center">
+            <span className="font-orbitron font-black text-xs sm:text-base text-purple-200 tracking-widest uppercase">
+              👑 LÃNH ĐỊA CHÚA TỂ BÓNG TỐI
+            </span>
+          </div>
         </div>
       )}
 
-      {/* 18. SHADOW ARMOR (skill-shadow-armor) - Hexagonal Obsidian Aegis Shield */}
+      {/* ========================================================================= */}
+      {/* 18. SHADOW ARMOR: Interlocking Crystalline Obsidian Aegis */}
+      {/* ========================================================================= */}
       {activeVFX === 'shadow_armor' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-vfx-shadowarmor">
-          <svg className="w-full h-full max-w-[280px] max-h-[160px] filter drop-shadow-[0_0_35px_#a855f7]" viewBox="0 0 200 120">
-            <polygon
-              points="100,10 150,35 150,90 100,115 50,90 50,35"
-              fill="#1e1b4b"
-              stroke="#a855f7"
-              strokeWidth="3.5"
-              opacity="0.85"
-            />
-            <polygon
-              points="100,25 135,45 135,80 100,100 65,80 65,45"
-              fill="none"
-              stroke="#38bdf8"
-              strokeWidth="2"
-              strokeDasharray="6 3"
-            />
-            <circle cx="100" cy="62" r="10" fill="#ffffff" className="animate-ping" />
-          </svg>
+        <div className="absolute right-[14%] sm:right-[20%] top-1/2 -translate-y-1/2 w-48 sm:w-60 h-36 sm:h-44 animate-vfx-shadowarmor">
+          <div className="w-full h-full rounded-lg border-2 border-indigo-400/90 bg-indigo-950/50 shadow-[0_0_35px_rgba(99,102,241,0.8)] flex items-center justify-center">
+            <span className="font-chakra font-black text-xs text-indigo-200 uppercase">
+              🛡️ HẮC GIÁP HỘ THỂ
+            </span>
+          </div>
         </div>
       )}
 
-      {/* 19. DRAGON FEAR (skill-dragon-fear) - Golden Dragon Roar Shockwaves */}
+      {/* ========================================================================= */}
+      {/* 19. DRAGON FEAR: Draconic Stun Roar Shockwave */}
+      {/* ========================================================================= */}
       {activeVFX === 'dragon_fear' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-vfx-dragonroar">
-          <svg className="w-full h-full max-w-[280px] max-h-[160px] filter drop-shadow-[0_0_40px_#f59e0b]" viewBox="0 0 200 120">
-            <circle cx="100" cy="60" r="50" fill="none" stroke="#f59e0b" strokeWidth="3" opacity="0.7" className="animate-ping" />
-            <circle cx="100" cy="60" r="35" fill="none" stroke="#fbbf24" strokeWidth="3" />
-            <circle cx="100" cy="60" r="20" fill="#ffffff" opacity="0.8" />
+        <div className="absolute left-[12%] sm:left-[20%] top-1/2 -translate-y-1/2 w-52 sm:w-68 h-36 sm:h-44 animate-vfx-dragonroar">
+          <svg className="w-full h-full" viewBox="0 0 180 140">
+            <circle cx="90" cy="70" r="48" fill="none" stroke="#f59e0b" strokeWidth="4" strokeDasharray="14 6" />
+            <circle cx="90" cy="70" r="28" fill="none" stroke="#fbbf24" strokeWidth="3" />
+            <circle cx="90" cy="70" r="16" fill="#f59e0b" opacity="0.8" className="animate-ping" />
           </svg>
         </div>
       )}
 
-      {/* 20. DRAGON BREATH (skill-dragon-breath) - Cosmic Plasma Firestorm Beam */}
+      {/* ========================================================================= */}
+      {/* 20. DRAGON BREATH: Torrent of Azure-White Incinerating Plasma */}
+      {/* ========================================================================= */}
       {activeVFX === 'dragon_breath' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-vfx-dragonbeam">
-          <svg className="w-full h-full max-w-[320px] max-h-[140px] filter drop-shadow-[0_0_45px_#ef4444]" viewBox="0 0 300 100">
-            <path d="M 0 50 Q 150 15 300 50 Q 150 85 0 50 Z" fill="#b91c1c" opacity="0.85" />
-            <path d="M 0 50 Q 150 25 300 50 Q 150 75 0 50 Z" fill="#f97316" opacity="0.9" />
-            <line x1="0" y1="50" x2="300" y2="50" stroke="#ffffff" strokeWidth="8" strokeLinecap="round" />
-          </svg>
+        <div className="absolute inset-0 flex items-center justify-center animate-vfx-dragonbeam">
+          <div className="w-full h-14 sm:h-20 bg-gradient-to-r from-transparent via-cyan-400 to-white shadow-[0_0_60px_#00e5ff] blur-xs" />
         </div>
       )}
 
-      {/* 21. DEMON LIGHTNING (skill-demon-lightning) - Baran Branched Heavenly Lightning */}
+      {/* ========================================================================= */}
+      {/* 21. DEMON LIGHTNING: Celestial Golden-Cyan Lightning Bolt */}
+      {/* ========================================================================= */}
       {activeVFX === 'demon_lightning' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-vfx-demonthunder">
-          <svg className="w-full h-full max-w-[280px] max-h-[160px] filter drop-shadow-[0_0_40px_#38bdf8]" viewBox="0 0 200 120">
+        <div className="absolute left-[16%] sm:left-[24%] top-0 bottom-0 w-28 sm:w-36 animate-vfx-demonthunder">
+          <svg className="w-full h-full" viewBox="0 0 100 200">
             <polyline
-              points="100,0 85,35 115,50 80,85 110,95 70,120"
+              points="50,0 35,60 65,90 30,140 70,160 45,200"
               fill="none"
-              stroke="#0284c7"
-              strokeWidth="10"
-              opacity="0.8"
+              stroke="#00e5ff"
+              strokeWidth="8"
+              strokeLinecap="round"
             />
             <polyline
-              points="100,0 85,35 115,50 80,85 110,95 70,120"
+              points="50,0 35,60 65,90 30,140 70,160 45,200"
               fill="none"
               stroke="#ffffff"
-              strokeWidth="4"
+              strokeWidth="3.5"
+              strokeLinecap="round"
             />
-            <circle cx="70" cy="120" r="14" fill="#38bdf8" className="animate-ping" />
           </svg>
         </div>
       )}
 
-      {/* 22. VOID CLEAVE (skill-void-cleave) - Reality Fracture Dimensional Tear */}
+      {/* ========================================================================= */}
+      {/* 22. VOID CLEAVE: Cosmic Dimensional Rift Cleave */}
+      {/* ========================================================================= */}
       {activeVFX === 'void_cleave' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-vfx-voidrift">
-          <svg className="w-full h-full max-w-[280px] max-h-[160px] filter drop-shadow-[0_0_40px_#ec4899]" viewBox="0 0 200 120">
-            <polygon
-              points="15,105 75,70 65,60 125,35 115,25 185,10 165,30 175,40 115,70 125,80"
-              fill="#581c87"
-              stroke="#ec4899"
-              strokeWidth="2.5"
-            />
-            <circle cx="100" cy="60" r="10" fill="#ffffff" className="animate-ping" />
+        <div className="absolute left-[10%] sm:left-[18%] top-1/2 -translate-y-1/2 w-56 sm:w-76 h-36 sm:h-48 animate-vfx-voidrift">
+          <svg className="w-full h-full" viewBox="0 0 220 160">
+            <line x1="20" y1="140" x2="200" y2="20" stroke="#a855f7" strokeWidth="16" strokeLinecap="round" />
+            <line x1="20" y1="140" x2="200" y2="20" stroke="#000000" strokeWidth="8" strokeLinecap="round" />
+            <line x1="20" y1="140" x2="200" y2="20" stroke="#f43f5e" strokeWidth="3" strokeLinecap="round" />
           </svg>
         </div>
       )}
 
-      {/* BOSS & ENEMY COMBAT ACTIONS */}
+      {/* ========================================================================= */}
+      {/* 23. BOSS CLAW: Jagged Crimson Lacerations */}
+      {/* ========================================================================= */}
       {activeVFX === 'boss_claw' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-vfx-mutilatecrash">
-          <svg className="w-full h-full max-w-[260px] max-h-[140px] filter drop-shadow-[0_0_35px_#ef4444]" viewBox="0 0 200 120">
-            <path d="M 40 25 Q 60 60 80 100" fill="none" stroke="#ef4444" strokeWidth="6" strokeLinecap="round" />
-            <path d="M 80 15 Q 100 60 120 105" fill="none" stroke="#dc2626" strokeWidth="8" strokeLinecap="round" />
-            <path d="M 120 25 Q 140 60 160 100" fill="none" stroke="#b91c1c" strokeWidth="6" strokeLinecap="round" />
+        <div className="absolute right-[14%] sm:right-[22%] top-1/2 -translate-y-1/2 w-48 sm:w-60 h-32 sm:h-40 animate-vfx-razorslash">
+          <svg className="w-full h-full" viewBox="0 0 160 120">
+            <path d="M 20 20 Q 80 60 140 100" stroke="#ef4444" strokeWidth="8" strokeLinecap="round" fill="none" />
+            <path d="M 40 10 Q 100 50 160 90" stroke="#b91c1c" strokeWidth="6" strokeLinecap="round" fill="none" />
+            <path d="M 10 35 Q 70 75 130 115" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" fill="none" />
           </svg>
         </div>
       )}
 
+      {/* ========================================================================= */}
+      {/* 24. BOSS COMBO: Berserk Multi-Slash Storm */}
+      {/* ========================================================================= */}
       {activeVFX === 'boss_combo' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-vfx-rasakawhirl">
-          <svg className="w-full h-full max-w-[260px] max-h-[140px] filter drop-shadow-[0_0_35px_#f97316]" viewBox="0 0 200 120">
-            <circle cx="100" cy="60" r="45" fill="none" stroke="#ef4444" strokeWidth="3" strokeDasharray="8 4" />
-            <line x1="20" y1="15" x2="180" y2="105" stroke="#f97316" strokeWidth="6" strokeLinecap="round" />
-            <line x1="180" y1="15" x2="20" y2="105" stroke="#ef4444" strokeWidth="6" strokeLinecap="round" />
+        <div className="absolute right-[14%] sm:right-[22%] top-1/2 -translate-y-1/2 w-52 sm:w-64 h-36 sm:h-44 animate-vfx-mutilatecrash">
+          <svg className="w-full h-full" viewBox="0 0 180 140">
+            <line x1="20" y1="20" x2="160" y2="120" stroke="#dc2626" strokeWidth="10" strokeLinecap="round" />
+            <line x1="160" y1="20" x2="20" y2="120" stroke="#b91c1c" strokeWidth="10" strokeLinecap="round" />
+            <circle cx="90" cy="70" r="18" fill="#ef4444" className="animate-ping" />
           </svg>
         </div>
       )}
 
+      {/* ========================================================================= */}
+      {/* 25. BOSS ULTIMATE: Blood Moon Eclipse Cataclysm */}
+      {/* ========================================================================= */}
       {activeVFX === 'boss_ultimate' && (
-        <div className="absolute inset-0 bg-red-950/80 backdrop-blur-xs flex items-center justify-center animate-pulse z-40">
-          <svg className="w-full h-full max-w-[280px] max-h-[160px] filter drop-shadow-[0_0_50px_#ef4444]" viewBox="0 0 200 120">
-            <circle cx="100" cy="60" r="50" fill="#dc2626" opacity="0.4" className="animate-ping" />
-            <circle cx="100" cy="60" r="25" fill="#ffffff" />
-          </svg>
+        <div className="absolute inset-0 bg-red-950/60 flex items-center justify-center animate-vfx-bloodlustpulse">
+          <div className="w-48 sm:w-64 h-48 sm:h-64 rounded-full border-4 border-rose-500 shadow-[0_0_80px_#f43f5e] bg-red-900/40 animate-ping" />
         </div>
       )}
 
+      {/* ========================================================================= */}
+      {/* 26. MONSTER EVADE: Phantom Afterimage Displacement */}
+      {/* ========================================================================= */}
       {activeVFX === 'monster_evade' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-vfx-shadowmirage">
-          <svg className="w-full h-full max-w-[240px] max-h-[120px] filter drop-shadow-[0_0_20px_#a855f7]" viewBox="0 0 200 120">
-            <circle cx="100" cy="60" r="40" fill="#581c87" opacity="0.3" stroke="#a855f7" strokeWidth="2" strokeDasharray="4 2" />
-          </svg>
+        <div className="absolute left-[14%] sm:left-[22%] top-1/2 -translate-y-1/2 w-40 sm:w-52 h-32 sm:h-40 animate-pulse">
+          <div className="w-full h-full rounded-full border border-dashed border-cyan-400 blur-xs bg-cyan-950/30" />
         </div>
       )}
     </div>

@@ -136,10 +136,12 @@ export interface Skill {
   id: string;
   name: string;
   vietnameseName: string;
+  rank?: 'E' | 'D' | 'C' | 'B' | 'A' | 'S' | 'Monarch';
   level: number;
   maxLevel: number;
   mpCost: number;
   cooldownSeconds: number;
+  cooldownTurns?: number;
   damageMultiplier: number;
   type: 'active' | 'passive';
   category?: 'dagger' | 'shadow' | 'ruler' | 'monarch' | 'buff' | 'assassin';

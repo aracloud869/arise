@@ -10,6 +10,7 @@ import {
   FlameStreakIcon,
 } from '../icons/SystemIcons';
 import { soundFx } from '../../utils/soundEffects';
+import { getSkillRank, RANK_STYLE_CONFIGS } from '../../utils/skillRank';
 
 interface SkillLoadoutDeckProps {
   skills: Skill[];
@@ -131,17 +132,25 @@ export const SkillLoadoutDeck: React.FC<SkillLoadoutDeckProps> = ({
 
             if (skill) {
               const catClass = getCategoryColor(skill.category);
+              const rank = getSkillRank(skill);
+              const rankCfg = RANK_STYLE_CONFIGS[rank];
+
               return (
                 <div
                   key={skill.id}
                   onClick={() => handleSlotClick(slotIdx)}
-                  className="p-3 bg-gradient-to-b from-slate-900/90 via-slate-950 to-slate-900/90 border border-cyan-400/80 hover:border-cyan-300 rounded-xs relative group cursor-pointer hover:shadow-[0_0_20px_rgba(0,229,255,0.4)] transition-all flex flex-col justify-between"
+                  className={`p-3 bg-gradient-to-b ${rankCfg.gradientBg} ${rankCfg.readyPulseClass} border border-cyan-400/80 hover:border-cyan-300 rounded-xs relative group cursor-pointer hover:shadow-[0_0_20px_rgba(0,229,255,0.4)] transition-all flex flex-col justify-between overflow-hidden`}
                 >
                   <div>
                     <div className="flex items-center justify-between gap-1 mb-1.5">
-                      <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 bg-cyan-950 border border-cyan-500/50 text-cyan-300 rounded-xs">
-                        SLOT {slotIdx + 1}
-                      </span>
+                      <div className="flex items-center gap-1">
+                        <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 bg-cyan-950 border border-cyan-500/50 text-cyan-300 rounded-xs">
+                          SLOT {slotIdx + 1}
+                        </span>
+                        <span className={`text-[8px] font-orbitron font-black px-1.5 py-0.2 rounded-xs border ${rankCfg.badgeBorder} ${rankCfg.badgeBg} ${rankCfg.badgeText}`}>
+                          [{rank}]
+                        </span>
+                      </div>
                       <span className={`text-[9px] font-mono font-bold px-1.5 py-0.2 rounded-xs border ${catClass}`}>
                         {getSkillCategoryName(skill.category)}
                       </span>
@@ -161,10 +170,11 @@ export const SkillLoadoutDeck: React.FC<SkillLoadoutDeckProps> = ({
                     </div>
                   </div>
 
-                  {/* Action row */}
+                  {/* Action row with ready state indicator */}
                   <div className="mt-2.5 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px]">
-                    <span className="text-cyan-400 font-chakra font-bold group-hover:underline">
-                      🔄 Đổi Chiêu
+                    <span className="text-emerald-400 font-chakra font-bold flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block" />
+                      SẴN SÀNG
                     </span>
                     <button
                       type="button"

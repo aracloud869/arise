@@ -19,6 +19,8 @@ import { CombatVFX, VFXType } from '../dungeon/CombatVFX';
 import { HolographicHPBar } from '../dungeon/HolographicHPBar';
 import { GroundImpactEffect } from '../effects/GroundImpactEffect';
 import { SkillLoadoutDeck } from '../skills/SkillLoadoutDeck';
+import { CombatDamageOverlay, FloatingCombatItem } from '../dungeon/CombatDamageOverlay';
+import { getSkillRank, RANK_STYLE_CONFIGS } from '../../utils/skillRank';
 
 interface DungeonTabProps {
   stats: PlayerStats;
@@ -220,6 +222,26 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
     }
   }, [stats.hp, stats.mp, battleState]);
 
+  const [combatPopups, setCombatPopups] = useState<FloatingCombatItem[]>([]);
+
+  const addCombatPopup = (
+    text: string,
+    type: FloatingCombatItem['type'] = 'damage',
+    subText?: string,
+    target: 'boss' | 'player' = 'boss',
+    rank?: string
+  ) => {
+    const id = Date.now() + Math.random();
+    // Monster is located in left arena column (x: 22-30%), Player is on right column (x: 70-78%)
+    const x = target === 'boss' ? 26 + (Math.random() * 10 - 5) : 74 + (Math.random() * 8 - 4);
+    const y = target === 'boss' ? 36 + (Math.random() * 14 - 7) : 48 + (Math.random() * 10 - 5);
+
+    setCombatPopups((prev) => [...prev, { id, text, subText, type, rank, x, y }]);
+    setTimeout(() => {
+      setCombatPopups((prev) => prev.filter((item) => item.id !== id));
+    }, 950);
+  };
+
   const addFloatingText = (text: string, type: FloatingText['type'], target: 'boss' | 'player' = 'boss') => {
     const id = Date.now() + Math.random();
     const x = target === 'boss' ? 45 + (Math.random() * 20 - 10) : 30 + (Math.random() * 20 - 10);
@@ -233,15 +255,22 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
 
   const vfxTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Safety Auto-Recovery Timer to prevent any input lockout or freezing ("bị đơ")
+  // Universal Safety Auto-Recovery Watchdog to prevent any input lockout or freezing ("bị đơ")
   useEffect(() => {
-    if (isActing && currentTurn === 'player') {
+    if (isActing) {
       const safetyUnlock = setTimeout(() => {
         setIsActing(false);
-      }, 850);
+        setIsHunterAttacking(false);
+        setIsMonsterAttacking(false);
+        setIsHunterHurt(false);
+        setIsMonsterHurt(false);
+        if (currentTurn !== 'player' && battleState === 'fighting') {
+          setCurrentTurn('player');
+        }
+      }, 1200);
       return () => clearTimeout(safetyUnlock);
     }
-  }, [isActing, currentTurn]);
+  }, [isActing, currentTurn, battleState]);
 
   const triggerVFX = (type: VFXType, duration = 400) => {
     if (vfxTimeoutRef.current) {
@@ -404,6 +433,12 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
 
       soundFx.playCrit();
       addFloatingText(isCrit ? `BẠO KÍCH! -${damage}` : `-${damage}`, isCrit ? 'crit' : 'damage', 'boss');
+      addCombatPopup(
+        isCrit ? `BẠO KÍCH! -${damage.toLocaleString()}` : `-${damage.toLocaleString()}`,
+        isCrit ? 'crit' : 'damage',
+        isCrit ? 'BẠO KÍCH DAO GĂM' : 'ĐÒN ĐÁNH CƠ BẢN',
+        'boss'
+      );
 
       setCombatLogs((prev) => [
         ...prev,
@@ -453,6 +488,10 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
     }));
 
     const skId = skill.id;
+    const rank = getSkillRank(skill);
+
+    // Immediate floating feedback on skill activation
+    addCombatPopup(`-${skill.mpCost} MP`, 'status', `[${rank}] ${skill.name}`, 'player', rank);
 
     if (skId === 'skill-slash') {
       soundFx.playSlash();
@@ -560,6 +599,33 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
 
       soundFx.playCrit();
       addFloatingText(isCrit ? `BẠO KÍCH! -${damage}` : `-${damage}`, 'crit', 'boss');
+      addCombatPopup(
+        isCrit ? `BẠO KÍCH! -${damage.toLocaleString()}` : `-${damage.toLocaleString()}`,
+        isCrit ? 'crit' : 'damage',
+        isCrit ? `SIÊU BẠO KÍCH (${skill.name})` : `HIỆU QUẢ CAO: ${skill.name}`,
+        'boss',
+        rank
+      );
+
+      // Contextual effectiveness popups
+      if (skill.category === 'assassin' || skId.includes('vital')) {
+        setTimeout(() => {
+          addCombatPopup('TỬ HUYỆT XUYÊN GIÁP!', 'effectiveness', 'PHÁ GIÁP CỰC ĐẠI', 'boss');
+        }, 120);
+      } else if (skId.includes('venom')) {
+        setTimeout(() => {
+          addCombatPopup('ĐỘC TỐ TÊ LIỆT!', 'status', 'ĂN MÒN SINH LỰC', 'boss');
+        }, 120);
+      } else if (skId.includes('authority') || skId.includes('fear') || skId.includes('demon')) {
+        setTimeout(() => {
+          addCombatPopup('ĐỐI THỦ BỊ CHOÁNG!', 'status', 'KHỐNG CHẾ HOÀN TOÀN', 'boss');
+        }, 120);
+      } else if (skId.includes('arise') || skId.includes('domain')) {
+        setTimeout(() => {
+          addCombatPopup('QUÂN ĐOÀN BÙNG NỔ!', 'effectiveness', 'CHÚA TỂ BÓNG TỐI', 'player', rank);
+        }, 120);
+      }
+
       setCombatLogs((prev) => [
         ...prev,
         `[KỸ NĂNG: ${skill.vietnameseName}]: Gây ${damage} sát thương ${isCrit ? '(SIÊU BẠO KÍCH!)' : ''} lên ${enemyName}!`,
@@ -588,6 +654,7 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
     soundFx.playGuardSound();
     setIsGuarding(true);
     addFloatingText('THỦ VỮNG -65%', 'status', 'player');
+    addCombatPopup('GIẢM 65% ST', 'effectiveness', 'THỦ VỮNG', 'player');
     setCombatLogs((prev) => [...prev, `[PHÒNG THỦ]: Bạn vào thế thủ vững chắc, giảm 65% sát thương nhận vào hiệp này!`]);
     advanceToEnemyTurn(enemyCurrentHp);
   };
@@ -674,16 +741,26 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
 
       totalDamageDealt += hitDmg;
       addFloatingText(`HIT ${hitsExecuted}: -${hitDmg}`, 'boss_damage', 'player');
+      addCombatPopup(`-${hitDmg}`, 'boss_damage', `HIT ${hitsExecuted}`, 'player');
 
+      let isDefeated = false;
       setPlayerCombatHp((prev) => {
         const nextHp = Math.max(0, prev - hitDmg);
         if (nextHp <= 0) {
+          isDefeated = true;
           handlePlayerDefeat();
         }
         return nextHp;
       });
 
       setTimeout(() => setIsHunterHurt(false), 150);
+
+      if (isDefeated) {
+        setIsMonsterAttacking(false);
+        setIsGuarding(false);
+        setIsActing(false);
+        return;
+      }
 
       if (hitsExecuted < numHits) {
         setTimeout(executeSingleHit, fastSpeed ? 100 : 180);
@@ -911,15 +988,27 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
               {[0, 1, 2, 3, 4].map((slotIdx) => {
                 const sk = equippedBattleSkills[slotIdx];
                 if (sk) {
+                  const skRank = getSkillRank(sk);
+                  const rankCfg = RANK_STYLE_CONFIGS[skRank];
+                  const isReady = stats.mp >= sk.mpCost;
+                  const pulseClass = isReady ? rankCfg.readyPulseClass : '';
+
                   return (
                     <div
                       key={sk.id}
                       onClick={() => onToggleEquipSkill?.(sk.id)}
-                      className="p-2 bg-slate-900/90 hover:bg-slate-850 border border-cyan-400/60 rounded-xs cursor-pointer transition-all flex flex-col justify-between group"
+                      className={`p-2 bg-slate-900/90 hover:bg-slate-850 border rounded-xs cursor-pointer transition-all flex flex-col justify-between group relative overflow-hidden ${
+                        isReady ? `${pulseClass} border-cyan-400` : 'border-slate-700 opacity-70'
+                      }`}
                       title="Bấm để tháo khỏi đội hình"
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-[9px] font-mono text-cyan-300 font-bold">SLOT {slotIdx + 1}</span>
+                        <div className="flex items-center gap-1">
+                          <span className="text-[9px] font-mono text-cyan-300 font-bold">SLOT {slotIdx + 1}</span>
+                          <span className={`px-1 py-0.2 text-[8px] font-black font-orbitron rounded-xs border ${rankCfg.badgeBorder} ${rankCfg.badgeBg} ${rankCfg.badgeText}`}>
+                            {skRank}
+                          </span>
+                        </div>
                         <span className="text-[8px] font-mono text-slate-400 group-hover:text-red-400">✕ Tháo</span>
                       </div>
                       <div className="font-bold text-xs text-white font-chakra truncate mt-0.5">{sk.name}</div>
@@ -1342,6 +1431,9 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
             {/* Dynamic Combat VFX overlaying directly on combat models */}
             <CombatVFX activeVFX={activeVFX} />
 
+            {/* Small Floating Damage & Effectiveness Pop-ups Overlay directly above combatants */}
+            <CombatDamageOverlay items={combatPopups} />
+
             {/* Ground Impact Particle Dust & Shockwaves Component */}
             <GroundImpactEffect
               active={groundImpactActive}
@@ -1450,31 +1542,55 @@ export const DungeonTab: React.FC<DungeonTabProps> = ({
                 const cd = skillCooldownTurns[skill.id] || 0;
                 const notEnoughMp = playerCombatMp < skill.mpCost;
                 const disabled = currentTurn !== 'player' || isActing || cd > 0 || notEnoughMp;
+                const isReady = !disabled && cd === 0 && !notEnoughMp;
+                const rank = getSkillRank(skill);
+                const rankCfg = RANK_STYLE_CONFIGS[rank];
+                const pulseClass = isReady ? rankCfg.readyPulseClass : '';
 
                 return (
                   <button
                     key={skill.id}
                     onClick={() => useSkillById(skill)}
                     disabled={disabled}
-                    className={`p-1.5 rounded-xs border text-left cursor-pointer transition-all flex flex-col justify-between relative shadow-sm ${
+                    className={`p-1.5 rounded-xs border text-left cursor-pointer transition-all flex flex-col justify-between relative shadow-sm overflow-hidden ${
                       disabled
                         ? 'bg-slate-950/80 border-slate-800 text-slate-500 opacity-60'
-                        : 'bg-gradient-to-b from-slate-900 to-slate-950 hover:from-cyan-950 hover:to-slate-900 border-cyan-400 text-cyan-200'
+                        : `bg-gradient-to-b ${rankCfg.gradientBg} ${pulseClass} border-cyan-400 text-cyan-200`
                     }`}
                   >
                     {cd > 0 && (
-                      <span className="absolute inset-0 bg-slate-950/85 backdrop-blur-xs flex items-center justify-center font-mono font-bold text-amber-300 text-[10px] rounded-xs">
-                        HỒI: {cd}
+                      <span className="absolute inset-0 bg-slate-950/90 backdrop-blur-xs flex items-center justify-center font-mono font-bold text-amber-300 text-[10px] rounded-xs z-20">
+                        HỒI: {cd} HIỆP
+                      </span>
+                    )}
+                    {notEnoughMp && cd === 0 && (
+                      <span className="absolute inset-0 bg-slate-950/85 backdrop-blur-xs flex items-center justify-center font-mono font-bold text-rose-400 text-[9px] rounded-xs z-20">
+                        THIẾU MP ({skill.mpCost})
                       </span>
                     )}
                     <div className="flex items-center justify-between">
-                      <span className="text-[9px] font-bold text-cyan-300">CẤP {skill.level}</span>
-                      <span className="text-[9px] font-mono text-cyan-400">{skill.mpCost} MP</span>
+                      <div className="flex items-center gap-1">
+                        <span className={`px-1 py-0.2 rounded-xs text-[8px] font-black font-orbitron border ${rankCfg.badgeBorder} ${rankCfg.badgeBg} ${rankCfg.badgeText}`}>
+                          [{rank}]
+                        </span>
+                        <span className="text-[9px] font-bold text-cyan-300">CẤP {skill.level}</span>
+                      </div>
+                      <span className={`text-[9px] font-mono font-bold ${notEnoughMp ? 'text-rose-400' : 'text-cyan-300'}`}>
+                        {skill.mpCost} MP
+                      </span>
                     </div>
                     <div className="mt-0.5 font-bold text-[11px] sm:text-xs text-white font-chakra truncate">
                       {skill.name}
                     </div>
-                    <span className="text-[8px] sm:text-[9px] text-slate-400 truncate">x{skill.damageMultiplier} ST</span>
+                    <div className="flex items-center justify-between text-[8px] sm:text-[9px]">
+                      <span className="text-slate-400 truncate">x{skill.damageMultiplier} ST</span>
+                      {isReady && (
+                        <span className="text-[8px] font-mono font-bold text-emerald-300 flex items-center gap-1 shrink-0">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block" />
+                          SẴN SÀNG
+                        </span>
+                      )}
+                    </div>
                   </button>
                 );
               })}

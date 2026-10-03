@@ -1009,15 +1009,168 @@
   animation: comboFireGlow 0.8s ease-in-out infinite;
 }
 
-/* Combo Synergy Badge Pulse */
-@keyframes comboBadgePulse {
-  0% { transform: scale(0.8); opacity: 0; }
-  20% { transform: scale(1.15); opacity: 1; box-shadow: 0 0 30px #a855f7, inset 0 0 20px #a855f7; }
-  80% { transform: scale(1); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
+/* ==========================================================================
+   PASSIVE RANK-BASED CSS PULSE ANIMATIONS (EQUIPPED SKILL READY STATES)
+   ========================================================================== */
+
+/* Rank E - Subtle Cyan/Silver Pulse */
+@keyframes rankPulseE {
+  0%, 100% {
+    box-shadow: 0 0 4px rgba(148, 163, 184, 0.3), inset 0 0 4px rgba(148, 163, 184, 0.15);
+    border-color: rgba(148, 163, 184, 0.4);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.6), inset 0 0 8px rgba(56, 189, 248, 0.25);
+    border-color: rgba(56, 189, 248, 0.8);
+    transform: scale(1.015);
+  }
 }
-.animate-combo-badge {
-  animation: comboBadgePulse 0.5s ease-out forwards;
+.animate-rank-pulse-e {
+  animation: rankPulseE 2.4s ease-in-out infinite;
+}
+
+/* Rank D - Venomous Emerald Pulse */
+@keyframes rankPulseD {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(34, 197, 94, 0.35), inset 0 0 4px rgba(34, 197, 94, 0.2);
+    border-color: rgba(34, 197, 94, 0.5);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(74, 222, 128, 0.75), inset 0 0 8px rgba(74, 222, 128, 0.3);
+    border-color: rgba(74, 222, 128, 0.9);
+    transform: scale(1.02);
+  }
+}
+.animate-rank-pulse-d {
+  animation: rankPulseD 2.0s ease-in-out infinite;
+}
+
+/* Rank C - Azure Blue Shock Shimmer Pulse */
+@keyframes rankPulseC {
+  0%, 100% {
+    box-shadow: 0 0 6px rgba(14, 165, 233, 0.4), inset 0 0 5px rgba(14, 165, 233, 0.2);
+    border-color: rgba(14, 165, 233, 0.55);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 14px rgba(56, 189, 248, 0.8), inset 0 0 9px rgba(56, 189, 248, 0.35);
+    border-color: rgba(56, 189, 248, 0.95);
+    transform: scale(1.025);
+  }
+}
+.animate-rank-pulse-c {
+  animation: rankPulseC 1.8s ease-in-out infinite;
+}
+
+/* Rank B - Abyssal Amethyst Shadow Pulse */
+@keyframes rankPulseB {
+  0%, 100% {
+    box-shadow: 0 0 6px rgba(168, 85, 247, 0.45), inset 0 0 6px rgba(168, 85, 247, 0.25);
+    border-color: rgba(168, 85, 247, 0.6);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(192, 132, 252, 0.85), inset 0 0 10px rgba(192, 132, 252, 0.35);
+    border-color: rgba(192, 132, 252, 0.95);
+    transform: scale(1.028);
+  }
+}
+.animate-rank-pulse-b {
+  animation: rankPulseB 1.5s ease-in-out infinite;
+}
+
+/* Rank A - Celestial Violet Authority Pulse */
+@keyframes rankPulseA {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(217, 70, 239, 0.5), inset 0 0 7px rgba(217, 70, 239, 0.3);
+    border-color: rgba(217, 70, 239, 0.7);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 18px rgba(240, 171, 252, 0.9), inset 0 0 12px rgba(240, 171, 252, 0.4);
+    border-color: rgba(240, 171, 252, 1);
+    transform: scale(1.032);
+  }
+}
+.animate-rank-pulse-a {
+  animation: rankPulseA 1.25s ease-in-out infinite;
+}
+
+/* Rank S - Radiant Solar Golden Aura Pulse */
+@keyframes rankPulseS {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.6), inset 0 0 8px rgba(245, 158, 11, 0.35);
+    border-color: rgba(245, 158, 11, 0.75);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 22px rgba(251, 191, 36, 1), 0 0 35px rgba(245, 158, 11, 0.5), inset 0 0 14px rgba(251, 191, 36, 0.5);
+    border-color: rgba(251, 191, 36, 1);
+    transform: scale(1.038);
+  }
+}
+.animate-rank-pulse-s {
+  animation: rankPulseS 1.0s ease-in-out infinite;
+}
+
+/* Rank Monarch - Cosmic Shadow Monarch Dual Violet & Gold Resonant Pulse */
+@keyframes rankPulseMonarch {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.7), 0 0 16px rgba(234, 179, 8, 0.4), inset 0 0 8px rgba(168, 85, 247, 0.4);
+    border-color: rgba(234, 179, 8, 0.8);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 26px rgba(192, 132, 252, 1), 0 0 38px rgba(250, 204, 21, 0.9), inset 0 0 16px rgba(192, 132, 252, 0.6);
+    border-color: rgba(250, 204, 21, 1);
+    transform: scale(1.045);
+  }
+}
+.animate-rank-pulse-monarch {
+  animation: rankPulseMonarch 0.85s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* ==========================================================================
+   FLOATING COMBAT EFFECTIVENESS POP-UP ANIMATIONS (DUNGEON SCREEN OVERLAY)
+   ========================================================================== */
+
+@keyframes combatPopupFloat {
+  0% {
+    transform: scale(0.65) translateY(12px);
+    opacity: 0;
+  }
+  20% {
+    transform: scale(1.22) translateY(-4px);
+    opacity: 1;
+  }
+  45% {
+    transform: scale(1.0) translateY(-18px);
+    opacity: 1;
+  }
+  75% {
+    transform: scale(0.96) translateY(-32px);
+    opacity: 0.95;
+  }
+  100% {
+    transform: scale(0.9) translateY(-48px);
+    opacity: 0;
+  }
+}
+.animate-combat-popup {
+  animation: combatPopupFloat 0.95s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes critBurstStar {
+  0% { transform: scale(0.4) rotate(0deg); opacity: 0; }
+  30% { transform: scale(1.3) rotate(45deg); opacity: 1; }
+  70% { transform: scale(1.1) rotate(90deg); opacity: 0.9; }
+  100% { transform: scale(1.5) rotate(135deg); opacity: 0; }
+}
+.animate-crit-burst {
+  animation: critBurstStar 0.6s ease-out forwards;
 }
 
 
